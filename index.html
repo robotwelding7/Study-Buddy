@@ -20,6 +20,7 @@
     --math:#2F6FE4;   --math-soft:#E8EFFC;
     --bm:#5B5F97;     --bm-soft:#ECECF6;
     --sains:#8C3B4A;  --sains-soft:#F6E8EA;
+    --eng:#3D8C82;    --eng-soft:#E5F2F0;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -92,9 +93,11 @@
   .subject-card[data-subj="math"] .subject-icon{ background:var(--math-soft); }
   .subject-card[data-subj="bm"] .subject-icon{ background:var(--bm-soft); }
   .subject-card[data-subj="sains"] .subject-icon{ background:var(--sains-soft); }
+  .subject-card[data-subj="eng"] .subject-icon{ background:var(--eng-soft); }
   .subject-card[data-subj="math"] .mode-btn{ background:var(--math-soft); color:var(--math); border-color:var(--math-soft); }
   .subject-card[data-subj="bm"] .mode-btn{ background:var(--bm-soft); color:var(--bm); border-color:var(--bm-soft); }
   .subject-card[data-subj="sains"] .mode-btn{ background:var(--sains-soft); color:var(--sains); border-color:var(--sains-soft); }
+  .subject-card[data-subj="eng"] .mode-btn{ background:var(--eng-soft); color:var(--eng); border-color:var(--eng-soft); }
 
   footer{ text-align:center; margin-top:34px; font-size:11px; color:var(--ink-soft); font-family:'Fredoka'; }
 </style>
@@ -171,6 +174,29 @@
             <span class="mode-desc">Ikut topik, tak bertimer</span>
           </a>
           <a class="mode-btn" href="sains-exam.html">
+            <span class="mode-emoji">⏱️</span>Exam
+            <span class="mode-desc">Kertas penuh, bertimer</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="subject-card" data-subj="eng">
+      <div class="subject-head" onclick="toggle(this)">
+        <div class="subject-icon">🇬🇧</div>
+        <div style="flex:1">
+          <div class="subject-title">English</div>
+          <div class="subject-meta">31 topik latihan · Exam Darjah 1-6</div>
+        </div>
+        <div class="chevron">›</div>
+      </div>
+      <div class="subject-body">
+        <div class="mode-grid">
+          <a class="mode-btn" href="english-latihan-hub.html">
+            <span class="mode-emoji">📝</span>Latihan
+            <span class="mode-desc">Ikut topik, tak bertimer</span>
+          </a>
+          <a class="mode-btn" href="english-exam.html">
             <span class="mode-emoji">⏱️</span>Exam
             <span class="mode-desc">Kertas penuh, bertimer</span>
           </a>

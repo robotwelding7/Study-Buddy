@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English — Latihan</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#EEF3F5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFDFF;
+    --ink:#1E2A4A;
+    --ink-soft:#5A6785;
+    --grid:#DCE8F7;
+    --eng:#3D8C82;
+    --eng-soft:#E5F2F0;
+    --ready:#2F7A4F;
+    --ready-bg:#EAF7EF;
+    --soon-bg:#F1F2F5;
+    --soon-ink:#9099AA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:18px 16px 40px;
+  }
+  .back-btn{
+    background:none;border:none;font-family:'Fredoka';font-size:14px;font-weight:600;
+    color:var(--ink-soft);padding:6px 0 14px;cursor:pointer;
+  }
+  header{margin-bottom:18px;}
+  .eyebrow{
+    font-family:'Fredoka';font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--eng);
+  }
+  h1{
+    font-family:'Fredoka';font-weight:700;font-size:clamp(26px,7vw,34px);
+    margin:4px 0 4px;color:var(--ink);
+  }
+  .sub{font-size:14px;color:var(--ink-soft);max-width:48ch;}
+
+  /* ---- Darjah picker grid ---- */
+  .darjah-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;
+  }
+  .darjah-card{
+    background:#fff;border:2.5px solid var(--eng);border-radius:14px;
+    padding:16px 14px;text-align:center;cursor:pointer;
+    box-shadow:0 4px 0 var(--eng);
+    transition:transform .1s;
+  }
+  .darjah-card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--eng);}
+  .darjah-num{font-family:'Fredoka';font-weight:700;font-size:28px;color:var(--eng);}
+  .darjah-name{font-family:'Fredoka';font-weight:600;font-size:13px;color:var(--ink-soft);margin-top:2px;}
+  .darjah-count{font-size:11px;color:var(--ink-soft);margin-top:6px;font-weight:700;}
+
+  /* ---- Topic list (within a darjah) ---- */
+  .topic-list{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+  .topic-card{
+    display:flex;align-items:center;gap:12px;
+    background:#fff;border-radius:12px;padding:14px 16px;
+    text-decoration:none;color:inherit;
+    box-shadow:0 1px 0 rgba(0,0,0,0.04),0 4px 12px rgba(30,42,74,0.06);
+  }
+  .topic-card.ready{border-left:5px solid var(--ready);}
+  .topic-card.soon{border-left:5px solid #D8DCE3;opacity:0.72;}
+  .topic-icon{font-size:24px;flex:0 0 auto;width:34px;text-align:center;}
+  .topic-body{flex:1;min-width:0;}
+  .topic-name{font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--ink);}
+  .topic-desc{font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.4;}
+  .topic-badge{
+    flex:0 0 auto;font-family:'Fredoka';font-size:10.5px;font-weight:600;
+    padding:4px 10px;border-radius:20px;white-space:nowrap;
+  }
+  .badge-ready{background:var(--ready-bg);color:var(--ready);}
+  .badge-soon{background:var(--soon-bg);color:var(--soon-ink);}
+  .topic-card.soon .topic-name,.topic-card.soon .topic-desc{color:var(--soon-ink);}
+
+  footer{text-align:center;margin-top:32px;font-size:11px;color:var(--ink-soft);font-family:'Fredoka';}
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+var DARJAH_LABELS = ['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6'];
+
+var TOPICS = {
+  1: [
+    {name:'Nouns & Articles', desc:'Common vs proper nouns, a/an/the', icon:'📛', ready:true, href:'latihan-english.html?topic=d1-nouns-articles'},
+    {name:'Verb \'To Be\'', desc:'am, is, are', icon:'🔤', ready:true, href:'latihan-english.html?topic=d1-verb-to-be'},
+    {name:'Simple Present Sentences', desc:'Basic verb forms', icon:'📝', ready:true, href:'latihan-english.html?topic=d1-simple-present'},
+    {name:'Phonics & Vocabulary', desc:'Rhymes, opposites, synonyms', icon:'🔊', ready:true, href:'latihan-english.html?topic=d1-phonics-vocab'},
+    {name:'Reading Comprehension', desc:'Simple short passages', icon:'📖', ready:true, href:'latihan-english.html?topic=d1-reading-comprehension'},
+  ],
+  2: [
+    {name:'Simple Present Tense', desc:'Verb conjugation', icon:'🔤', ready:true, href:'latihan-english.html?topic=d2-simple-present-tense'},
+    {name:'Plural Nouns', desc:'Regular & irregular plurals', icon:'📛', ready:true, href:'latihan-english.html?topic=d2-plural-nouns'},
+    {name:'Prepositions of Place', desc:'in, on, under, behind', icon:'📍', ready:true, href:'latihan-english.html?topic=d2-prepositions-place'},
+    {name:'Simple Past (Common Verbs)', desc:'Irregular past tense', icon:'⏮️', ready:true, href:'latihan-english.html?topic=d2-simple-past'},
+    {name:'Short Reading Passages', desc:'Comprehension practice', icon:'📖', ready:true, href:'latihan-english.html?topic=d2-short-passages'},
+  ],
+  3: [
+    {name:'Past Tense (Regular Verbs)', desc:'-ed spelling rules', icon:'⏮️', ready:true, href:'latihan-english.html?topic=d3-past-tense-regular'},
+    {name:'Pronouns', desc:'he, she, it, they, etc.', icon:'👤', ready:true, href:'latihan-english.html?topic=d3-pronouns'},
+    {name:'Question Words', desc:'what, where, when, who, why', icon:'❓', ready:true, href:'latihan-english.html?topic=d3-question-words'},
+    {name:'Reading (Short Stories)', desc:'Story comprehension', icon:'📖', ready:true, href:'latihan-english.html?topic=d3-reading-short-stories'},
+    {name:'Simple Guided Writing', desc:'Sentence construction', icon:'✍️', ready:true, href:'latihan-english.html?topic=d3-guided-writing'},
+  ],
+  4: [
+    {name:'Present Continuous Tense', desc:'is/am/are + -ing', icon:'⏳', ready:true, href:'latihan-english.html?topic=d4-present-continuous'},
+    {name:'Comparative & Superlative', desc:'-er, -est, more, most', icon:'📊', ready:true, href:'latihan-english.html?topic=d4-comparative-superlative'},
+    {name:'Conjunctions', desc:'and, but, because, so', icon:'🔗', ready:true, href:'latihan-english.html?topic=d4-conjunctions'},
+    {name:'Reading (Paragraphs)', desc:'Main idea & details', icon:'📖', ready:true, href:'latihan-english.html?topic=d4-reading-paragraphs'},
+    {name:'Guided Composition', desc:'Sentence structure', icon:'✍️', ready:true, href:'latihan-english.html?topic=d4-guided-composition'},
+  ],
+  5: [
+    {name:'Past Continuous Tense', desc:'was/were + -ing', icon:'⏳', ready:true, href:'latihan-english.html?topic=d5-past-continuous'},
+    {name:'Modal Verbs', desc:'can, must, may, should', icon:'🔑', ready:true, href:'latihan-english.html?topic=d5-modal-verbs'},
+    {name:'Direct & Indirect Speech', desc:'Basic reported speech', icon:'💬', ready:true, href:'latihan-english.html?topic=d5-direct-indirect-speech'},
+    {name:'Reading (Longer Texts)', desc:'Extended comprehension', icon:'📖', ready:true, href:'latihan-english.html?topic=d5-reading-longer'},
+    {name:'Letter Writing', desc:'Formal & informal format', icon:'✉️', ready:true, href:'latihan-english.html?topic=d5-letter-writing'},
+  ],
+  6: [
+    {name:'Future Tense', desc:'will, going to', icon:'🔮', ready:true, href:'latihan-english.html?topic=d6-future-tense'},
+    {name:'Passive Voice', desc:'Active vs passive', icon:'🔄', ready:true, href:'latihan-english.html?topic=d6-passive-voice'},
+    {name:'Reported Speech', desc:'Advanced reported speech', icon:'💬', ready:true, href:'latihan-english.html?topic=d6-reported-speech'},
+    {name:'Reading (KBAT)', desc:'Higher-order thinking', icon:'🧠', ready:true, href:'latihan-english.html?topic=d6-reading-kbat'},
+    {name:'Essay Writing', desc:'Structure & style', icon:'🖋️', ready:true, href:'latihan-english.html?topic=d6-essay-writing'},
+    {name:'Summary Writing', desc:'Main idea extraction', icon:'📋', ready:true, href:'latihan-english.html?topic=d6-summary-writing'},
+  ],
+};
+
+var state = {screen:'darjah', darjah:null};
+var app = document.getElementById('app');
+
+function readyCount(d){
+  return TOPICS[d].filter(function(t){return t.ready;}).length;
+}
+
+function renderDarjahPicker(){
+  var html = '<header>'
+    + '<div class="eyebrow">Latihan &middot; English</div>'
+    + '<h1>Pilih darjah</h1>'
+    + '<div class="sub">Setiap darjah ada beberapa topik. Topik yang dah siap boleh main terus.</div>'
+    + '</header>'
+    + '<div class="darjah-grid">';
+  for(var d=1; d<=6; d++){
+    var rc = readyCount(d);
+    html += '<div class="darjah-card" data-d="'+d+'">'
+      + '<div class="darjah-num">'+d+'</div>'
+      + '<div class="darjah-name">'+DARJAH_LABELS[d-1]+'</div>'
+      + '<div class="darjah-count">'+rc+' / '+TOPICS[d].length+' topik siap</div>'
+      + '</div>';
+  }
+  html += '</div>'
+    + '<footer>lebih banyak topik akan ditambah dari semasa ke semasa</footer>';
+  app.innerHTML = html;
+  document.querySelectorAll('[data-d]').forEach(function(card){
+    card.onclick = function(){
+      state.darjah = parseInt(card.dataset.d);
+      state.screen = 'topics';
+      render();
+    };
+  });
+}
+
+function renderTopicList(){
+  var d = state.darjah;
+  var topics = TOPICS[d];
+  var html = '<button class="back-btn" id="backBtn">\u2190 Darjah</button>'
+    + '<header>'
+    + '<div class="eyebrow">English &middot; '+DARJAH_LABELS[d-1]+'</div>'
+    + '<h1>Senarai latihan</h1>'
+    + '<div class="sub">Pilih topik untuk mula berlatih.</div>'
+    + '</header>'
+    + '<div class="topic-list">';
+
+  topics.forEach(function(t){
+    if(t.ready){
+      html += '<a class="topic-card ready" href="'+t.href+'">'
+        + '<div class="topic-icon">'+t.icon+'</div>'
+        + '<div class="topic-body"><div class="topic-name">'+t.name+'</div><div class="topic-desc">'+t.desc+'</div></div>'
+        + '<div class="topic-badge badge-ready">Sedia</div>'
+        + '</a>';
+    } else {
+      html += '<div class="topic-card soon">'
+        + '<div class="topic-icon">'+t.icon+'</div>'
+        + '<div class="topic-body"><div class="topic-name">'+t.name+'</div><div class="topic-desc">'+t.desc+'</div></div>'
+        + '<div class="topic-badge badge-soon">Akan Datang</div>'
+        + '</div>';
+    }
+  });
+
+  html += '</div>'
+    + '<footer>topik "Akan Datang" akan diisi bila diperlukan</footer>';
+  app.innerHTML = html;
+  document.getElementById('backBtn').onclick = function(){
+    state.screen = 'darjah';
+    render();
+  };
+}
+
+function render(){
+  if(state.screen==='darjah') renderDarjahPicker();
+  else renderTopicList();
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan English — Buku Latihan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sriracha&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#f2ece0;
+    --paper-line:#d0c3a5;
+    --ink:#2a2620;
+    --plum:#5c3d5c;
+    --plum-mid:#8a6a8a;
+    --plum-light:#d3c0d3;
+    --teal:#3a7d6e;
+    --teal-dark:#2a5c50;
+    --amber:#d9932b;
+    --card:#fffdf7;
+    --shadow:rgba(42,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 34px, var(--paper-line) 35px),
+      var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+    padding:26px 14px 60px;
+  }
+  .book{ width:100%; max-width:660px; }
+
+  .back-link{
+    display:inline-block; margin-bottom:12px; font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:13px; color:var(--plum); text-decoration:none;
+  }
+
+  .cover{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:6px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px 24px 18px;
+    position:relative;
+    margin-bottom:18px;
+  }
+  .cover::before{
+    content:"";
+    position:absolute; left:16px; top:0; bottom:0; width:2px;
+    background:repeating-linear-gradient(0deg,var(--amber) 0 8px, transparent 8px 16px);
+    opacity:0.5;
+  }
+  .stamp{
+    position:absolute; top:14px; right:18px;
+    width:66px; height:66px;
+    border:3px solid var(--plum);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-12deg);
+    color:var(--plum);
+    font-family:'Sriracha',cursive;
+    font-size:11.5px; text-align:center; line-height:1.15;
+    opacity:0.85;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase;
+    font-size:11px; color:var(--teal-dark);
+    margin-left:22px;
+  }
+  h1{
+    font-family:'Sriracha',cursive; font-weight:400;
+    font-size:26px; margin:4px 0 2px 22px; color:var(--plum);
+  }
+  .sub{ margin:0 0 4px 22px; font-size:13.5px; color:#5a5346; }
+
+  .startBtn{
+    margin-top:16px; width:100%; padding:14px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .startBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  /* ===== quiz area ===== */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin:0 0 14px;
+  }
+  .hud-box{
+    background:var(--card); border:2px solid var(--ink); border-radius:6px;
+    box-shadow:3px 3px 0 var(--shadow); padding:8px 14px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hud-box .val{ font-size:18px; }
+  #timerBox{
+    position:relative; overflow:hidden;
+    min-width:88px; justify-content:center;
+  }
+  #timerBar{
+    position:absolute; left:0; bottom:0; top:0; width:100%;
+    background:var(--plum-light); z-index:0;
+    transition:width 1s linear, background 0.3s ease;
+  }
+  #timerBox span{ position:relative; z-index:1; }
+  #timerBox.low #timerBar{ background:#e79a8a; }
+  .soundToggle{
+    background:var(--card); border:2px solid var(--ink); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); font-size:16px; user-select:none;
+  }
+  .soundToggle:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .progressWrap{
+    height:8px; background:#e6ddc4; border-radius:20px; overflow:hidden;
+    margin-bottom:16px; border:1.5px solid var(--ink);
+  }
+  .progressBar{
+    height:100%; background:linear-gradient(90deg, var(--plum-mid), var(--plum));
+    width:0%; transition:width 0.4s ease;
+  }
+
+  .card{
+    background:var(--card); border:2px solid var(--ink); border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow); padding:22px 22px 20px; position:relative;
+  }
+  .expTag{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.05em; background:var(--teal-dark); color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .qnum{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--plum); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .qtext{
+    font-size:17px; line-height:1.5; font-weight:600; margin:0 0 16px; color:var(--ink);
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:#fff; border:2px solid #ddd3ba; border-radius:7px;
+    padding:12px 14px; font-size:15px; font-family:'Inter',sans-serif; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:background 0.15s, border-color 0.15s, transform 0.08s;
+  }
+  .opt:hover{ border-color:var(--plum-mid); background:#faf6ec; }
+  .opt:active{ transform:scale(0.99); }
+  .opt .letter{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  }
+  .opt.correct{ background:#e0efe9; border-color:var(--teal-dark); }
+  .opt.correct .letter{ background:var(--teal-dark); color:#fff; }
+  .opt.wrong{ background:#f4e2ea; border-color:var(--plum); }
+  .opt.wrong .letter{ background:var(--plum); color:#fff; }
+  .opt.disabled{ pointer-events:none; opacity:0.75; }
+  .opt.disabled.correct, .opt.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:14px; padding:12px 14px; border-radius:7px;
+    font-size:14px; line-height:1.55; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:#e0efe9; border:1.5px dashed var(--teal-dark); color:var(--teal-dark); }
+  .feedback.bad{ background:#f4e2ea; border:1.5px dashed var(--plum); color:var(--plum); }
+  .feedback b{ display:block; margin-bottom:3px; font-family:'Space Grotesk',sans-serif; }
+
+  .nextBtn{
+    margin-top:16px; width:100%; padding:13px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.03em; cursor:pointer; display:none; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .nextBtn.show{ display:block; }
+  .nextBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .result{ text-align:center; padding:10px 6px; }
+  .result .emoji{ font-size:52px; }
+  .result h2{
+    font-family:'Sriracha',cursive; font-weight:400; color:var(--plum);
+    font-size:26px; margin:6px 0 2px;
+  }
+  .result .scoreLine{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin:8px 0 4px; }
+  .result p{ color:#5a5346; font-size:14px; margin:6px 0 18px; }
+  .restartBtn, .homeBtn{
+    padding:13px 22px; background:var(--amber); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); margin:4px;
+  }
+  .homeBtn{ background:var(--plum); }
+  .restartBtn:active, .homeBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .breakdown{ text-align:left; margin-top:18px; border-top:1.5px dashed var(--paper-line); padding-top:14px; }
+  .breakdown-item{
+    display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:6px 0;
+    border-bottom:1px dotted #e6ddc4;
+  }
+  .breakdown-item .mark{ flex:0 0 auto; font-size:16px; }
+  .breakdown-item{ flex-direction:column; }
+  .breakdown-item .row{ display:flex; gap:8px; align-items:flex-start; width:100%; }
+  .breakdown-item .answer-detail{
+    margin:6px 0 2px 24px; font-size:12.5px; line-height:1.5;
+    background:#FBEAEA; border-left:3px solid #D9534F; border-radius:4px;
+    padding:6px 10px;
+  }
+  .breakdown-item .answer-detail .yourans{ color:#B93A2E; }
+  .breakdown-item .answer-detail .rightans{ color:#2F7A4F; font-weight:600; }
+
+  footer{ text-align:center; font-size:11.5px; color:#8a8371; margin-top:20px; }
+
+  @media (max-width:420px){
+    h1{ font-size:20px; }
+    .qtext{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="english-latihan-hub.html">← Kembali ke senarai topik</a>
+
+  <div class="cover">
+    <div class="stamp" id="coverStamp">ENG</div>
+    <div class="eyebrow" id="coverEyebrow">Buku Latihan</div>
+    <h1 id="coverTitle">Latihan English</h1>
+    <p class="sub" id="coverSub">Sedia menanti...</p>
+  </div>
+
+  <div class="cover" id="startCard">
+    <button class="startBtn" id="startBtn">Mula Latihan →</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quizArea" style="display:none;">
+    <div class="hud">
+      <div class="hud-box">⭐ <span class="val" id="scoreVal">0</span></div>
+      <div class="hud-box" id="timerBox"><div id="timerBar"></div><span>⏱ <span id="timeVal">30</span>s</span></div>
+      <div class="hud-box">📋 <span class="val" id="qCounter">1/12</span></div>
+      <div class="soundToggle" id="soundToggle" title="Bunyi hidup/mati">🔊</div>
+    </div>
+
+    <div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+
+    <div class="card" id="quizCard">
+      <span class="expTag" id="expTag">Soalan</span>
+      <div class="qnum" id="qNum">&nbsp;</div>
+      <p class="qtext" id="qText">...</p>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nextBtn" id="nextBtn">Seterusnya →</button>
+    </div>
+  </div>
+
+  <div class="card result" id="resultArea" style="display:none;">
+    <div class="emoji" id="resultEmoji">🎉</div>
+    <h2 id="resultTitle">Syabas!</h2>
+    <div class="scoreLine" id="resultScore">0 / 12</div>
+    <p id="resultMsg">Cuba lagi untuk skor lebih tinggi!</p>
+    <button class="restartBtn" id="restartBtn">Ulang Latihan</button>
+    <button class="homeBtn" id="homeBtn">🏠 Senarai Topik</button>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <footer id="footerText">Latihan English · Study Buddy</footer>
+</div>
+
+<script>
+var TOPIC_BANKS = {
+  'd1-nouns-articles': [
+    {q:'Choose the correct article: ___ cat is sleeping.',options:['A','An','The','No article'],correct:'The'},
+    {q:'Choose the correct article: I saw ___ orange on the table.',options:['a','an','the','no article'],correct:'an'},
+    {q:'Choose the correct article: She has ___ dog.',options:['a','an','the','no article'],correct:'a'},
+    {q:'\'Table\' is what type of noun?',options:['Common noun','Proper noun','Pronoun','Verb'],correct:'Common noun'},
+    {q:'\'Malaysia\' is what type of noun?',options:['Common noun','Proper noun','Pronoun','Adjective'],correct:'Proper noun'},
+    {q:'Choose the correct article: ___ umbrella is red.',options:['A','An','The book','No article'],correct:'An'},
+    {q:'Choose the correct article: I have ___ egg for breakfast.',options:['a','an','the','no article'],correct:'an'},
+    {q:'Choose the correct article: He is ___ teacher.',options:['a','an','the','no article'],correct:'a'},
+    {q:'Which word is a proper noun?',options:['Ahmad','boy','school','book'],correct:'Ahmad'},
+    {q:'Which word is a common noun?',options:['chair','Kuala Lumpur','Ali','Monday'],correct:'chair'},
+    {q:'Choose the correct article: ___ hour has 60 minutes. (silent h)',options:['A','An','The only','No article'],correct:'An'},
+    {q:'Choose the correct article: I need ___ pencil.',options:['a','an','the','no article'],correct:'a'},
+    {q:'\'Selangor\' is what type of noun?',options:['Common noun','Proper noun','Pronoun','Adjective'],correct:'Proper noun'},
+    {q:'Choose the correct article: ___ sun is bright today.',options:['A','An','The','No article'],correct:'The'},
+    {q:'Choose the proper noun from the options below.',options:['river','Sungai Perak','mountain','city'],correct:'Sungai Perak'},
+    {q:'Choose the correct article: She bought ___ apple and a banana.',options:['a','an','the','no article'],correct:'an'},
+    {q:'Choose the correct article: ___ moon shines at night.',options:['A','An','The','No article'],correct:'The'},
+    {q:'Choose the common noun from the options below.',options:['dog','Rex','Friday','England'],correct:'dog'},
+    {q:'Choose the correct article: He is ___ honest boy. (silent h)',options:['a','an','the only','no article'],correct:'an'},
+    {q:'\'Friday\' is what type of noun?',options:['Common noun','Proper noun','Pronoun','Verb'],correct:'Proper noun'},
+  ],
+  'd1-verb-to-be': [
+    {q:'Choose the correct form: I ___ a student.',options:['am','is','are','be'],correct:'am'},
+    {q:'Choose the correct form: You ___ my friend.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct form: He ___ tall.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct form: She ___ happy.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct form: It ___ a cat.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct form: We ___ at home.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct form: They ___ students.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct negative form: I ___ not tired.',options:['am','is','are','be'],correct:'am'},
+    {q:'Choose the correct question form: ___ you happy?',options:['Am','Is','Are','Be'],correct:'Are'},
+    {q:'Choose the correct question form: ___ he your brother?',options:['Am','Is','Are','Be'],correct:'Is'},
+    {q:'Choose the correct form: My parents ___ kind.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct form: This book ___ interesting.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct form: These shoes ___ new.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct negative form: She ___ not here.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct question form: ___ they at school?',options:['Am','Is','Are','Be'],correct:'Are'},
+    {q:'Choose the correct form: The weather ___ hot today.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct form: My friends and I ___ excited.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct form: The cat ___ under the table.',options:['am','is','are','be'],correct:'is'},
+    {q:'Choose the correct negative form: We ___ not late.',options:['am','is','are','be'],correct:'are'},
+    {q:'Choose the correct form: I ___ ten years old.',options:['am','is','are','be'],correct:'am'},
+  ],
+  'd1-simple-present': [
+    {q:'Ali ___ to school every day.',options:['go','goes','going','gone'],correct:'goes'},
+    {q:'I ___ my teeth every morning.',options:['brush','brushes','brushing','brushed'],correct:'brush'},
+    {q:'She ___ rice for lunch.',options:['eat','eats','eating','ate'],correct:'eats'},
+    {q:'We ___ football on Saturdays.',options:['play','plays','playing','played'],correct:'play'},
+    {q:'The sun ___ in the east.',options:['rise','rises','rising','rose'],correct:'rises'},
+    {q:'My mother ___ to work by bus.',options:['go','goes','going','gone'],correct:'goes'},
+    {q:'Birds ___ in the sky.',options:['fly','flies','flying','flew'],correct:'fly'},
+    {q:'He ___ his homework every night.',options:['do','does','doing','did'],correct:'does'},
+    {q:'They ___ in a big house.',options:['live','lives','living','lived'],correct:'live'},
+    {q:'My father ___ the newspaper every morning.',options:['read','reads','reading','red'],correct:'reads'},
+    {q:'I ___ my bed every day.',options:['make','makes','making','made'],correct:'make'},
+    {q:'The dog ___ loudly at strangers.',options:['bark','barks','barking','barked'],correct:'barks'},
+    {q:'Choose the correct sentence.',options:['She like ice cream.','She likes ice cream.','She liking ice cream.','She liked ice cream now.'],correct:'She likes ice cream.'},
+    {q:'Which sentence is grammatically correct?',options:['We plays basketball.','We play basketball.','We playing basketball.','We played basketball now.'],correct:'We play basketball.'},
+    {q:'My grandmother ___ delicious cookies.',options:['bake','bakes','baking','baked'],correct:'bakes'},
+    {q:'Fish ___ in water.',options:['swim','swims','swimming','swam'],correct:'swim'},
+    {q:'He ___ a red car.',options:['drive','drives','driving','drove'],correct:'drives'},
+    {q:'The children ___ in the park after school.',options:['play','plays','playing','played'],correct:'play'},
+    {q:'My sister ___ the piano well.',options:['play','plays','playing','played'],correct:'plays'},
+    {q:'Pick the sentence with correct grammar.',options:['The teacher teach us English.','The teacher teaches us English.','The teacher teaching us English.','The teacher taught us English now.'],correct:'The teacher teaches us English.'},
+  ],
+  'd1-phonics-vocab': [
+    {q:'Which word rhymes with \'cat\'?',options:['hat','dog','sun','tree'],correct:'hat'},
+    {q:'Which word rhymes with \'ball\'?',options:['tall','dog','cat','sun'],correct:'tall'},
+    {q:'Which word begins with the same sound as \'ball\'?',options:['book','cat','fish','apple'],correct:'book'},
+    {q:'Which word begins with the same sound as \'sun\'?',options:['star','moon','cat','dog'],correct:'star'},
+    {q:'What is the opposite of \'big\'?',options:['small','tall','fast','happy'],correct:'small'},
+    {q:'What is the opposite of \'hot\'?',options:['cold','warm','dry','wet'],correct:'cold'},
+    {q:'What is the opposite of \'happy\'?',options:['sad','angry','tired','hungry'],correct:'sad'},
+    {q:'What is the opposite of \'up\'?',options:['down','left','right','near'],correct:'down'},
+    {q:'Which word means the same as \'happy\'?',options:['glad','sad','angry','tired'],correct:'glad'},
+    {q:'Which word means the same as \'big\'?',options:['large','small','short','tiny'],correct:'large'},
+    {q:'How many letters are in the word \'cat\'?',options:['3','2','4','5'],correct:'3'},
+    {q:'Which word rhymes with \'dog\'?',options:['frog','cat','fish','bird'],correct:'frog'},
+    {q:'Which word begins with the same sound as \'moon\'?',options:['milk','sun','cat','dog'],correct:'milk'},
+    {q:'What is the opposite of \'fast\'?',options:['slow','quick','big','small'],correct:'slow'},
+    {q:'Which word means the same as \'small\'?',options:['little','large','tall','wide'],correct:'little'},
+    {q:'Which word rhymes with \'house\'?',options:['mouse','cat','dog','tree'],correct:'mouse'},
+    {q:'What is the opposite of \'day\'?',options:['night','sun','moon','light'],correct:'night'},
+    {q:'Which word begins with the same sound as \'tiger\'?',options:['table','lion','cat','bird'],correct:'table'},
+    {q:'What is the opposite of \'open\'?',options:['closed','big','small','new'],correct:'closed'},
+    {q:'Which word means the same as \'quick\'?',options:['fast','slow','big','small'],correct:'fast'},
+  ],
+  'd1-reading-comprehension': [
+    {q:'\'Ali has a dog. The dog is brown.\' What color is the dog?',options:['Brown','Black','White','Grey'],correct:'Brown'},
+    {q:'\'Siti likes apples. She eats one every day.\' What fruit does Siti like?',options:['Apples','Bananas','Oranges','Grapes'],correct:'Apples'},
+    {q:'\'The cat sat on the mat.\' Where did the cat sit?',options:['On the mat','Under the table','In the box','On the chair'],correct:'On the mat'},
+    {q:'\'It is raining today. I need an umbrella.\' What is the weather like?',options:['Rainy','Sunny','Windy','Cloudy'],correct:'Rainy'},
+    {q:'\'Ahmad plays football every Saturday.\' When does Ahmad play football?',options:['Saturday','Sunday','Monday','Friday'],correct:'Saturday'},
+    {q:'\'The bird flew to its nest.\' Where did the bird fly?',options:['To its nest','To the tree','To the ground','To the water'],correct:'To its nest'},
+    {q:'\'My mother cooks rice every day.\' What does mother cook?',options:['Rice','Bread','Noodles','Fish'],correct:'Rice'},
+    {q:'\'The boy is happy because he got a new toy.\' Why is the boy happy?',options:['He got a new toy','He ate ice cream','He went to school','He saw his friend'],correct:'He got a new toy'},
+    {q:'\'The sun is bright and hot.\' What is the weather like?',options:['Sunny','Rainy','Snowy','Windy'],correct:'Sunny'},
+    {q:'\'Aini has three cats. All of them are white.\' How many cats does Aini have?',options:['Three','Two','Four','One'],correct:'Three'},
+    {q:'\'The teacher gave us homework.\' Who gave the homework?',options:['The teacher','The student','The parent','The friend'],correct:'The teacher'},
+    {q:'\'We go to school by bus every morning.\' How do they go to school?',options:['By bus','By car','By bike','On foot'],correct:'By bus'},
+    {q:'\'The fish swims in the pond.\' Where does the fish swim?',options:['In the pond','In the sea','In the river','In the bath'],correct:'In the pond'},
+    {q:'\'Grandma tells us a story before bed.\' Who tells the story?',options:['Grandma','Mother','Father','Sister'],correct:'Grandma'},
+    {q:'\'The flowers in the garden are red.\' What color are the flowers?',options:['Red','Yellow','Blue','Pink'],correct:'Red'},
+    {q:'\'I wake up at 7am every day.\' What time do \'I\' wake up?',options:['7am','6am','8am','9am'],correct:'7am'},
+    {q:'\'The dog barks at strangers.\' What does the dog do at strangers?',options:['Barks','Sleeps','Runs away','Sits quietly'],correct:'Barks'},
+    {q:'\'Ali and Abu are best friends.\' Who are best friends?',options:['Ali and Abu','Ali and Siti','Abu and Siti','Ali alone'],correct:'Ali and Abu'},
+    {q:'\'The baby is sleeping in the crib.\' Where is the baby sleeping?',options:['In the crib','On the sofa','In the car','On the floor'],correct:'In the crib'},
+    {q:'\'It is cold in December.\' What season/month is mentioned?',options:['December','June','March','August'],correct:'December'},
+  ],
+  'd2-simple-present-tense': [
+    {q:'My father ___ to work every day.',options:['drive','drives','driving','drove'],correct:'drives'},
+    {q:'The children ___ to school by bus.',options:['go','goes','going','gone'],correct:'go'},
+    {q:'She ___ her homework after school.',options:['do','does','doing','did'],correct:'does'},
+    {q:'We ___ dinner at 7pm every night.',options:['have','has','having','had'],correct:'have'},
+    {q:'He ___ a shower every morning.',options:['take','takes','taking','took'],correct:'takes'},
+    {q:'My friends ___ football on weekends.',options:['play','plays','playing','played'],correct:'play'},
+    {q:'The shop ___ at 9am.',options:['open','opens','opening','opened'],correct:'opens'},
+    {q:'I ___ my grandmother every Sunday.',options:['visit','visits','visiting','visited'],correct:'visit'},
+    {q:'My brother ___ comic books.',options:['collect','collects','collecting','collected'],correct:'collects'},
+    {q:'Choose the correct sentence.',options:['He walk to school.','He walks to school.','He walking to school.','He walked to school now.'],correct:'He walks to school.'},
+    {q:'Which sentence is grammatically correct?',options:['They wash the car every week.','They washes the car every week.','They washing the car every week.','They washed the car every week now.'],correct:'They wash the car every week.'},
+    {q:'My aunt ___ delicious cakes.',options:['make','makes','making','made'],correct:'makes'},
+    {q:'The train ___ at 8am every day.',options:['arrive','arrives','arriving','arrived'],correct:'arrives'},
+    {q:'I ___ English every day.',options:['study','studies','studying','studied'],correct:'study'},
+    {q:'She ___ the piano beautifully.',options:['play','plays','playing','played'],correct:'plays'},
+    {q:'We ___ to the market on Sundays.',options:['go','goes','going','gone'],correct:'go'},
+    {q:'My uncle ___ a taxi driver.',options:['is','am','are','be'],correct:'is'},
+    {q:'The library ___ books to students.',options:['lend','lends','lending','lent'],correct:'lends'},
+    {q:'I ___ my bicycle to school.',options:['ride','rides','riding','rode'],correct:'ride'},
+    {q:'My parents ___ me a lot.',options:['love','loves','loving','loved'],correct:'love'},
+  ],
+  'd2-plural-nouns': [
+    {q:'One book, two ___',options:['books','bookes','bookies','book'],correct:'books'},
+    {q:'One box, two ___',options:['boxs','boxes','box','boxies'],correct:'boxes'},
+    {q:'One child, two ___',options:['childs','children','childes','child'],correct:'children'},
+    {q:'One foot, two ___',options:['foots','feet','footes','foot'],correct:'feet'},
+    {q:'One mouse, two ___',options:['mouses','mice','mices','mouse'],correct:'mice'},
+    {q:'One tooth, two ___',options:['tooths','teeth','toothes','tooth'],correct:'teeth'},
+    {q:'One baby, two ___',options:['babys','babies','babyes','baby'],correct:'babies'},
+    {q:'One city, two ___',options:['citys','cities','cityes','city'],correct:'cities'},
+    {q:'One leaf, two ___',options:['leafs','leaves','leafes','leaf'],correct:'leaves'},
+    {q:'One knife, two ___',options:['knifes','knives','knifees','knife'],correct:'knives'},
+    {q:'One man, two ___',options:['mans','men','manes','man'],correct:'men'},
+    {q:'One woman, two ___',options:['womans','women','womanes','woman'],correct:'women'},
+    {q:'One sheep, two ___',options:['sheeps','sheep','sheepes','sheepies'],correct:'sheep'},
+    {q:'One fish, two ___ (as a general plural)',options:['fishs','fish','fishes','fishies'],correct:'fish'},
+    {q:'One bus, two ___',options:['bus','buses','busies','buss'],correct:'buses'},
+    {q:'One watch, two ___',options:['watchs','watches','watchies','watch'],correct:'watches'},
+    {q:'One brush, two ___',options:['brushs','brushes','brushies','brush'],correct:'brushes'},
+    {q:'One toy, two ___',options:['toys','toies','toyes','toy'],correct:'toys'},
+    {q:'One key, two ___',options:['keys','kies','keyes','key'],correct:'keys'},
+    {q:'One goose, two ___',options:['gooses','geese','goosees','goose'],correct:'geese'},
+  ],
+  'd2-prepositions-place': [
+    {q:'The cat is ___ the table. (on top of)',options:['on','under','behind','in'],correct:'on'},
+    {q:'The ball is ___ the box. (inside)',options:['on','under','in','behind'],correct:'in'},
+    {q:'The dog is ___ the tree. (at the back of)',options:['in','on','behind','under'],correct:'behind'},
+    {q:'The book is ___ the table. (below)',options:['on','under','in','behind'],correct:'under'},
+    {q:'The picture is ___ the wall.',options:['on','under','in','behind'],correct:'on'},
+    {q:'The car is ___ the garage.',options:['in','on','under','behind'],correct:'in'},
+    {q:'The bird is flying ___ the sky.',options:['in','on','under','behind'],correct:'in'},
+    {q:'The keys are ___ the drawer.',options:['in','on','under','behind'],correct:'in'},
+    {q:'My school is ___ my house. (near)',options:['next to','under','behind only','in'],correct:'next to'},
+    {q:'The lamp is ___ the desk.',options:['on','under','in','behind'],correct:'on'},
+    {q:'The shoes are ___ the bed.',options:['under','on top','in','behind'],correct:'under'},
+    {q:'The park is ___ the school and the library. (in the middle)',options:['between','under','behind','in'],correct:'between'},
+    {q:'The fish is swimming ___ the water.',options:['in','on','under','behind'],correct:'in'},
+    {q:'The clock is ___ the wall.',options:['on','under','in','behind'],correct:'on'},
+    {q:'The cushion is ___ the sofa.',options:['on','under','in','behind'],correct:'on'},
+    {q:'There is a garden ___ my house. (at the back of)',options:['behind','in front of','in','on'],correct:'behind'},
+    {q:'The teacher is standing ___ the class. (at the front)',options:['in front of','behind','under','in'],correct:'in front of'},
+    {q:'The bag is ___ the chair.',options:['on','under','in','behind'],correct:'on'},
+    {q:'My house is ___ the corner.',options:['at','in','on','under'],correct:'at'},
+    {q:'The plane is flying ___ the clouds. (higher than)',options:['above','under','in','behind'],correct:'above'},
+  ],
+  'd2-simple-past': [
+    {q:'Yesterday, I ___ to the market. (go)',options:['go','goes','went','going'],correct:'went'},
+    {q:'Yesterday, she ___ a cake. (bake)',options:['bake','bakes','baked','baking'],correct:'baked'},
+    {q:'Last night, we ___ a movie. (watch)',options:['watch','watches','watched','watching'],correct:'watched'},
+    {q:'He ___ his homework yesterday. (finish)',options:['finish','finishes','finished','finishing'],correct:'finished'},
+    {q:'They ___ to the park. (walk)',options:['walk','walks','walked','walking'],correct:'walked'},
+    {q:'I ___ a letter yesterday. (write)',options:['write','writes','wrote','writing'],correct:'wrote'},
+    {q:'She ___ her keys this morning. (lose)',options:['lose','loses','lost','losing'],correct:'lost'},
+    {q:'We ___ pizza for dinner last night. (eat)',options:['eat','eats','ate','eating'],correct:'ate'},
+    {q:'He ___ to the beach last weekend. (go)',options:['go','goes','went','going'],correct:'went'},
+    {q:'I ___ my room yesterday. (clean)',options:['clean','cleans','cleaned','cleaning'],correct:'cleaned'},
+    {q:'They ___ a new house last year. (buy)',options:['buy','buys','bought','buying'],correct:'bought'},
+    {q:'She ___ me a beautiful gift. (give)',options:['give','gives','gave','giving'],correct:'gave'},
+    {q:'We ___ the bus this morning. (miss)',options:['miss','misses','missed','missing'],correct:'missed'},
+    {q:'He ___ his bike yesterday. (ride)',options:['ride','rides','rode','riding'],correct:'rode'},
+    {q:'I ___ my friend at the mall. (see)',options:['see','sees','saw','seeing'],correct:'saw'},
+    {q:'She ___ very happy yesterday. (be)',options:['is','was','were','are'],correct:'was'},
+    {q:'They ___ very tired after the trip. (be)',options:['is','was','were','are'],correct:'were'},
+    {q:'We ___ to school by bus yesterday. (go)',options:['go','goes','went','going'],correct:'went'},
+    {q:'He ___ his hand while cooking. (cut)',options:['cut','cuts','cutting','cutted'],correct:'cut'},
+    {q:'I ___ a good book last week. (read)',options:['read','reads','reading','readed'],correct:'read'},
+  ],
+  'd2-short-passages': [
+    {q:'\'Aminah went to the market with her mother. They bought fruits and vegetables.\' Who went to the market?',options:['Aminah and her mother','Aminah alone','Her mother alone','Aminah and her father'],correct:'Aminah and her mother'},
+    {q:'\'The zoo has many animals. There are lions, tigers, and elephants.\' What kind of place is described?',options:['Zoo','School','Market','Hospital'],correct:'Zoo'},
+    {q:'\'Every morning, Ali feeds his chickens before going to school.\' What does Ali do before school?',options:['Feeds his chickens','Reads a book','Plays football','Watches TV'],correct:'Feeds his chickens'},
+    {q:'\'It was a sunny day. The children played in the park until evening.\' What was the weather like?',options:['Sunny','Rainy','Cloudy','Snowy'],correct:'Sunny'},
+    {q:'\'Siti\'s favourite subject is Science. She enjoys learning about animals and plants.\' What is Siti\'s favourite subject?',options:['Science','Mathematics','English','Art'],correct:'Science'},
+    {q:'\'The fisherman went out to sea early in the morning to catch fish.\' What is the fisherman\'s job?',options:['Catching fish','Selling vegetables','Teaching students','Driving a bus'],correct:'Catching fish'},
+    {q:'\'My grandfather grows vegetables in his garden. He waters them every day.\' What does grandfather grow?',options:['Vegetables','Flowers','Fruits','Trees'],correct:'Vegetables'},
+    {q:'\'The library is quiet. People read books there.\' What can people do in the library?',options:['Read books','Play games','Watch movies','Eat food'],correct:'Read books'},
+    {q:'\'Ahmad and his friends built a sandcastle at the beach.\' Where were Ahmad and his friends?',options:['At the beach','At the park','At school','At home'],correct:'At the beach'},
+    {q:'\'The bakery sells fresh bread every morning.\' What does the bakery sell?',options:['Bread','Fish','Vegetables','Toys'],correct:'Bread'},
+    {q:'\'My dog likes to chase the ball in the garden.\' What does the dog like to do?',options:['Chase the ball','Sleep all day','Eat fish','Climb trees'],correct:'Chase the ball'},
+    {q:'\'The nurse takes care of sick people in the hospital.\' Where does the nurse work?',options:['Hospital','School','Market','Farm'],correct:'Hospital'},
+    {q:'\'We planted a tree in our school garden today.\' What did they plant?',options:['A tree','A flower','Vegetables','Grass'],correct:'A tree'},
+    {q:'\'The postman delivers letters to houses every day.\' What does the postman deliver?',options:['Letters','Food','Water','Newspapers only'],correct:'Letters'},
+    {q:'\'Farah likes to draw pictures of animals in her free time.\' What does Farah like to draw?',options:['Animals','Cars','Flowers','People'],correct:'Animals'},
+    {q:'\'The farmer wakes up early to milk the cows.\' What is the farmer\'s job?',options:['Milking cows','Teaching','Fishing','Driving'],correct:'Milking cows'},
+    {q:'\'On rainy days, we like to read books at home.\' What do they do on rainy days?',options:['Read books','Go swimming','Play outside','Ride bicycles'],correct:'Read books'},
+    {q:'\'The baker bakes bread and cakes every morning.\' What does the baker make?',options:['Bread and cakes','Toys','Furniture','Clothes'],correct:'Bread and cakes'},
+    {q:'\'My sister plays the violin every evening after dinner.\' What instrument does the sister play?',options:['Violin','Piano','Guitar','Drums'],correct:'Violin'},
+    {q:'\'The children washed their hands before eating lunch.\' When did they wash their hands?',options:['Before eating lunch','After eating lunch','Before sleeping','After playing'],correct:'Before eating lunch'},
+  ],
+  'd3-past-tense-regular': [
+    {q:'Add -ed: I ___ my room yesterday. (clean)',options:['clean','cleans','cleaned','cleaning'],correct:'cleaned'},
+    {q:'Add -ed: She ___ the door. (close)',options:['close','closes','closed','closing'],correct:'closed'},
+    {q:'Add -ed: We ___ football last week. (play)',options:['play','plays','played','playing'],correct:'played'},
+    {q:'Double the consonant: He ___ the ball. (stop)',options:['stop','stops','stopped','stoping'],correct:'stopped'},
+    {q:'Double the consonant: I ___ my hand. (clap)',options:['clap','claps','clapped','claping'],correct:'clapped'},
+    {q:'Change y to i: She ___ to be a doctor. (try)',options:['try','tries','tried','trying'],correct:'tried'},
+    {q:'Change y to i: He ___ his lunch box. (carry)',options:['carry','carries','carried','carrying'],correct:'carried'},
+    {q:'Add -d only (word ends in e): We ___ to the story. (live)',options:['live','lives','lived','living'],correct:'lived'},
+    {q:'Add -d only: They ___ their new home. (love)',options:['love','loves','loved','loving'],correct:'loved'},
+    {q:'Add -ed: The dog ___ loudly. (bark)',options:['bark','barks','barked','barking'],correct:'barked'},
+    {q:'Add -ed: I ___ my teacher a question. (ask)',options:['ask','asks','asked','asking'],correct:'asked'},
+    {q:'Double the consonant: She ___ the ball. (grab)',options:['grab','grabs','grabbed','grabing'],correct:'grabbed'},
+    {q:'Add -ed: We ___ the movie together. (watch)',options:['watch','watches','watched','watching'],correct:'watched'},
+    {q:'Change y to i: The baby ___ all night. (cry)',options:['cry','cries','cried','crying'],correct:'cried'},
+    {q:'Add -d only: He ___ the letter carefully. (close read is a phrase, use \'save\')',options:['save','saves','saved','saving'],correct:'saved'},
+    {q:'Add -ed: They ___ the fence blue. (paint)',options:['paint','paints','painted','painting'],correct:'painted'},
+    {q:'Add -ed: I ___ my homework early. (finish)',options:['finish','finishes','finished','finishing'],correct:'finished'},
+    {q:'Double the consonant: She ___ her ankle. (twist is regular, no double - use \'plan\')',options:['plan','plans','planned','planing'],correct:'planned'},
+    {q:'Add -ed: We ___ the garden yesterday. (water)',options:['water','waters','watered','watering'],correct:'watered'},
+    {q:'Change y to i: He ___ the heavy box. (carry)',options:['carry','carries','carried','carrying'],correct:'carried'},
+  ],
+  'd3-pronouns': [
+    {q:'___ is my sister. (referring to a girl)',options:['He','She','It','They'],correct:'She'},
+    {q:'___ is a book. (referring to an object)',options:['He','She','It','They'],correct:'It'},
+    {q:'Ali and Abu are friends. ___ play together.',options:['He','She','It','They'],correct:'They'},
+    {q:'This is my pen. ___ is blue.',options:['He','She','It','They'],correct:'It'},
+    {q:'My parents love me. I love ___.',options:['they','them','he','it'],correct:'them'},
+    {q:'That is Ali. I saw ___ yesterday.',options:['he','him','his','it'],correct:'him'},
+    {q:'This is Siti\'s bag. It is ___ bag.',options:['she','her','hers','it'],correct:'her'},
+    {q:'This pencil is mine. It is ___.',options:['I','me','my','mine'],correct:'mine'},
+    {q:'We are students. ___ study every day.',options:['We','Us','Our','Ours'],correct:'We'},
+    {q:'The teacher gave ___ homework. (to us)',options:['we','us','our','ours'],correct:'us'},
+    {q:'That is your book. It is ___.',options:['you','your','yours','yourself'],correct:'yours'},
+    {q:'Ali lost ___ pen. (belonging to him)',options:['he','him','his','it'],correct:'his'},
+    {q:'I saw the dog. ___ was running fast.',options:['He','She','It','They'],correct:'It'},
+    {q:'My friends and I like sports. ___ play every day.',options:['We','Us','Our','Ours'],correct:'We'},
+    {q:'This is not my bag. It is ___.',options:['he','him','his','it'],correct:'his'},
+    {q:'The girls are singing. ___ have nice voices.',options:['He','She','It','They'],correct:'They'},
+    {q:'That car belongs to us. It is ___.',options:['we','us','our','ours'],correct:'ours'},
+    {q:'I have a cat. ___ name is Mimi.',options:['It','Its','It\'s','Itself'],correct:'Its'},
+    {q:'Can you help ___? (referring to me)',options:['I','me','my','mine'],correct:'me'},
+    {q:'The boys are playing football. ___ are having fun.',options:['He','She','It','They'],correct:'They'},
+  ],
+  'd3-question-words': [
+    {q:'___ is your name? (asking for a name)',options:['What','Where','When','Who'],correct:'What'},
+    {q:'___ do you live? (asking for a place)',options:['What','Where','When','Who'],correct:'Where'},
+    {q:'___ is your birthday? (asking for a date)',options:['What','Where','When','Who'],correct:'When'},
+    {q:'___ is that boy? (asking about a person)',options:['What','Where','When','Who'],correct:'Who'},
+    {q:'___ many apples do you have? (asking about quantity)',options:['How','What','Where','Who'],correct:'How'},
+    {q:'___ is this pencil? (asking who owns it)',options:['Whose','Who','What','Where'],correct:'Whose'},
+    {q:'___ are you sad? (asking for a reason)',options:['Why','What','Where','When'],correct:'Why'},
+    {q:'___ old are you? (asking about age)',options:['How','What','Where','Who'],correct:'How'},
+    {q:'___ colour is the sky? (asking about a quality)',options:['What','Where','When','Who'],correct:'What'},
+    {q:'___ does the bus leave? (asking about time)',options:['What','Where','When','Who'],correct:'When'},
+    {q:'___ is your teacher? (asking about a person)',options:['Who','What','Where','When'],correct:'Who'},
+    {q:'___ book is this? (asking about ownership)',options:['Whose','Who','What','Where'],correct:'Whose'},
+    {q:'___ is the nearest hospital? (asking for location)',options:['Where','What','When','Who'],correct:'Where'},
+    {q:'___ did you go yesterday? (asking about a past action)',options:['Where','What','When','Who'],correct:'Where'},
+    {q:'___ is the weather like today? (asking to describe)',options:['What','Where','When','Who'],correct:'What'},
+    {q:'___ often do you exercise? (asking about frequency)',options:['How','What','Where','Who'],correct:'How'},
+    {q:'___ is your favourite subject? (asking about preference)',options:['What','Where','When','Who'],correct:'What'},
+    {q:'___ are you late? (asking for the cause)',options:['Why','What','Where','When'],correct:'Why'},
+    {q:'___ is your best friend? (asking about a person)',options:['Who','What','Where','When'],correct:'Who'},
+    {q:'___ does the movie start? (asking about time)',options:['When','Where','Who','What'],correct:'When'},
+  ],
+  'd3-reading-short-stories': [
+    {q:'\'One day, Ali found a lost puppy. He took it home and fed it.\' What did Ali find?',options:['A lost puppy','A lost kitten','A lost bird','A lost rabbit'],correct:'A lost puppy'},
+    {q:'\'Siti forgot her umbrella at home. When it rained, she got wet on the way home.\' Why did Siti get wet?',options:['She forgot her umbrella','She fell into a puddle','She went swimming','She washed her hair'],correct:'She forgot her umbrella'},
+    {q:'\'The rabbit ran fast, but the tortoise won the race because it never gave up.\' Who won the race?',options:['The tortoise','The rabbit','Both of them','Neither of them'],correct:'The tortoise'},
+    {q:'\'Ahmad saved his pocket money for three months to buy a new bicycle.\' How did Ahmad get money for the bicycle?',options:['He saved his pocket money','His father bought it','He found money on the street','He borrowed it from a friend'],correct:'He saved his pocket money'},
+    {q:'\'The little bird fell from its nest. A kind boy put it back gently.\' What happened to the bird?',options:['It fell from its nest','It flew away','It got sick','It laid an egg'],correct:'It fell from its nest'},
+    {q:'\'During the storm, the fishermen quickly returned to shore for safety.\' Why did the fishermen return to shore?',options:['Because of the storm','To sell their fish','To meet their families','To repair their boats'],correct:'Because of the storm'},
+    {q:'\'Maria studied hard every night. In the end, she passed her exam with excellent results.\' What was the result of Maria\'s hard work?',options:['She passed with excellent results','She failed the exam','She got sick','She gave up studying'],correct:'She passed with excellent results'},
+    {q:'\'The old man shared his food with the hungry traveller.\' What did the old man do?',options:['Shared his food','Ignored the traveller','Asked for money','Ran away'],correct:'Shared his food'},
+    {q:'\'Because the road was blocked, the bus took a different route to school.\' Why did the bus take a different route?',options:['The road was blocked','The driver was lost','It was a holiday','The bus broke down'],correct:'The road was blocked'},
+    {q:'\'The children planted flowers in the school garden and watered them every day.\' What did the children do to the flowers?',options:['Watered them every day','Picked them every day','Ignored them','Cut them down'],correct:'Watered them every day'},
+    {q:'\'Farhan was scared of the dark, but he learned to be brave with his mother\'s help.\' What was Farhan scared of?',options:['The dark','Loud noises','Spiders','Heights'],correct:'The dark'},
+    {q:'\'The clever fox tricked the crow into dropping its cheese.\' What did the fox trick the crow into doing?',options:['Dropping its cheese','Flying away','Singing a song','Sharing its nest'],correct:'Dropping its cheese'},
+    {q:'\'Every weekend, grandpa takes us fishing at the river near his house.\' Where does grandpa take them fishing?',options:['At the river near his house','At the sea','At a lake far away','At a fish farm'],correct:'At the river near his house'},
+    {q:'\'The lazy grasshopper did not store food for winter, unlike the busy ants.\' What did the grasshopper fail to do?',options:['Store food for winter','Sing songs','Play all summer','Make friends'],correct:'Store food for winter'},
+    {q:'\'Aisyah was nervous before her speech, but she did well after taking a deep breath.\' How did Aisyah feel before her speech?',options:['Nervous','Excited','Angry','Bored'],correct:'Nervous'},
+    {q:'\'The village celebrated the harvest with a big feast and traditional dances.\' What did the village celebrate?',options:['The harvest','A wedding','A birthday','A holiday'],correct:'The harvest'},
+    {q:'\'Because he was kind to animals, the boy grew up to become a veterinarian.\' What did the boy become?',options:['A veterinarian','A teacher','A doctor for humans','A farmer'],correct:'A veterinarian'},
+    {q:'\'The two brothers argued over a toy but later apologised and shared it.\' What did the brothers do in the end?',options:['Apologised and shared the toy','Kept fighting','Broke the toy','Ignored each other'],correct:'Apologised and shared the toy'},
+    {q:'\'The girl practised the piano every day and won first place in the competition.\' What did the girl win?',options:['First place in the competition','A new piano','A trip abroad','A scholarship'],correct:'First place in the competition'},
+    {q:'\'The kind neighbour helped the old lady carry her groceries home.\' Who did the neighbour help?',options:['The old lady','A child','A stranger','A friend'],correct:'The old lady'},
+  ],
+  'd3-guided-writing': [
+    {q:'Which sentence correctly describes a picture of a boy eating?',options:['The boy is eating rice.','The boy eating rice.','The boy eat rice.','Eating rice the boy.'],correct:'The boy is eating rice.'},
+    {q:'Which is the correct opening sentence for a story about a rainy day?',options:['It was a rainy day.','Rainy was it a day.','Day rainy it was.','Was it a rainy day.'],correct:'It was a rainy day.'},
+    {q:'Choose the correct sentence to describe a happy dog.',options:['The dog is happy and wagging its tail.','The dog happy and wagging its tail.','Happy the dog wagging its tail is.','The dog wag happy its tail.'],correct:'The dog is happy and wagging its tail.'},
+    {q:'Which sentence uses correct capitalization?',options:['My name is Ali.','my name is ali.','My Name Is Ali.','my Name is Ali.'],correct:'My name is Ali.'},
+    {q:'Choose the sentence with correct punctuation.',options:['What is your name?','What is your name.','what is your name?','What is your name'],correct:'What is your name?'},
+    {q:'Which sentence correctly starts a description of a garden?',options:['There is a beautiful garden near my house.','Garden beautiful near my house there is.','Near my house there a garden is.','A garden is house near my beautiful.'],correct:'There is a beautiful garden near my house.'},
+    {q:'Choose the correct sentence describing a birthday party.',options:['We had a fun birthday party yesterday.','Fun we had a birthday party yesterday.','Yesterday party birthday a fun we had.','Had we a fun birthday party yesterday.'],correct:'We had a fun birthday party yesterday.'},
+    {q:'Which is the best closing sentence for a story with a happy ending?',options:['Everyone lived happily ever after.','Ever after everyone happily lived.','Happily lived everyone ever after.','After ever happily everyone lived.'],correct:'Everyone lived happily ever after.'},
+    {q:'Choose the sentence that correctly uses a capital letter for a place name.',options:['We visited Kuala Lumpur last week.','We visited kuala lumpur last week.','we visited Kuala lumpur last week.','We Visited kuala Lumpur last week.'],correct:'We visited Kuala Lumpur last week.'},
+    {q:'Which sentence correctly ends with a full stop?',options:['I like to read books.','I like to read books','I Like To Read Books.','i like to read books.'],correct:'I like to read books.'},
+    {q:'Choose the correct sentence order.',options:['The cat is sleeping on the sofa.','Sleeping the cat is on the sofa.','On the sofa sleeping is the cat.','Is the cat sleeping on the sofa the.'],correct:'The cat is sleeping on the sofa.'},
+    {q:'Which sentence correctly describes an action happening now?',options:['She is reading a book.','She reading a book.','She read a book now.','Reading she is a book.'],correct:'She is reading a book.'},
+    {q:'Choose the correct sentence for a diary entry about today.',options:['Today, I went to school.','School today I went to.','Went I today to school.','To school today I went.'],correct:'Today, I went to school.'},
+    {q:'Which sentence uses the correct word order for a question?',options:['Where is my bag?','My bag is where?','Bag my is where?','Is where my bag?'],correct:'Where is my bag?'},
+    {q:'Choose the correct sentence describing weather.',options:['It is sunny today.','Sunny it is today.','Today sunny is it.','Is sunny it today.'],correct:'It is sunny today.'},
+    {q:'Which sentence correctly uses \'and\' to join two ideas?',options:['I like apples and oranges.','I like apples oranges and.','And I like apples oranges.','I apples and like oranges.'],correct:'I like apples and oranges.'},
+    {q:'Choose the sentence with correct spelling.',options:['I have a beautiful garden.','I have a beutiful garden.','I have a beautifull garden.','I have a beautifal garden.'],correct:'I have a beautiful garden.'},
+    {q:'Which sentence correctly describes a picture of children playing?',options:['The children are playing football.','The children playing football.','Children the are playing football.','Playing football the children are.'],correct:'The children are playing football.'},
+    {q:'Choose the correct sentence to describe your family.',options:['My family is small but happy.','Small but happy my family is.','Family my is small but happy.','Happy but small is my family.'],correct:'My family is small but happy.'},
+    {q:'Which sentence correctly begins a story about an animal?',options:['Once upon a time, there was a clever fox.','There a clever fox was, once upon a time.','A clever fox there was, once upon a time.','Once a clever fox, there was upon a time.'],correct:'Once upon a time, there was a clever fox.'},
+  ],
+  'd4-present-continuous': [
+    {q:'Right now, she ___ her homework.',options:['do','does','is doing','did'],correct:'is doing'},
+    {q:'Right now, they ___ football.',options:['play','plays','are playing','played'],correct:'are playing'},
+    {q:'At the moment, the baby ___ .',options:['sleep','sleeps','is sleeping','slept'],correct:'is sleeping'},
+    {q:'Look! The dog ___ .',options:['run','runs','is running','ran'],correct:'is running'},
+    {q:'I ___ a letter now.',options:['write','writes','am writing','wrote'],correct:'am writing'},
+    {q:'We ___ TV at the moment.',options:['watch','watches','are watching','watched'],correct:'are watching'},
+    {q:'He ___ his bicycle right now.',options:['ride','rides','is riding','rode'],correct:'is riding'},
+    {q:'Listen! The birds ___ .',options:['sing','sings','are singing','sang'],correct:'are singing'},
+    {q:'She ___ dinner in the kitchen now.',options:['cook','cooks','is cooking','cooked'],correct:'is cooking'},
+    {q:'The children ___ in the pool right now.',options:['swim','swims','are swimming','swam'],correct:'are swimming'},
+    {q:'I ___ to music at the moment.',options:['listen','listens','am listening','listened'],correct:'am listening'},
+    {q:'They ___ a new house right now.',options:['build','builds','are building','built'],correct:'are building'},
+    {q:'He ___ his teeth now.',options:['brush','brushes','is brushing','brushed'],correct:'is brushing'},
+    {q:'We ___ our homework together at the moment.',options:['do','does','are doing','did'],correct:'are doing'},
+    {q:'Look! It ___ .',options:['rain','rains','is raining','rained'],correct:'is raining'},
+    {q:'She ___ a beautiful picture right now.',options:['draw','draws','is drawing','drew'],correct:'is drawing'},
+    {q:'The students ___ quietly in class now.',options:['work','works','are working','worked'],correct:'are working'},
+    {q:'I ___ my mother in the kitchen right now.',options:['help','helps','am helping','helped'],correct:'am helping'},
+    {q:'He ___ a book at the moment.',options:['read','reads','is reading','read'],correct:'is reading'},
+    {q:'They ___ their bags for the trip right now.',options:['pack','packs','are packing','packed'],correct:'are packing'},
+  ],
+  'd4-comparative-superlative': [
+    {q:'This book is ___ than that one. (interesting)',options:['interesting','more interesting','most interesting','interestinger'],correct:'more interesting'},
+    {q:'This is the ___ book in the library. (interesting)',options:['interesting','more interesting','most interesting','interestinger'],correct:'most interesting'},
+    {q:'Ali is ___ than Abu. (tall)',options:['tall','taller','tallest','more tall'],correct:'taller'},
+    {q:'Ali is the ___ boy in class. (tall)',options:['tall','taller','tallest','more tall'],correct:'tallest'},
+    {q:'This bag is ___ than that one. (heavy)',options:['heavy','heavier','heaviest','more heavy'],correct:'heavier'},
+    {q:'Mount Everest is the ___ mountain in the world. (high)',options:['high','higher','highest','more high'],correct:'highest'},
+    {q:'My house is ___ than yours. (big)',options:['big','bigger','biggest','more big'],correct:'bigger'},
+    {q:'This is the ___ house on the street. (big)',options:['big','bigger','biggest','more big'],correct:'biggest'},
+    {q:'She is ___ than her sister. (beautiful)',options:['beautiful','beautifuller','more beautiful','most beautiful'],correct:'more beautiful'},
+    {q:'She is the ___ girl in school. (beautiful)',options:['beautiful','beautifuller','more beautiful','most beautiful'],correct:'most beautiful'},
+    {q:'This road is ___ than that one. (long)',options:['long','longer','longest','more long'],correct:'longer'},
+    {q:'The Nile is the ___ river in the world. (long)',options:['long','longer','longest','more long'],correct:'longest'},
+    {q:'Today is ___ than yesterday. (cold)',options:['cold','colder','coldest','more cold'],correct:'colder'},
+    {q:'This is the ___ day of the year. (cold)',options:['cold','colder','coldest','more cold'],correct:'coldest'},
+    {q:'This car is ___ than that one. (expensive)',options:['expensive','expensiver','more expensive','most expensive'],correct:'more expensive'},
+    {q:'This is the ___ car in the shop. (expensive)',options:['expensive','expensiver','more expensive','most expensive'],correct:'most expensive'},
+    {q:'He runs ___ than his friend. (fast)',options:['fast','faster','fastest','more fast'],correct:'faster'},
+    {q:'He is the ___ runner in the team. (fast)',options:['fast','faster','fastest','more fast'],correct:'fastest'},
+    {q:'This puzzle is ___ than that one. (difficult)',options:['difficult','difficulter','more difficult','most difficult'],correct:'more difficult'},
+    {q:'This is the ___ question in the test. (difficult)',options:['difficult','difficulter','more difficult','most difficult'],correct:'most difficult'},
+  ],
+  'd4-conjunctions': [
+    {q:'I like tea ___ coffee.',options:['and','but','because','so'],correct:'and'},
+    {q:'I was tired, ___ I went to sleep.',options:['and','but','because','so'],correct:'so'},
+    {q:'I like her ___ she is kind.',options:['and','but','because','so'],correct:'because'},
+    {q:'I wanted to go out, ___ it was raining.',options:['and','but','because','so'],correct:'but'},
+    {q:'She studied hard ___ she could pass the exam.',options:['and','but','because','so'],correct:'because'},
+    {q:'He is smart ___ hardworking.',options:['and','but','because','so'],correct:'and'},
+    {q:'I called him, ___ he did not answer.',options:['and','but','because','so'],correct:'but'},
+    {q:'We were hungry, ___ we ordered pizza.',options:['and','but','because','so'],correct:'so'},
+    {q:'She was late ___ the traffic was heavy.',options:['and','but','because','so'],correct:'because'},
+    {q:'He is tall ___ strong.',options:['and','but','because','so'],correct:'and'},
+    {q:'I wanted to help ___ I did not know how.',options:['and','but','because','so'],correct:'but'},
+    {q:'It was cold, ___ she wore a jacket.',options:['and','but','because','so'],correct:'so'},
+    {q:'They stayed home ___ it was raining heavily.',options:['and','but','because','so'],correct:'because'},
+    {q:'The soup is hot ___ delicious.',options:['and','but','because','so'],correct:'and'},
+    {q:'He tried hard ___ he still failed.',options:['and','but','because','so'],correct:'but'},
+    {q:'She was sick, ___ she stayed home from school.',options:['and','but','because','so'],correct:'so'},
+    {q:'I woke up late ___ I missed the bus.',options:['and','but','because','so'],correct:'because'},
+    {q:'The movie was long ___ boring.',options:['and','but','because','so'],correct:'and'},
+    {q:'We planned a picnic, ___ it rained that day.',options:['and','but','because','so'],correct:'but'},
+    {q:'I finished my homework ___ I could watch TV.',options:['and','but','because','so'],correct:'so'},
+  ],
+  'd4-reading-paragraphs': [
+    {q:'\'Recycling helps protect the environment. When we recycle paper, plastic, and glass, we reduce waste and save natural resources. Everyone should try to recycle at home and school.\' What is the main idea of this paragraph?',options:['Recycling helps protect the environment','Paper is made from trees','Plastic is bad for animals','Schools should have more bins'],correct:'Recycling helps protect the environment'},
+    {q:'Based on the paragraph above, what materials are mentioned that can be recycled?',options:['Paper, plastic, and glass','Metal and wood','Food and clothes','Books and pens'],correct:'Paper, plastic, and glass'},
+    {q:'\'Exercise is important for staying healthy. It strengthens our muscles, improves our heart health, and helps us sleep better. Children should exercise for at least an hour every day.\' Why is exercise important according to the paragraph?',options:['It strengthens muscles and improves heart health','It makes us taller','It helps us do homework','It makes us hungry'],correct:'It strengthens muscles and improves heart health'},
+    {q:'Based on the paragraph above, how long should children exercise each day?',options:['At least an hour','30 minutes','2 hours','10 minutes'],correct:'At least an hour'},
+    {q:'\'Bees play an important role in nature. They pollinate flowers, which helps plants grow fruits and seeds. Without bees, many plants would not survive.\' What is the main role of bees mentioned in the paragraph?',options:['Pollinating flowers','Making honey only','Building hives','Stinging insects'],correct:'Pollinating flowers'},
+    {q:'Based on the paragraph above, what would happen without bees?',options:['Many plants would not survive','Nothing would change','Flowers would grow faster','Animals would disappear'],correct:'Many plants would not survive'},
+    {q:'\'Reading books can improve our vocabulary and imagination. It also helps us learn about different cultures and ideas. Many successful people say that reading helped them in their careers.\' What are the benefits of reading mentioned in the paragraph?',options:['Improves vocabulary and imagination','Makes us tired','Takes too much time','Is only for students'],correct:'Improves vocabulary and imagination'},
+    {q:'Based on the paragraph above, what do successful people say about reading?',options:['It helped them in their careers','It is a waste of time','It is only for children','It is difficult to do'],correct:'It helped them in their careers'},
+    {q:'\'Malaysia is a country with many different cultures. People of Malay, Chinese, Indian, and other backgrounds live together. This diversity makes Malaysian food, festivals, and traditions very colourful.\' What makes Malaysia special according to the paragraph?',options:['Its cultural diversity','Its size','Its weather','Its language only'],correct:'Its cultural diversity'},
+    {q:'Based on the paragraph above, what does the diversity affect?',options:['Food, festivals, and traditions','Only the language','Only the food','Only the weather'],correct:'Food, festivals, and traditions'},
+    {q:'\'Water is essential for all living things. Humans need water to survive, and so do plants and animals. We should always use water wisely and avoid wasting it.\' What does the paragraph say we should do with water?',options:['Use it wisely and avoid wasting it','Use as much as we want','Save it only for drinking','Waste it if we have enough'],correct:'Use it wisely and avoid wasting it'},
+    {q:'Based on the paragraph above, who needs water to survive?',options:['Humans, plants, and animals','Only humans','Only plants','Only animals'],correct:'Humans, plants, and animals'},
+    {q:'\'The Malacca Sultanate was once a great trading port. Merchants from China, India, and the Middle East came to trade goods. This made Malacca a very important and wealthy city.\' Why did merchants come to Malacca?',options:['To trade goods','To study','To fish','To farm'],correct:'To trade goods'},
+    {q:'Based on the paragraph above, what did the trading make Malacca?',options:['Important and wealthy','Poor and small','Dangerous','Empty'],correct:'Important and wealthy'},
+    {q:'\'Sleep is important for our brain and body. When we sleep, our body repairs itself and our brain processes information from the day. Children need more sleep than adults.\' Who needs more sleep according to the paragraph?',options:['Children','Adults','Elderly people','Teenagers only'],correct:'Children'},
+    {q:'Based on the paragraph above, what happens to our body when we sleep?',options:['It repairs itself','It stops working','It gets weaker','It stays the same'],correct:'It repairs itself'},
+    {q:'\'The rainforest is home to millions of plant and animal species. It also helps control the Earth\'s climate by absorbing carbon dioxide. Protecting rainforests is important for the whole world.\' Why is protecting the rainforest important?',options:['It helps control the Earth\'s climate','It has no animals','It is only in one country','It is not useful'],correct:'It helps control the Earth\'s climate'},
+    {q:'Based on the paragraph above, what does the rainforest absorb?',options:['Carbon dioxide','Oxygen only','Water only','Sunlight only'],correct:'Carbon dioxide'},
+    {q:'\'A balanced diet includes fruits, vegetables, grains, and proteins. Eating a variety of foods keeps our body healthy and gives us energy for daily activities.\' What does a balanced diet include?',options:['Fruits, vegetables, grains, and proteins','Only fruits','Only vegetables','Only meat'],correct:'Fruits, vegetables, grains, and proteins'},
+    {q:'Based on the paragraph above, what does a balanced diet give us?',options:['Energy for daily activities','Weight loss only','Sleepiness','Nothing important'],correct:'Energy for daily activities'},
+  ],
+  'd4-guided-composition': [
+    {q:'Which sentence is the best opening for a composition about \'My Family\'?',options:['I have a small and happy family.','Family my is small and happy.','Small and happy my family is.','Happy my family and small is.'],correct:'I have a small and happy family.'},
+    {q:'Which sentence is best for describing a setting in a story?',options:['The old house stood at the end of a quiet street.','At the end of a quiet street old house stood.','The house old stood quiet at street end.','Quiet street end house old stood.'],correct:'The old house stood at the end of a quiet street.'},
+    {q:'Choose the best sentence to describe a character\'s feelings.',options:['Sarah felt nervous before her exam.','Nervous Sarah felt before her exam.','Before her exam Sarah nervous felt.','Felt nervous Sarah before exam her.'],correct:'Sarah felt nervous before her exam.'},
+    {q:'Which sentence correctly uses paragraph structure (topic sentence first)?',options:['My favourite hobby is reading. I read every night before bed.','I read every night before bed. My favourite hobby is reading.','Before bed I read every night, reading is my favourite hobby.','Reading favourite my hobby is, every night I read before bed.'],correct:'My favourite hobby is reading. I read every night before bed.'},
+    {q:'Choose the best concluding sentence for a composition about a school trip.',options:['Overall, it was a memorable and enjoyable trip.','It was a trip that memorable overall enjoyable.','Enjoyable overall it memorable trip was.','Memorable it trip overall enjoyable was.'],correct:'Overall, it was a memorable and enjoyable trip.'},
+    {q:'Which sentence is best for describing an action sequence?',options:['First, I woke up. Then, I brushed my teeth.','I woke up first. My teeth then brushed I.','Then brushed teeth my, first I woke up.','My teeth brushed then, woke up first I.'],correct:'First, I woke up. Then, I brushed my teeth.'},
+    {q:'Choose the best sentence to describe weather in a composition.',options:['The sky was dark and full of grey clouds.','Dark sky was and grey clouds full of.','Full of grey clouds dark sky was.','Clouds grey full dark sky of was.'],correct:'The sky was dark and full of grey clouds.'},
+    {q:'Which sentence correctly uses descriptive adjectives?',options:['The tall, green tree stood beside the small river.','Tree tall green stood small river beside.','Beside the river small stood tree tall green.','Green tall tree the small river beside stood.'],correct:'The tall, green tree stood beside the small river.'},
+    {q:'Choose the best sentence for the introduction of a story about a holiday.',options:['Last year, my family and I went on an exciting holiday to Langkawi.','Holiday exciting Langkawi to went my family and I last year.','Went my family last year I and to Langkawi exciting holiday.','To Langkawi holiday exciting went last year family my and I.'],correct:'Last year, my family and I went on an exciting holiday to Langkawi.'},
+    {q:'Which sentence best shows cause and effect?',options:['Because it was raining, we cancelled the picnic.','Raining because was it, cancelled picnic we the.','We cancelled the picnic because it was raining.','Picnic the cancelled we raining was because it.'],correct:'Because it was raining, we cancelled the picnic.'},
+    {q:'Choose the sentence that correctly describes a person\'s appearance.',options:['She has long, curly hair and bright eyes.','Long curly hair she has and bright eyes.','Bright eyes and long curly hair she has.','Has she long curly hair bright eyes and.'],correct:'She has long, curly hair and bright eyes.'},
+    {q:'Which sentence uses time connectors correctly?',options:['After breakfast, I went to school.','Breakfast after, went school I to.','I to school went, after breakfast.','School I went to after breakfast.'],correct:'After breakfast, I went to school.'},
+    {q:'Choose the correct sentence for describing a favourite food.',options:['My favourite food is fried rice because it is delicious.','Fried rice favourite my food is delicious because it.','Delicious because it is my favourite food fried rice.','Is fried rice my favourite food because delicious it.'],correct:'My favourite food is fried rice because it is delicious.'},
+    {q:'Which sentence best describes an emotion using correct grammar?',options:['I was very excited about the competition.','Excited very I was about the competition.','About the competition I very excited was.','Was I about the competition very excited.'],correct:'I was very excited about the competition.'},
+    {q:'Choose the correct sentence to end a paragraph about helping others.',options:['Helping others makes us feel good and builds a caring community.','A caring community and feel good makes us helping others.','Builds community caring a and good feel us makes helping others.','Others helping community caring builds feel good and.'],correct:'Helping others makes us feel good and builds a caring community.'},
+    {q:'Which sentence uses correct sequencing words?',options:['First, we packed our bags. Next, we left for the airport.','We packed first our bags. Left we next for the airport.','Bags packed we first, airport for left we next.','Next left we for the airport, first we packed bags.'],correct:'First, we packed our bags. Next, we left for the airport.'},
+    {q:'Choose the sentence that best describes a place using sensory details.',options:['The market was noisy, colourful, and full of delicious smells.','Noisy colourful market was full delicious smells and.','Full of delicious smells the market noisy colourful was.','Delicious smells full colourful noisy market was and.'],correct:'The market was noisy, colourful, and full of delicious smells.'},
+    {q:'Which sentence is the best topic sentence for a paragraph about pets?',options:['Pets bring joy and companionship to our lives.','Joy and companionship pets bring to our lives.','To our lives pets bring joy and companionship.','Companionship and joy to our lives pets bring.'],correct:'Pets bring joy and companionship to our lives.'},
+    {q:'Choose the correct sentence describing a problem and solution.',options:['The bridge was broken, so the workers repaired it quickly.','Broken was the bridge, quickly repaired it workers so the.','Workers the repaired it quickly so broken was the bridge.','Quickly repaired workers the bridge broken it so was.'],correct:'The bridge was broken, so the workers repaired it quickly.'},
+    {q:'Which sentence best concludes a composition about kindness?',options:['In conclusion, small acts of kindness can make a big difference.','A big difference small acts kindness can make in conclusion of.','Make can difference big a kindness acts small in conclusion of.','Conclusion in, difference big a make can kindness of acts small.'],correct:'In conclusion, small acts of kindness can make a big difference.'},
+  ],
+  'd5-past-continuous': [
+    {q:'While I ___ dinner, the phone rang.',options:['cook','cooked','was cooking','cooks'],correct:'was cooking'},
+    {q:'They ___ football when it started to rain.',options:['play','played','were playing','plays'],correct:'were playing'},
+    {q:'This time yesterday, I ___ TV.',options:['watch','watched','was watching','watches'],correct:'was watching'},
+    {q:'They ___ dinner when I called.',options:['have','had','were having','has'],correct:'were having'},
+    {q:'While she ___ , I was cleaning the house.',options:['sleep','slept','was sleeping','sleeps'],correct:'was sleeping'},
+    {q:'We ___ in the garden when it began to thunder.',options:['play','played','were playing','plays'],correct:'were playing'},
+    {q:'He ___ his bicycle when he fell down.',options:['ride','rode','was riding','rides'],correct:'was riding'},
+    {q:'I ___ a book when the lights went out.',options:['read','read','was reading','reads'],correct:'was reading'},
+    {q:'The children ___ when the teacher walked in.',options:['talk','talked','were talking','talks'],correct:'were talking'},
+    {q:'She ___ the piano while her brother was studying.',options:['play','played','was playing','plays'],correct:'was playing'},
+    {q:'At 8pm last night, I ___ dinner.',options:['eat','ate','was eating','eats'],correct:'was eating'},
+    {q:'They ___ when the accident happened.',options:['drive','drove','were driving','drives'],correct:'were driving'},
+    {q:'While we ___ , it started to snow.',options:['walk','walked','were walking','walks'],correct:'were walking'},
+    {q:'He ___ his homework when his friend visited.',options:['do','did','was doing','does'],correct:'was doing'},
+    {q:'I ___ when you called me.',options:['shower','showered','was showering','showers'],correct:'was showering'},
+    {q:'The birds ___ when the cat approached.',options:['sing','sang','were singing','sings'],correct:'were singing'},
+    {q:'She ___ a letter when the doorbell rang.',options:['write','wrote','was writing','writes'],correct:'was writing'},
+    {q:'We ___ for the bus when it started raining.',options:['wait','waited','were waiting','waits'],correct:'were waiting'},
+    {q:'He ___ when the fire alarm went off.',options:['sleep','slept','was sleeping','sleeps'],correct:'was sleeping'},
+    {q:'They ___ when their mother arrived home.',options:['cook','cooked','were cooking','cooks'],correct:'were cooking'},
+  ],
+  'd5-modal-verbs': [
+    {q:'You ___ finish your homework before playing.',options:['can','must','may','would'],correct:'must'},
+    {q:'___ I borrow your pen, please?',options:['Must','Should','May','Would'],correct:'May'},
+    {q:'She ___ swim very well.',options:['can','must','should','would'],correct:'can'},
+    {q:'You ___ not run near the pool.',options:['can','must','should','would'],correct:'must'},
+    {q:'We ___ help each other.',options:['should','must not','can\'t','won\'t'],correct:'should'},
+    {q:'Students ___ wear their uniform to school.',options:['may','must','would','could'],correct:'must'},
+    {q:'___ you help me with this bag?',options:['Must','Could','Should','Shall'],correct:'Could'},
+    {q:'He ___ speak three languages.',options:['can','must','should','would'],correct:'can'},
+    {q:'You ___ see a doctor if you are sick.',options:['can','should','would','might'],correct:'should'},
+    {q:'___ we start the meeting now?',options:['Must','Shall','Would','Could'],correct:'Shall'},
+    {q:'You ___ not talk during the exam.',options:['can','must','should','would'],correct:'must'},
+    {q:'I think it ___ rain later.',options:['can','must','might','should'],correct:'might'},
+    {q:'___ you please pass the salt?',options:['Must','Would','Should','Shall'],correct:'Would'},
+    {q:'Children ___ not play with fire.',options:['can','must','should','would'],correct:'must'},
+    {q:'You ___ try your best in everything you do.',options:['can','must not','should','would'],correct:'should'},
+    {q:'He ___ be at home now; his car is here.',options:['can','must','would','should'],correct:'must'},
+    {q:'We ___ visit the museum tomorrow if we have time.',options:['can','must','might','should'],correct:'might'},
+    {q:'___ I open the window? It\'s hot in here.',options:['Must','May','Should','Would'],correct:'May'},
+    {q:'You ___ respect your elders.',options:['can','should','would','might'],correct:'should'},
+    {q:'Drivers ___ stop at a red light.',options:['can','must','would','might'],correct:'must'},
+  ],
+  'd5-direct-indirect-speech': [
+    {q:'Ali said, "I am tired." → Ali said that he ___ tired.',options:['is','was','am','were'],correct:'was'},
+    {q:'She said, "I like ice cream." → She said that she ___ ice cream.',options:['like','likes','liked','liking'],correct:'liked'},
+    {q:'He said, "I will come tomorrow." → He said that he ___ come the next day.',options:['will','would','is','was'],correct:'would'},
+    {q:'She said, "I am happy." → She said that she ___ happy.',options:['is','was','am','are'],correct:'was'},
+    {q:'He said, "I like football." → He said that he ___ football.',options:['like','likes','liked','liking'],correct:'liked'},
+    {q:'They said, "We are hungry." → They said that they ___ hungry.',options:['are','is','was','were'],correct:'were'},
+    {q:'She said, "I have finished my work." → She said that she ___ finished her work.',options:['have','has','had','was'],correct:'had'},
+    {q:'He said, "I can swim." → He said that he ___ swim.',options:['can','could','will','would'],correct:'could'},
+    {q:'They said, "We will help." → They said that they ___ help.',options:['will','would','was','are'],correct:'would'},
+    {q:'She said, "I am going home." → She said that she ___ going home.',options:['is','was','will be','has been'],correct:'was'},
+    {q:'Ali said, "I saw the movie." → Ali said that he ___ seen the movie.',options:['have','has','had','was'],correct:'had'},
+    {q:'He said, "I am reading a book." → He said that he ___ reading a book.',options:['is','was','am','are'],correct:'was'},
+    {q:'She said, "I want to eat." → She said that she ___ to eat.',options:['want','wants','wanted','wanting'],correct:'wanted'},
+    {q:'They said, "We are studying." → They said that they ___ studying.',options:['are','is','were','was'],correct:'were'},
+    {q:'He said, "I feel sick." → He said that he ___ sick.',options:['feel','feels','felt','feeling'],correct:'felt'},
+    {q:'She said, "I have a headache." → She said that she ___ a headache.',options:['have','has','had','having'],correct:'had'},
+    {q:'They said, "We live near the school." → They said that they ___ near the school.',options:['live','lives','lived','living'],correct:'lived'},
+    {q:'He said, "I am cooking dinner." → He said that he ___ cooking dinner.',options:['is','was','am','are'],correct:'was'},
+    {q:'She said, "I need help." → She said that she ___ help.',options:['need','needs','needed','needing'],correct:'needed'},
+    {q:'They said, "We enjoy reading." → They said that they ___ reading.',options:['enjoy','enjoys','enjoyed','enjoying'],correct:'enjoyed'},
+  ],
+  'd5-reading-longer': [
+    {q:'\'Amir has always loved animals. Ever since he was young, he dreamed of becoming a veterinarian. He studied hard in school, especially in Science, and after many years of hard work, he finally achieved his dream and opened his own clinic.\' What was Amir\'s dream?',options:['To become a veterinarian','To become a doctor','To become a teacher','To become a farmer'],correct:'To become a veterinarian'},
+    {q:'Based on the passage above, what subject did Amir focus on in school?',options:['Science','Mathematics','History','Art'],correct:'Science'},
+    {q:'\'The Amazon rainforest is often called the "lungs of the Earth" because it produces a large amount of the world\'s oxygen. However, deforestation is destroying large areas of this forest every year, threatening many species of plants and animals that live there.\' Why is the Amazon called the lungs of the Earth?',options:['It produces a large amount of oxygen','It is very large','It has many animals','It is very old'],correct:'It produces a large amount of oxygen'},
+    {q:'Based on the passage above, what is threatening the rainforest?',options:['Deforestation','Too much rain','Animals','Tourism'],correct:'Deforestation'},
+    {q:'\'Malaysia gained independence from British colonial rule on 31 August 1957. This important day is celebrated every year as Hari Merdeka, with parades, fireworks, and patriotic celebrations across the country.\' When did Malaysia gain independence?',options:['31 August 1957','1 January 1957','31 August 1963','1 September 1957'],correct:'31 August 1957'},
+    {q:'Based on the passage above, how is Hari Merdeka celebrated?',options:['With parades, fireworks, and celebrations','With school holidays only','With quiet family gatherings','With sporting events only'],correct:'With parades, fireworks, and celebrations'},
+    {q:'\'Recycling is one of the easiest ways for individuals to help the environment. By separating waste into paper, plastic, and glass, we can reduce the amount of rubbish sent to landfills and conserve natural resources for future generations.\' What is one benefit of recycling mentioned?',options:['It conserves natural resources','It creates more rubbish','It is difficult to do','It only helps big companies'],correct:'It conserves natural resources'},
+    {q:'Based on the passage above, what should waste be separated into?',options:['Paper, plastic, and glass','Food and clothes','Metal and wood only','Books and toys'],correct:'Paper, plastic, and glass'},
+    {q:'\'Coral reefs are among the most diverse ecosystems on Earth, home to thousands of species of fish and marine life. Unfortunately, rising ocean temperatures caused by climate change are causing coral bleaching, which threatens the survival of these important habitats.\' What is threatening coral reefs?',options:['Rising ocean temperatures','Too many fish','Too much sunlight','Strong winds'],correct:'Rising ocean temperatures'},
+    {q:'Based on the passage above, what happens to coral due to climate change?',options:['Coral bleaching','Coral growing faster','Coral turning blue','Coral becoming stronger'],correct:'Coral bleaching'},
+    {q:'\'Bicycles are a healthy and environmentally friendly form of transport. Riding a bicycle instead of driving a car can reduce air pollution and improve physical fitness. Many cities are now building more bicycle lanes to encourage this habit.\' What are the benefits of riding a bicycle?',options:['Reduces pollution and improves fitness','Makes travel slower','Costs more money','Requires no effort'],correct:'Reduces pollution and improves fitness'},
+    {q:'Based on the passage above, what are cities doing to encourage cycling?',options:['Building more bicycle lanes','Banning cars completely','Increasing petrol prices','Removing all roads'],correct:'Building more bicycle lanes'},
+    {q:'\'Sleep deprivation can have serious effects on both physical and mental health. Studies show that people who do not get enough sleep are more likely to experience memory problems, mood swings, and a weaker immune system.\' What are the effects of sleep deprivation mentioned?',options:['Memory problems, mood swings, weaker immune system','Better memory and mood','Stronger immune system','No effects at all'],correct:'Memory problems, mood swings, weaker immune system'},
+    {q:'Based on the passage above, what does \'sleep deprivation\' likely mean?',options:['Not getting enough sleep','Sleeping too much','Sleeping at the wrong time','Having good dreams'],correct:'Not getting enough sleep'},
+    {q:'\'Volunteering can benefit both the community and the volunteer. While helping others, volunteers often gain new skills, meet new people, and feel a sense of purpose and satisfaction from their contributions.\' What do volunteers gain from volunteering?',options:['New skills, new friends, and satisfaction','Money and fame','Nothing at all','Only tiredness'],correct:'New skills, new friends, and satisfaction'},
+    {q:'Based on the passage above, who benefits from volunteering?',options:['Both the community and the volunteer','Only the community','Only the volunteer','Neither of them'],correct:'Both the community and the volunteer'},
+    {q:'\'Traditional Malay houses are built on stilts, which helps protect the house from floods and allows air to circulate underneath, keeping the house cool in the hot climate.\' Why are traditional Malay houses built on stilts?',options:['To protect from floods and keep the house cool','To make the house taller','To save building materials','To attract more visitors'],correct:'To protect from floods and keep the house cool'},
+    {q:'Based on the passage above, what does the space under the house allow?',options:['Air to circulate','Water storage','More rooms','Parking space'],correct:'Air to circulate'},
+    {q:'\'The invention of the internet has changed the way people communicate, work, and learn. Today, people can connect with others across the world instantly, access vast amounts of information, and even attend online classes from home.\' How has the internet changed communication?',options:['People can connect instantly across the world','People communicate less','People only use letters','People cannot access information'],correct:'People can connect instantly across the world'},
+    {q:'Based on the passage above, what can people do from home because of the internet?',options:['Attend online classes','Only watch television','Only sleep','Only cook'],correct:'Attend online classes'},
+  ],
+  'd5-letter-writing': [
+    {q:'An informal letter is usually written to?',options:['Family or close friends','Government offices','Companies','Strangers only'],correct:'Family or close friends'},
+    {q:'A formal letter is usually written to?',options:['An organisation or official person','Close friends','Family members','Pets'],correct:'An organisation or official person'},
+    {q:'Which greeting is suitable for an informal letter to a friend?',options:['Dear Ahmad,','Dear Sir/Madam,','To Whom It May Concern,','Respected Sir,'],correct:'Dear Ahmad,'},
+    {q:'Which greeting is suitable for a formal letter?',options:['Dear Sir/Madam,','Hi buddy,','Hey there,','Dear best friend,'],correct:'Dear Sir/Madam,'},
+    {q:'Which closing is suitable for an informal letter?',options:['Your friend,','Yours faithfully,','Yours sincerely,','Respectfully,'],correct:'Your friend,'},
+    {q:'Which closing is suitable for a formal letter?',options:['Yours faithfully,','Love,','Bye for now,','See you soon,'],correct:'Yours faithfully,'},
+    {q:'The language used in an informal letter is usually?',options:['Casual and friendly','Very formal','Full of technical terms','Written in code'],correct:'Casual and friendly'},
+    {q:'The language used in a formal letter is usually?',options:['Polite and professional','Very casual','Full of slang','Written like a text message'],correct:'Polite and professional'},
+    {q:'Which of these is an example of an informal letter topic?',options:['Writing to a cousin about your holiday','Applying for a job','Complaining to a company','Requesting permission from the school'],correct:'Writing to a cousin about your holiday'},
+    {q:'Which of these is an example of a formal letter topic?',options:['Applying for a library membership','Telling a friend about your pet','Wishing a cousin happy birthday','Sharing holiday photos with family'],correct:'Applying for a library membership'},
+    {q:'Where is the sender\'s address usually written in a letter?',options:['Top right corner','Bottom left corner','Middle of the page','Top left corner only for formal letters'],correct:'Top right corner'},
+    {q:'What should be included in the first paragraph of a formal letter?',options:['The purpose of writing the letter','Personal jokes','Family gossip','Random stories'],correct:'The purpose of writing the letter'},
+    {q:'An informal letter can include which of these?',options:['Personal stories and jokes','Formal complaints only','Business proposals','Legal documents'],correct:'Personal stories and jokes'},
+    {q:'Which sentence is suitable for the opening of an informal letter?',options:['How are you? I hope you are doing well.','I am writing to inform you of the following matter.','This letter serves as an official request.','Please find attached the required documents.'],correct:'How are you? I hope you are doing well.'},
+    {q:'Which sentence is suitable for the opening of a formal letter?',options:['I am writing to enquire about your services.','Hey! What\'s up?','Guess what happened to me today!','I miss you so much!'],correct:'I am writing to enquire about your services.'},
+    {q:'A formal letter should always include?',options:['A clear and polite purpose','Emojis','Nicknames','Abbreviated words like \'u\' and \'gonna\''],correct:'A clear and polite purpose'},
+    {q:'Which is a good example of a formal letter\'s purpose statement?',options:['I am writing to request information about the school\'s admission process.','Just wanted to say hi and see how you\'re doing!','Let\'s meet up this weekend, it\'ll be fun!','Thanks for the birthday gift, I loved it!'],correct:'I am writing to request information about the school\'s admission process.'},
+    {q:'When writing to a pen pal about your daily life, you should use?',options:['Informal letter style','Formal letter style','Legal documentation style','Business report style'],correct:'Informal letter style'},
+    {q:'When writing to a school principal to request leave, you should use?',options:['Formal letter style','Informal letter style','Text message style','Diary entry style'],correct:'Formal letter style'},
+    {q:'Which of the following is NOT appropriate in a formal letter?',options:['Slang words','A clear purpose','Polite language','A proper greeting'],correct:'Slang words'},
+  ],
+  'd6-future-tense': [
+    {q:'Tomorrow, I ___ visit my grandmother.',options:['will','would','was','did'],correct:'will'},
+    {q:'We ___ going to the beach next week.',options:['is','am','are','was'],correct:'are'},
+    {q:'They ___ arrive at noon.',options:['will','would','was','did'],correct:'will'},
+    {q:'I think it ___ rain tomorrow.',options:['will','would','was','did'],correct:'will'},
+    {q:'She ___ going to bake a cake this weekend.',options:['is','am','are','was'],correct:'is'},
+    {q:'He ___ start his new job next month.',options:['will','would','was','did'],correct:'will'},
+    {q:'We ___ going to watch a movie tonight.',options:['is','am','are','was'],correct:'are'},
+    {q:'I ___ finish this project by Friday.',options:['will','would','was','did'],correct:'will'},
+    {q:'They ___ going to travel to Japan next year.',options:['is','am','are','was'],correct:'are'},
+    {q:'She ___ call you when she arrives.',options:['will','would','was','did'],correct:'will'},
+    {q:'I ___ going to clean my room later.',options:['is','am','are','was'],correct:'am'},
+    {q:'We ___ meet at the park tomorrow.',options:['will','would','was','did'],correct:'will'},
+    {q:'He ___ going to buy a new car soon.',options:['is','am','are','was'],correct:'is'},
+    {q:'The train ___ leave at 9am tomorrow.',options:['will','would','was','did'],correct:'will'},
+    {q:'They ___ going to open a new shop next month.',options:['is','am','are','was'],correct:'are'},
+    {q:'I believe she ___ pass the exam.',options:['will','would','was','did'],correct:'will'},
+    {q:'We ___ going to celebrate her birthday tomorrow.',options:['is','am','are','was'],correct:'are'},
+    {q:'He ___ probably be late.',options:['will','would','was','did'],correct:'will'},
+    {q:'I ___ going to study hard for the exam.',options:['is','am','are','was'],correct:'am'},
+    {q:'They ___ visit us next weekend.',options:['will','would','was','did'],correct:'will'},
+  ],
+  'd6-passive-voice': [
+    {q:'Choose the passive voice of: \'The teacher teaches the students.\'',options:['The students are taught by the teacher.','The teacher is taught by the students.','The students teach the teacher.','The teacher teaches by the students.'],correct:'The students are taught by the teacher.'},
+    {q:'Choose the passive voice of: \'Ali wrote the letter.\'',options:['The letter was written by Ali.','Ali was written by the letter.','The letter wrote Ali.','Ali writes the letter.'],correct:'The letter was written by Ali.'},
+    {q:'Choose the passive voice of: \'They built the house.\'',options:['The house was built by them.','They were built by the house.','The house builds them.','They build the house by.'],correct:'The house was built by them.'},
+    {q:'Choose the passive voice of: \'The chef cooks the meal.\'',options:['The meal is cooked by the chef.','The chef is cooked by the meal.','The meal cooks the chef.','The chef cooked by the meal.'],correct:'The meal is cooked by the chef.'},
+    {q:'Choose the passive voice of: \'Someone stole my bag.\'',options:['My bag was stolen.','My bag stole someone.','Someone was stolen by my bag.','My bag steals someone.'],correct:'My bag was stolen.'},
+    {q:'Choose the passive voice of: \'The company will launch a new product.\'',options:['A new product will be launched by the company.','A new product will launch the company.','The company will be launched by a new product.','A new product launches the company.'],correct:'A new product will be launched by the company.'},
+    {q:'Choose the passive voice of: \'The gardener waters the plants.\'',options:['The plants are watered by the gardener.','The gardener is watered by the plants.','The plants water the gardener.','The gardener waters by the plants.'],correct:'The plants are watered by the gardener.'},
+    {q:'Choose the passive voice of: \'The workers built the bridge.\'',options:['The bridge was built by the workers.','The workers were built by the bridge.','The bridge builds the workers.','The workers build the bridge by.'],correct:'The bridge was built by the workers.'},
+    {q:'Choose the passive voice of: \'The artist painted the picture.\'',options:['The picture was painted by the artist.','The artist was painted by the picture.','The picture paints the artist.','The artist paints by the picture.'],correct:'The picture was painted by the artist.'},
+    {q:'Choose the passive voice of: \'The students clean the classroom.\'',options:['The classroom is cleaned by the students.','The students are cleaned by the classroom.','The classroom cleans the students.','The students clean by the classroom.'],correct:'The classroom is cleaned by the students.'},
+    {q:'Choose the active voice of: \'The book was read by Ali.\'',options:['Ali read the book.','The book read Ali.','Ali was read the book.','The book reads Ali.'],correct:'Ali read the book.'},
+    {q:'Choose the active voice of: \'The cake was baked by mother.\'',options:['Mother baked the cake.','The cake baked mother.','Mother was baked the cake.','The cake bakes mother.'],correct:'Mother baked the cake.'},
+    {q:'Choose the passive voice of: \'The farmer grows rice.\'',options:['Rice is grown by the farmer.','The farmer is grown by rice.','Rice grows the farmer.','The farmer grows by rice.'],correct:'Rice is grown by the farmer.'},
+    {q:'Choose the passive voice of: \'The doctor examined the patient.\'',options:['The patient was examined by the doctor.','The doctor was examined by the patient.','The patient examines the doctor.','The doctor examines by the patient.'],correct:'The patient was examined by the doctor.'},
+    {q:'Choose the active voice of: \'The window was broken by the boy.\'',options:['The boy broke the window.','The window broke the boy.','The boy was broken the window.','The window breaks the boy.'],correct:'The boy broke the window.'},
+    {q:'Choose the passive voice of: \'The librarian organises the books.\'',options:['The books are organised by the librarian.','The librarian is organised by the books.','The books organise the librarian.','The librarian organises by the books.'],correct:'The books are organised by the librarian.'},
+    {q:'Choose the passive voice of: \'The mechanic fixed the car.\'',options:['The car was fixed by the mechanic.','The mechanic was fixed by the car.','The car fixes the mechanic.','The mechanic fixes by the car.'],correct:'The car was fixed by the mechanic.'},
+    {q:'Choose the active voice of: \'The song was sung by the choir.\'',options:['The choir sang the song.','The song sang the choir.','The choir was sung the song.','The song sings the choir.'],correct:'The choir sang the song.'},
+    {q:'Choose the passive voice of: \'The company hired new staff.\'',options:['New staff were hired by the company.','The company was hired by new staff.','New staff hire the company.','The company hires by new staff.'],correct:'New staff were hired by the company.'},
+    {q:'Choose the passive voice of: \'The children planted the trees.\'',options:['The trees were planted by the children.','The children were planted by the trees.','The trees plant the children.','The children plant by the trees.'],correct:'The trees were planted by the children.'},
+  ],
+  'd6-reported-speech': [
+    {q:'She said, "I am going home." → She said that she ___ going home.',options:['is','was','will be','has been'],correct:'was'},
+    {q:'He said, "I have finished my work." → He said that he ___ finished his work.',options:['have','has','had','was'],correct:'had'},
+    {q:'They said, "We will help you." → They said that they ___ help us.',options:['will','would','was','are'],correct:'would'},
+    {q:'She said, "I saw the movie." → She said that she ___ seen the movie.',options:['have','has','had','was'],correct:'had'},
+    {q:'He said, "I can swim." → He said that he ___ swim.',options:['can','could','will','would'],correct:'could'},
+    {q:'The teacher said, "You must study hard." → The teacher said that we ___ study hard.',options:['must','had to','will','would'],correct:'had to'},
+    {q:'She asked, "Where do you live?" → She asked where I ___.',options:['live','lived','lives','living'],correct:'lived'},
+    {q:'He asked, "What is your name?" → He asked what my name ___.',options:['is','was','are','were'],correct:'was'},
+    {q:'They said, "We are studying." → They said that they ___ studying.',options:['are','is','were','was'],correct:'were'},
+    {q:'She said, "I will call you tomorrow." → She said that she ___ call me the next day.',options:['will','would','was','is'],correct:'would'},
+    {q:'He asked, "Can you help me?" → He asked if I ___ help him.',options:['can','could','will','would'],correct:'could'},
+    {q:'They said, "We do not like it." → They said that they ___ not like it.',options:['do','did','don\'t','didn\'t'],correct:'did'},
+    {q:'She said, "I am tired." → She said that she ___ tired.',options:['is','am','was','are'],correct:'was'},
+    {q:'He said, "I need help." → He said that he ___ help.',options:['need','needs','needed','needing'],correct:'needed'},
+    {q:'The boy said, "I want to play." → The boy said that he ___ to play.',options:['want','wants','wanted','wanting'],correct:'wanted'},
+    {q:'She asked, "When will you arrive?" → She asked when I ___ arrive.',options:['will','would','was','am'],correct:'would'},
+    {q:'They said, "We have finished the task." → They said that they ___ finished the task.',options:['have','has','had','was'],correct:'had'},
+    {q:'He said, "I do not know the answer." → He said that he ___ not know the answer.',options:['do','did','does','doing'],correct:'did'},
+    {q:'She said, "I am cooking dinner." → She said that she ___ cooking dinner.',options:['is','was','am','are'],correct:'was'},
+    {q:'He asked, "Why are you late?" → He asked why I ___ late.',options:['am','was','is','were'],correct:'was'},
+  ],
+  'd6-reading-kbat': [
+    {q:'\'Despite facing many failures, Thomas Edison never gave up on his invention of the light bulb. He once said failure was simply a step towards success.\' What can we infer about Edison\'s attitude towards failure?',options:['He saw failure as part of the process to success','He was afraid of failing','He gave up easily','He never experienced failure'],correct:'He saw failure as part of the process to success'},
+    {q:'\'The factory continued to release smoke into the air despite complaints from nearby residents about the pollution.\' What is the most likely consequence of the factory\'s actions?',options:['The residents\' health may be affected by the pollution','The factory will close down immediately','The residents will move away happily','Nothing will happen'],correct:'The residents\' health may be affected by the pollution'},
+    {q:'\'Even though she was the youngest in the team, Sarah worked twice as hard to prove herself capable.\' What quality does this show about Sarah?',options:['Determination and hard work','Laziness','Overconfidence','Carelessness'],correct:'Determination and hard work'},
+    {q:'\'The government introduced a new policy to reduce plastic waste, but many shopkeepers were reluctant to change their habits.\' What challenge does this policy face?',options:['Resistance to change from shopkeepers','Too much support from everyone','No need for the policy','Immediate success'],correct:'Resistance to change from shopkeepers'},
+    {q:'\'Although the weather forecast predicted rain, the farmers still went ahead with the harvest, worried that delaying further would damage the crops.\' Why did the farmers proceed despite the forecast?',options:['They were worried about damage from further delay','They did not believe the forecast','They wanted to test the weather','They had no other choice at all'],correct:'They were worried about damage from further delay'},
+    {q:'\'The company\'s profits doubled after they started listening to customer feedback and improving their products.\' What can we conclude caused the increase in profits?',options:['Listening to customer feedback and improving products','Lowering prices only','Reducing staff','Advertising more'],correct:'Listening to customer feedback and improving products'},
+    {q:'\'Even though he was scared of heights, John decided to go rock climbing to overcome his fear.\' What does this tell us about John\'s character?',options:['He is brave and willing to face his fears','He is careless','He avoids challenges','He dislikes outdoor activities'],correct:'He is brave and willing to face his fears'},
+    {q:'\'The old bridge, built over fifty years ago, was finally closed after inspectors found it was no longer safe for heavy vehicles.\' Why was the bridge closed?',options:['It was found unsafe for heavy vehicles','It was too old to look at','No one used the bridge','The government wanted to save money'],correct:'It was found unsafe for heavy vehicles'},
+    {q:'\'Instead of complaining about the difficult exam, Mei Ling decided to focus on what she could learn from her mistakes.\' What attitude does Mei Ling show?',options:['A positive and growth-focused attitude','A negative attitude','An indifferent attitude','A defeated attitude'],correct:'A positive and growth-focused attitude'},
+    {q:'\'The village elders warned the younger generation about overfishing, saying it would soon leave the sea empty for their children.\' What is the elders\' main concern?',options:['Overfishing will affect future generations','Fish are too expensive','The sea is too small','Young people do not like fish'],correct:'Overfishing will affect future generations'},
+    {q:'\'Even after losing the competition, the team celebrated because they had improved significantly since their last match.\' Why did the team celebrate despite losing?',options:['They recognised their improvement','They did not care about the result','They were confused about the score','They always celebrate regardless'],correct:'They recognised their improvement'},
+    {q:'\'The scientist spent ten years researching the disease, driven by the hope of finding a cure that could save millions of lives.\' What motivated the scientist\'s long research?',options:['The hope of saving millions of lives','The desire for fame','Being forced to do it','Financial gain only'],correct:'The hope of saving millions of lives'},
+    {q:'\'Although the new student was shy at first, she gradually made friends by joining the school\'s book club.\' What helped the new student make friends?',options:['Joining the school\'s book club','Staying alone','Avoiding other students','Skipping school activities'],correct:'Joining the school\'s book club'},
+    {q:'\'The manager decided to invest in employee training, believing that a skilled workforce would benefit the company in the long run.\' What does this decision reveal about the manager\'s approach?',options:['A long-term, strategic approach','A short-term approach','A reckless approach','An indifferent approach'],correct:'A long-term, strategic approach'},
+    {q:'\'Despite being warned about the storm, some tourists still went sailing, believing the warning was exaggerated.\' What can we infer about these tourists?',options:['They underestimated the danger','They were very cautious','They cancelled their trip','They followed all safety advice'],correct:'They underestimated the danger'},
+    {q:'\'The charity organisation focused on providing education rather than just giving money, believing it would create lasting change.\' Why did the charity choose this approach?',options:['To create lasting, sustainable change','To spend less money','To avoid helping people directly','Because it was easier'],correct:'To create lasting, sustainable change'},
+    {q:'\'After the factory closed, many workers had to learn new skills to find jobs in other industries.\' What was the effect of the factory closing on the workers?',options:['They had to learn new skills for other jobs','They all remained unemployed','They received the same jobs elsewhere','Nothing changed for them'],correct:'They had to learn new skills for other jobs'},
+    {q:'\'Even though the medicine tasted terrible, the boy drank it because he trusted it would make him feel better.\' What does this show about the boy\'s reasoning?',options:['He trusted the outcome would benefit him','He liked the terrible taste','He was forced against his will','He did not think about it'],correct:'He trusted the outcome would benefit him'},
+    {q:'\'The company reduced its prices to compete with new businesses entering the market.\' Why did the company reduce its prices?',options:['To compete with new businesses','To increase its profits immediately','Because customers asked for it','To close down the business'],correct:'To compete with new businesses'},
+    {q:'\'Despite having less experience, the young chef won the competition through creativity and hard work.\' What factors led to the young chef\'s success?',options:['Creativity and hard work','Luck alone','Having more experience than others','Knowing the judges personally'],correct:'Creativity and hard work'},
+  ],
+  'd6-essay-writing': [
+    {q:'A formal essay usually requires which type of language?',options:['Formal and structured language','Casual slang','Text message abbreviations','Emojis and symbols'],correct:'Formal and structured language'},
+    {q:'An essay should always have which THREE main parts?',options:['Introduction, body, and conclusion','Only an introduction','Only a conclusion','Title and pictures only'],correct:'Introduction, body, and conclusion'},
+    {q:'Which sentence is a good introduction for an essay about \'The Importance of Reading\'?',options:['Reading is one of the most valuable habits a person can develop.','I like reading books sometimes.','Reading, I think it\'s okay I guess.','Books are things people read sometimes.'],correct:'Reading is one of the most valuable habits a person can develop.'},
+    {q:'What should the body paragraphs of an essay contain?',options:['Supporting points and examples','Only the title','Random unrelated facts','A summary of the introduction only'],correct:'Supporting points and examples'},
+    {q:'Which sentence is suitable for an essay conclusion?',options:['In conclusion, reading opens doors to knowledge and imagination.','So yeah, that\'s it about reading.','Books, I guess, are fine.','The end of my essay about reading.'],correct:'In conclusion, reading opens doors to knowledge and imagination.'},
+    {q:'An essay about \'My Hobby\' would most likely use which style?',options:['Slightly informal, personal narrative style','Strictly formal legal style','Business report style','Scientific research style'],correct:'Slightly informal, personal narrative style'},
+    {q:'Which linking word is suitable to introduce an additional point in an essay?',options:['Furthermore','Bye','Hi there','Um'],correct:'Furthermore'},
+    {q:'Which linking word is suitable to introduce a contrasting point?',options:['However','Also','And','Additionally'],correct:'However'},
+    {q:'A good essay title should be?',options:['Clear and related to the topic','Long and confusing','Unrelated to the content','Written in another language'],correct:'Clear and related to the topic'},
+    {q:'Which sentence shows good essay structure with a clear point?',options:['One major benefit of exercise is improved physical health.','Exercise, well, it\'s good I think.','People do exercise sometimes for reasons.','Exercise is a thing some people do.'],correct:'One major benefit of exercise is improved physical health.'},
+    {q:'An essay about the environment should include which type of evidence?',options:['Facts and examples','Personal jokes only','Random guesses','Unrelated stories'],correct:'Facts and examples'},
+    {q:'Which linking word shows a result or effect?',options:['Therefore','But','Although','Meanwhile'],correct:'Therefore'},
+    {q:'Paragraphs in an essay should each focus on?',options:['One main idea','Multiple unrelated ideas','No particular idea','Random facts only'],correct:'One main idea'},
+    {q:'Which of these is an example of a strong essay topic sentence?',options:['Technology has transformed the way students learn today.','Technology, um, it changes things.','Students use technology I think.','Learning happens with technology sometimes.'],correct:'Technology has transformed the way students learn today.'},
+    {q:'An essay\'s conclusion should?',options:['Summarise the main points','Introduce a completely new topic','Repeat the essay word for word','Be left blank'],correct:'Summarise the main points'},
+    {q:'Which is an example of a formal essay tone?',options:['It is evident that regular exercise benefits overall health.','Exercise is like, super good for you, you know?','Working out is cool I guess.','Exercise, yeah, it\'s a thing.'],correct:'It is evident that regular exercise benefits overall health.'},
+    {q:'An essay discussing advantages and disadvantages should be organised?',options:['With clear sections for each side','Randomly mixed together','Only discussing advantages','Only discussing disadvantages'],correct:'With clear sections for each side'},
+    {q:'Which sentence uses a linking word correctly to add a point?',options:['Moreover, regular reading improves vocabulary.','Reading books, moreover vocabulary.','Vocabulary moreover reading improves.','Improves vocabulary reading moreover books.'],correct:'Moreover, regular reading improves vocabulary.'},
+    {q:'A well-written essay avoids?',options:['Repetition and irrelevant information','Clear topic sentences','Supporting examples','A strong conclusion'],correct:'Repetition and irrelevant information'},
+    {q:'Which is the best way to end an essay about protecting the environment?',options:['We must all take action to protect our planet for future generations.','So yeah, protect the environment or whatever.','The environment, that\'s the end of it.','Protecting is a thing about the environment.'],correct:'We must all take action to protect our planet for future generations.'},
+  ],
+  'd6-summary-writing': [
+    {q:'A summary should be?',options:['Shorter than the original text','Longer than the original text','The same length as the original','Written in a different language'],correct:'Shorter than the original text'},
+    {q:'A good summary includes?',options:['Only the main points','Every single detail','Personal opinions','Made-up information'],correct:'Only the main points'},
+    {q:'Summaries should be written in?',options:['Your own words','The exact words of the original text','A completely different topic','Random words'],correct:'Your own words'},
+    {q:'Which is the best summary of: \'Regular exercise improves physical health, mental wellbeing, and helps maintain a healthy weight.\'',options:['Exercise benefits physical health, mental wellbeing, and weight management.','Exercise is good.','People should exercise sometimes.','Exercise, health, weight, mental, all connected somehow.'],correct:'Exercise benefits physical health, mental wellbeing, and weight management.'},
+    {q:'What should be avoided when writing a summary?',options:['Adding your own opinions not in the text','Using your own words','Including main points','Being concise'],correct:'Adding your own opinions not in the text'},
+    {q:'A summary of a story should focus on?',options:['The main events and key points','Every single word from the story','Only the title','Random unrelated details'],correct:'The main events and key points'},
+    {q:'Which is the best summary of: \'Water pollution is caused by factories, plastic waste, and untreated sewage entering rivers and oceans.\'',options:['Water pollution comes from factory waste, plastic, and sewage.','Water is polluted, that\'s bad.','Rivers and oceans have problems.','Pollution happens because of things.'],correct:'Water pollution comes from factory waste, plastic, and sewage.'},
+    {q:'Before writing a summary, you should?',options:['Read and understand the whole text first','Skip reading and guess','Only read the title','Copy the first sentence only'],correct:'Read and understand the whole text first'},
+    {q:'A summary should maintain?',options:['The original meaning of the text','A completely different meaning','No connection to the original text','Only the writer\'s opinion'],correct:'The original meaning of the text'},
+    {q:'Which of these is a sign of a poor summary?',options:['Copying sentences directly from the original text','Using your own words','Including main ideas','Being brief and clear'],correct:'Copying sentences directly from the original text'},
+    {q:'A summary of a news article should highlight?',options:['The key facts and events','Personal feelings about the news','Unrelated opinions','Random guesses'],correct:'The key facts and events'},
+    {q:'Which sentence best summarises: \'The library offers free access to books, computers, and study spaces for all members of the community.\'',options:['The library provides free books, computers, and study spaces to the community.','The library has some stuff.','Libraries are useful sometimes.','Books and computers exist in libraries.'],correct:'The library provides free books, computers, and study spaces to the community.'},
+    {q:'Summaries are useful because they?',options:['Save time by presenting key information quickly','Take longer to read than the original','Add unnecessary details','Confuse the reader'],correct:'Save time by presenting key information quickly'},
+    {q:'When summarising a long passage, you should identify?',options:['The topic sentences of each paragraph','Every single detail','Only the last sentence','Random words'],correct:'The topic sentences of each paragraph'},
+    {q:'A one-sentence summary should capture?',options:['The overall main idea','Every detail in the text','Only examples','Unrelated information'],correct:'The overall main idea'},
+    {q:'Which is the best summary of: \'Malaysia is known for its diverse culture, delicious food, and beautiful natural landscapes.\'',options:['Malaysia is known for its diverse culture, food, and landscapes.','Malaysia has some nice things.','Malaysia is a country with stuff.','Culture and food and landscapes, Malaysia things.'],correct:'Malaysia is known for its diverse culture, food, and landscapes.'},
+    {q:'A well-written summary should be?',options:['Clear, concise, and accurate','Long and detailed','Full of personal opinions','Written in complicated language'],correct:'Clear, concise, and accurate'},
+    {q:'Which skill is most important for writing a good summary?',options:['Identifying the main idea','Copying word for word','Adding new information','Ignoring the original text'],correct:'Identifying the main idea'},
+    {q:'A summary should NOT include?',options:['Minor details and examples','The main idea','Key points','Important facts'],correct:'Minor details and examples'},
+    {q:'Which sentence best summarises: \'Sleep helps the body recover, improves memory, and boosts overall health.\'',options:['Sleep aids recovery, memory, and overall health.','Sleep is when you close your eyes.','People sleep at night usually.','Sleep, health, memory, things happen.'],correct:'Sleep aids recovery, memory, and overall health.'},
+  ],
+};var TOPIC_META = {
+  'd1-nouns-articles': {title:'Nouns & Articles', darjah:'Darjah 1', emoji:'📛'},
+  'd1-verb-to-be': {title:'Verb \'To Be\'', darjah:'Darjah 1', emoji:'🔤'},
+  'd1-simple-present': {title:'Simple Present Sentences', darjah:'Darjah 1', emoji:'📝'},
+  'd1-phonics-vocab': {title:'Phonics & Vocabulary', darjah:'Darjah 1', emoji:'🔊'},
+  'd1-reading-comprehension': {title:'Reading Comprehension', darjah:'Darjah 1', emoji:'📖'},
+  'd2-simple-present-tense': {title:'Simple Present Tense', darjah:'Darjah 2', emoji:'🔤'},
+  'd2-plural-nouns': {title:'Plural Nouns', darjah:'Darjah 2', emoji:'📛'},
+  'd2-prepositions-place': {title:'Prepositions of Place', darjah:'Darjah 2', emoji:'📍'},
+  'd2-simple-past': {title:'Simple Past (Common Verbs)', darjah:'Darjah 2', emoji:'⏮️'},
+  'd2-short-passages': {title:'Short Reading Passages', darjah:'Darjah 2', emoji:'📖'},
+  'd3-past-tense-regular': {title:'Past Tense (Regular Verbs)', darjah:'Darjah 3', emoji:'⏮️'},
+  'd3-pronouns': {title:'Pronouns', darjah:'Darjah 3', emoji:'👤'},
+  'd3-question-words': {title:'Question Words', darjah:'Darjah 3', emoji:'❓'},
+  'd3-reading-short-stories': {title:'Reading (Short Stories)', darjah:'Darjah 3', emoji:'📖'},
+  'd3-guided-writing': {title:'Simple Guided Writing', darjah:'Darjah 3', emoji:'✍️'},
+  'd4-present-continuous': {title:'Present Continuous Tense', darjah:'Darjah 4', emoji:'⏳'},
+  'd4-comparative-superlative': {title:'Comparative & Superlative', darjah:'Darjah 4', emoji:'📊'},
+  'd4-conjunctions': {title:'Conjunctions', darjah:'Darjah 4', emoji:'🔗'},
+  'd4-reading-paragraphs': {title:'Reading (Paragraphs)', darjah:'Darjah 4', emoji:'📖'},
+  'd4-guided-composition': {title:'Guided Composition', darjah:'Darjah 4', emoji:'✍️'},
+  'd5-past-continuous': {title:'Past Continuous Tense', darjah:'Darjah 5', emoji:'⏳'},
+  'd5-modal-verbs': {title:'Modal Verbs', darjah:'Darjah 5', emoji:'🔑'},
+  'd5-direct-indirect-speech': {title:'Direct & Indirect Speech', darjah:'Darjah 5', emoji:'💬'},
+  'd5-reading-longer': {title:'Reading (Longer Texts)', darjah:'Darjah 5', emoji:'📖'},
+  'd5-letter-writing': {title:'Letter Writing', darjah:'Darjah 5', emoji:'✉️'},
+  'd6-future-tense': {title:'Future Tense', darjah:'Darjah 6', emoji:'🔮'},
+  'd6-passive-voice': {title:'Passive Voice', darjah:'Darjah 6', emoji:'🔄'},
+  'd6-reported-speech': {title:'Reported Speech', darjah:'Darjah 6', emoji:'💬'},
+  'd6-reading-kbat': {title:'Reading (KBAT)', darjah:'Darjah 6', emoji:'🧠'},
+  'd6-essay-writing': {title:'Essay Writing', darjah:'Darjah 6', emoji:'🖋️'},
+  'd6-summary-writing': {title:'Summary Writing', darjah:'Darjah 6', emoji:'📋'},
+};
+
+/* ===================== SOUND ENGINE ===================== */
+let soundOn = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function ensureCtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+function beep({freq=440, dur=0.15, type='sine', gain=0.2, delay=0}){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+function sfxCorrect(){
+  beep({freq:523.25, dur:0.12, type:'triangle', gain:0.22});
+  beep({freq:659.25, dur:0.12, type:'triangle', gain:0.22, delay:0.1});
+  beep({freq:783.99, dur:0.18, type:'triangle', gain:0.24, delay:0.2});
+}
+function sfxWrong(){
+  beep({freq:220, dur:0.18, type:'sawtooth', gain:0.18});
+  beep({freq:164.81, dur:0.25, type:'sawtooth', gain:0.18, delay:0.14});
+}
+function sfxClick(){ beep({freq:600, dur:0.05, type:'square', gain:0.08}); }
+function sfxTick(){ beep({freq:880, dur:0.045, type:'square', gain:0.06}); }
+function sfxTimeUp(){
+  beep({freq:180, dur:0.3, type:'sawtooth', gain:0.2});
+  beep({freq:140, dur:0.4, type:'sawtooth', gain:0.2, delay:0.2});
+}
+function sfxFanfare(){
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep({freq:f,dur:0.22,type:'triangle',gain:0.22,delay:i*0.13}));
+}
+
+/* ===================== LOAD TOPIC ===================== */
+const params = new URLSearchParams(window.location.search);
+const topicId = params.get('topic') || Object.keys(TOPIC_BANKS)[0];
+const meta = TOPIC_META[topicId] || {title:'Latihan English', darjah:'', emoji:'🔬'};
+let QUESTIONS = (TOPIC_BANKS[topicId] || []).slice();
+
+document.getElementById('coverTitle').textContent = meta.emoji + ' ' + meta.title;
+document.getElementById('coverEyebrow').textContent = 'Buku Latihan · ' + meta.darjah;
+document.getElementById('coverSub').textContent = QUESTIONS.length + ' soalan · 30 saat/soalan';
+document.getElementById('coverStamp').innerHTML = meta.darjah.replace('Darjah ','D') + '<br>ENG';
+document.getElementById('footerText').textContent = meta.title + ' · English · Study Buddy';
+document.title = meta.title + ' — Latihan English';
+
+const LETTERS = ['A','B','C','D'];
+
+/* ===================== STATE ===================== */
+let currentIndex = 0;
+let score = 0;
+let selectedAnswers = [];
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+const TIME_LIMIT = 30;
+
+const startCard = document.getElementById('startCard');
+const startBtn = document.getElementById('startBtn');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+
+const expTag = document.getElementById('expTag');
+const qNum = document.getElementById('qNum');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const scoreVal = document.getElementById('scoreVal');
+const qCounter = document.getElementById('qCounter');
+const progressBar = document.getElementById('progressBar');
+const soundToggle = document.getElementById('soundToggle');
+const timerBox = document.getElementById('timerBox');
+const timerBar = document.getElementById('timerBar');
+const timeVal = document.getElementById('timeVal');
+
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ ensureCtx(); sfxClick(); }
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureCtx();
+  sfxClick();
+  startCard.style.display = 'none';
+  quizArea.style.display = 'block';
+  QUESTIONS = shuffle(QUESTIONS);
+  currentIndex = 0; score = 0; selectedAnswers = [];
+  scoreVal.textContent = 0;
+  loadQuestion();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  timerBox.classList.remove('low');
+  updateTimerUI();
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft <= 5 && timeLeft > 0){ sfxTick(); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      sfxTimeUp();
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimerUI(){
+  timeVal.textContent = timeLeft;
+  const pct = Math.max(0,(timeLeft/TIME_LIMIT)*100);
+  timerBar.style.width = pct + '%';
+  timerBox.classList.toggle('low', timeLeft <= 5);
+}
+
+function loadQuestion(){
+  answered = false;
+  feedback.classList.remove('show','good','bad');
+  nextBtn.classList.remove('show');
+  const q = QUESTIONS[currentIndex];
+
+  expTag.textContent = meta.title;
+  qNum.textContent = 'Soalan ' + (currentIndex+1);
+  qText.textContent = q.q;
+  qCounter.textContent = `${currentIndex+1}/${QUESTIONS.length}`;
+  progressBar.style.width = ((currentIndex)/QUESTIONS.length*100) + '%';
+
+  optionsWrap.innerHTML = '';
+  const order = shuffle(q.options);
+  q._order = order;
+
+  order.forEach((optText, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx] || (idx+1)}</span><span>${optText}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(btn, optText));
+    optionsWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function selectAnswer(btn, chosenText){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+  const q = QUESTIONS[currentIndex];
+  const isCorrect = chosenText === q.correct;
+
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+    else if(el === btn){ el.classList.add('wrong'); }
+  });
+
+  if(isCorrect){
+    score++;
+    scoreVal.textContent = score;
+    sfxCorrect();
+    feedback.classList.add('show','good');
+    feedback.innerHTML = `<b>Betul! 🎉</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  } else {
+    sfxWrong();
+    feedback.classList.add('show','bad');
+    feedback.innerHTML = `<b>Bukan tu.</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  }
+
+  selectedAnswers.push({ q, correct: isCorrect, chosen: chosenText });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  nextBtn.focus();
+}
+
+function handleTimeout(){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+  });
+  feedback.classList.add('show','bad');
+  feedback.innerHTML = `<b>Masa tamat! ⏰</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  selectedAnswers.push({ q, correct:false, chosen: null });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex++;
+  if(currentIndex >= QUESTIONS.length){
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult(){
+  clearInterval(timer);
+  progressBar.style.width = '100%';
+  quizArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  const resultEmoji = document.getElementById('resultEmoji');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMsg = document.getElementById('resultMsg');
+  document.getElementById('resultScore').textContent = score + ' / ' + QUESTIONS.length;
+
+  if(pct >= 80){
+    resultEmoji.textContent = '🏆';
+    resultTitle.textContent = 'Syabas, Faham Betul!';
+    resultMsg.textContent = 'Konsep ' + meta.title + ' demo dah mantap!';
+    sfxFanfare();
+  } else if(pct >= 50){
+    resultEmoji.textContent = '👍';
+    resultTitle.textContent = 'Dah Faham Sikit!';
+    resultMsg.textContent = 'Baca balik jawapan yang salah tadi, lepas tu try lagi sekali.';
+  } else {
+    resultEmoji.textContent = '💪';
+    resultTitle.textContent = 'Jangan Give Up!';
+    resultMsg.textContent = 'Baca balik penjelasan yang salah tadi, lepas tu try lagi sekali.';
+  }
+
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;color:#5a5346;">RINGKASAN JAWAPAN</div>';
+  selectedAnswers.forEach((a,i)=>{
+    const div = document.createElement('div');
+    div.className = 'breakdown-item';
+    const mark = a.correct ? '✅' : '❌';
+    let html = `<div class="row"><span class="mark">${mark}</span><span>${i+1}. ${a.q.q}</span></div>`;
+    if(!a.correct){
+      const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
+      html += `<div class="answer-detail">
+        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="rightans">Jawapan betul:</span> ${a.q.correct}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+    breakdown.appendChild(div);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  sfxClick();
+  resultArea.style.display = 'none';
+  startCard.style.display = 'block';
+});
+document.getElementById('homeBtn').addEventListener('click', ()=>{
+  window.location.href = 'english-latihan-hub.html';
+});
+</script>
+</body>
+</html>

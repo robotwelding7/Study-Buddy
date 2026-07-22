@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FBFDFF">
+<link rel="manifest" href='data:application/manifest+json,{"name":"English Exam","short_name":"EngExam","display":"fullscreen","orientation":"portrait","background_color":"%23FBFDFF","theme_color":"%23FBFDFF","start_url":"."}'>
+<title>English — Examination Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1E2A4A;--ink-soft:#5A6785;--paper:#FBFDFF;--grid:#DCE8F7;--margin-red:#F0857A;--pen-red:#E8503A;--tick-green:#2FA45C;--gold:#D4A017;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;color:var(--ink);font-family:'Nunito',system-ui,sans-serif;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;position:relative;}
+body::before{content:'';position:fixed;top:0;bottom:0;left:34px;width:2px;background:var(--margin-red);opacity:.7;z-index:0;}
+#app{position:relative;max-width:580px;margin:0 auto;padding:16px 14px 40px;z-index:1;}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer;font-family:inherit;}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.home-eyebrow{font-family:'Fredoka';font-size:14px;font-weight:600;color:var(--pen-red);letter-spacing:1.5px;text-transform:uppercase;}
+h1.home-title{font-family:'Fredoka';font-size:34px;font-weight:700;margin:4px 0 6px;line-height:1.1;}
+.home-sub{font-weight:700;color:var(--ink-soft);font-size:14px;margin-bottom:20px;}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;}
+.lang-toggle{display:inline-flex;border:2px solid var(--ink);border-radius:99px;overflow:hidden;}
+.lang-toggle button{font-family:'Fredoka';font-size:13px;font-weight:700;padding:5px 12px;border:none;background:transparent;color:var(--ink);}
+.lang-toggle button.active{background:var(--ink);color:#fff;}
+.fs-btn{font-size:17px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);padding:3px 8px;}
+.darjah-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.darjah-btn{border-radius:18px;padding:16px 12px;text-align:center;border-width:3px;border-style:solid;background:#fff;}
+.darjah-label{font-family:'Fredoka';font-size:20px;font-weight:700;}
+.darjah-info{font-size:12px;font-weight:800;color:var(--ink-soft);margin-top:4px;}
+.darjah-score{font-size:13px;font-weight:800;margin-top:6px;}
+
+/* EXAM HEADER */
+.exam-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+.exam-header .school{font-size:13px;font-weight:800;color:var(--ink-soft);letter-spacing:.5px;}
+.exam-header .subj{font-family:'Fredoka';font-size:22px;font-weight:700;margin:4px 0 2px;}
+.exam-header .meta{font-size:13px;font-weight:800;color:var(--ink-soft);}
+.exam-header .name-row{display:flex;gap:12px;margin-top:10px;font-size:13px;font-weight:800;}
+.exam-header .name-field{flex:1;border-bottom:2px solid var(--ink);padding-bottom:2px;}
+
+/* TIMER BAR */
+.timer-strip{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #B7C6E2;border-radius:12px;padding:8px 14px;margin-bottom:14px;}
+.timer-strip .tlabel{font-family:'Fredoka';font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+.tbar-wrap{flex:1;height:10px;background:#E7EEF9;border-radius:99px;overflow:hidden;}
+.tbar{height:100%;border-radius:99px;background:var(--tick-green);transition:width 1s linear,background .3s;}
+.tnum{font-family:'Fredoka';font-weight:700;font-size:15px;min-width:42px;text-align:right;}
+
+/* SECTION HEADER */
+.section-head{background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;margin:18px 0 12px;display:flex;justify-content:space-between;align-items:center;}
+.section-head .sname{font-family:'Fredoka';font-size:17px;font-weight:700;}
+.section-head .smarks{font-size:13px;font-weight:800;opacity:.85;}
+.section-instr{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:14px;line-height:1.5;}
+
+/* QUESTION CARDS */
+.qblock{background:#fff;border-radius:16px;border:2px solid #DCE8F7;padding:16px;margin-bottom:12px;animation:fadeIn .25s;}
+.qblock.answered-correct{border-color:var(--tick-green);}
+.qblock.answered-wrong{border-color:var(--pen-red);}
+.qnum{font-family:'Fredoka';font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+.qtext{font-size:16px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+.qtable{width:100%;border-collapse:collapse;font-size:15px;font-weight:800;margin:8px 0 12px;}
+.qtable th{background:#E7EEF9;padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qtable td{padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qgrid{margin:8px 0 12px;padding:12px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qscene{margin:8px 0 12px;padding:16px;background:#FFF9E9;border:2px solid #E9DFB8;border-radius:8px;text-align:center;}
+.qscene-icons{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.qscene-label{margin-top:6px;font-size:11px;font-weight:700;color:#8A6D1D;}
+.qgrid-row{display:flex;gap:6px;justify-content:center;margin-bottom:6px;}
+.qgrid-row:last-child{margin-bottom:0;}
+.qgrid-icon{font-size:22px;line-height:1;}
+.qgrid-label{text-align:center;font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;}
+.qchart{margin:8px 0 12px;padding:14px 10px 6px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qchart-bars{display:flex;align-items:flex-end;justify-content:space-around;height:110px;gap:10px;}
+.qchart-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;}
+.qchart-bar-val{font-size:11px;font-weight:800;margin-bottom:3px;}
+.qchart-bar{width:100%;max-width:38px;background:#5B8DEF;border-radius:4px 4px 0 0;}
+.qchart-bar-label{font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;text-align:center;}
+.name-input-wrap{margin:4px 0 16px;}
+.name-input-label{display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:5px;}
+.name-input{width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;font-weight:700;border:2px solid var(--grid);border-radius:8px;background:#fff;color:var(--ink);font-family:'Nunito',sans-serif;}
+.name-input:focus{outline:none;border-color:#2F6FE4;}
+.hof-wrap{margin:18px 0;padding:14px;background:#FBF8EE;border:2px solid #E9DFB8;border-radius:12px;}
+.hof-title{display:flex;align-items:center;gap:6px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#8A6D1D;margin-bottom:10px;}
+.hof-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dotted #E9DFB8;font-size:13px;}
+.hof-row:last-child{border-bottom:none;}
+.hof-rank{width:20px;font-weight:800;color:var(--ink-soft);text-align:center;flex:0 0 auto;}
+.hof-row.top1 .hof-rank{color:#D4A017;}
+.hof-name{flex:1;font-weight:800;color:var(--ink);}
+.hof-meta{font-size:10.5px;color:var(--ink-soft);font-weight:600;}
+.hof-pct{font-weight:800;color:#2F6FE4;}
+.hof-row.mine{background:#FFF6DC;border-radius:6px;padding:7px 6px;margin:0 -6px;}
+.qinfo{background:#F0F4FF;border:2px solid #B7C6E2;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+
+/* MCQ OPTIONS */
+.mcq-opts{display:grid;gap:8px;}
+.mcq-opt{font-size:15px;font-weight:800;text-align:left;padding:11px 14px;border-radius:12px;border:2px solid #B7C6E2;background:#fff;color:var(--ink);box-shadow:0 2px 0 #C9D4E8;display:flex;align-items:flex-start;gap:10px;}
+.mcq-opt .opt-label{font-family:'Fredoka';font-size:15px;font-weight:700;color:var(--ink-soft);min-width:20px;}
+.mcq-opt.selected{border-color:#2F6FE4;background:#E3EDFF;box-shadow:0 2px 0 #2F6FE4;}
+.mcq-opt.correct{border-color:var(--tick-green);background:#E8F6EC;box-shadow:0 2px 0 var(--tick-green);}
+.mcq-opt.wrong{border-color:var(--pen-red);background:#FDEAE7;box-shadow:0 2px 0 var(--pen-red);}
+.mcq-opt:disabled{cursor:default;}
+
+/* SHORT ANSWER */
+.short-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.short-input{font-family:'Fredoka';font-size:22px;font-weight:700;width:100px;text-align:center;border:3px solid #B7C6E2;border-radius:10px;padding:8px 4px;background:#fff;color:var(--ink);}
+.short-input:focus{outline:none;border-color:#2F6FE4;}
+.short-input.correct{border-color:var(--tick-green);background:#E8F6EC;color:var(--tick-green);}
+.short-input.wrong{border-color:var(--pen-red);background:#FDEAE7;color:var(--pen-red);}
+.short-unit{font-size:15px;font-weight:800;color:var(--ink-soft);}
+.long-answer{font-family:'Nunito',sans-serif;font-size:16px;font-weight:600;width:100%;box-sizing:border-box;min-height:70px;line-height:1.5;border:3px solid #B7C6E2;border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);resize:vertical;}
+.long-answer:focus{outline:none;border-color:#2F6FE4;}
+.long-answer.correct{border-color:#2F7A4F;background:#F1FBF4;}
+.long-answer.wrong{border-color:#D9534F;background:#FBF0F0;}
+.long-hint{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;}
+
+/* FEEDBACK */
+.fb-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;font-weight:800;}
+.fb-tick{font-size:20px;}
+.fb-why{color:var(--ink-soft);}
+.fb-correct-ans{color:var(--pen-red);}
+.claim-btn{margin-top:6px;font-family:"Fredoka",sans-serif;font-size:12.5px;font-weight:600;padding:5px 12px;border:2px solid #2F7A4F;border-radius:16px;background:#fff;color:#2F7A4F;cursor:pointer;}
+.claim-btn:active{background:#2F7A4F;color:#fff;}
+.claim-done{margin-top:6px;font-size:12px;font-weight:800;color:#2F7A4F;}
+.fb-partial{color:#C68A00;}
+.fb-model{margin-top:4px;font-size:12.5px;font-weight:700;color:#2F7A4F;line-height:1.4;}
+.fb-row{flex-wrap:wrap;}
+
+/* NAV BUTTONS */
+.nav-bar{display:flex;gap:10px;margin:20px 0 10px;}
+.nav-btn{flex:1;font-family:'Fredoka';font-size:18px;font-weight:700;padding:13px 0;border-radius:14px;border:3px solid;background:#fff;}
+.submit-btn{width:100%;font-family:'Fredoka';font-size:20px;font-weight:700;padding:15px 0;border-radius:16px;border:none;background:#1E2A4A;color:#fff;margin-top:16px;box-shadow:0 4px 0 #0D1520;}
+.back-btn{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:6px 0;margin-bottom:4px;}
+
+/* RESULTS */
+.result-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:20px 16px;text-align:center;margin-bottom:16px;}
+.result-grade{font-family:'Fredoka';font-size:52px;font-weight:700;line-height:1;}
+.result-pct{font-family:'Fredoka';font-size:22px;font-weight:600;color:var(--ink-soft);}
+.result-band{display:inline-block;font-family:'Fredoka';font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;border-radius:99px;padding:4px 16px;margin:8px 0;}
+.result-breakdown{background:#fff;border:2px solid #DCE8F7;border-radius:14px;padding:14px 16px;margin-bottom:14px;}
+.rb-row{display:flex;justify-content:space-between;font-size:14px;font-weight:800;padding:6px 0;border-bottom:1px solid #E7EEF9;}
+.rb-row:last-child{border-bottom:none;}
+.result-review{margin-bottom:14px;}
+.rq{background:#fff;border:2px solid #DCE8F7;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.rq .rq-num{font-family:'Fredoka';font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
+.rq .rq-q{font-size:14px;font-weight:800;line-height:1.5;margin-bottom:6px;}
+.rq .rq-ans{font-size:13px;font-weight:800;}
+.rq.rq-wrong{border-color:var(--pen-red);}
+.rq.rq-correct{border-color:var(--tick-green);}
+.res-btns{display:grid;gap:10px;margin-top:16px;}
+.big-btn{font-family:'Fredoka';font-size:19px;font-weight:700;padding:14px 0;border-radius:16px;border-width:3px;border-style:solid;}
+.home-btn2{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:8px;}
+.star-dim{filter:grayscale(1) opacity(.35);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ============================================================
+// EXAM PAPERS DATA
+// ============================================================
+var PAPERS = {
+ms: {
+1: {
+  label:'Darjah 1', time:75, totalMarks:22,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:7, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct article: ___ apple is red.',opts:['A','An','The','No article needed'],a:1,m:1},
+    {sec:'A',q:'Choose the correct article: I have ___ cat.',opts:['a','an','the','no article needed'],a:0,m:1},
+    {sec:'A',q:'\'Book\' is what type of noun?',opts:['Common noun','Proper noun','Pronoun','Adjective'],a:0,m:1},
+    {sec:'A',q:'\'Ali\' is what type of noun?',opts:['Common noun','Proper noun','Pronoun','Verb'],a:1,m:1},
+    {sec:'A',q:'Choose the correct form: I ___ a student.',opts:['am','is','are','be'],a:0,m:1},
+    {sec:'A',q:'Choose the correct form: She ___ happy.',opts:['am','is','are','be'],a:1,m:1},
+    {sec:'A',q:'Choose the correct form: They ___ friends.',opts:['am','is','are','be'],a:2,m:1},
+    {sec:'A',q:'Choose the correct form: We ___ at school.',opts:['am','is','are','be'],a:2,m:1},
+    {sec:'A',q:'Choose the correct verb: I ___ to school every day.',opts:['go','goes','going','gone'],a:0,m:1},
+    {sec:'A',q:'Choose the correct verb: She ___ to school every day.',opts:['go','goes','going','gone'],a:1,m:1},
+    {sec:'A',q:'Which word rhymes with \'cat\'?',opts:['hat','dog','sun','tree'],a:0,m:1},
+    {sec:'A',q:'Which word rhymes with \'sun\'?',opts:['fun','cat','dog','book'],a:0,m:1},
+    {sec:'A',q:'Choose the correct plural: one dog, two ___',opts:['dogs','dog','doges','dogies'],a:0,m:1},
+    {sec:'A',q:'Choose the correct plural: one box, two ___',opts:['boxs','boxes','box','boxies'],a:1,m:1},
+    {sec:'A',q:'Which word means the opposite of \'big\'?',opts:['small','tall','fast','happy'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Write the correct article: I saw ___ elephant at the zoo.',a:'an',m:1,unit:''},
+    {sec:'B',q:'Change to plural: one chair, two ___',a:'chairs',m:1,unit:''},
+    {sec:'B',q:'Fill in the blank with \'am/is/are\': He ___ my brother.',a:'is',m:1,unit:''},
+    {sec:'B',q:'Write a simple sentence using the word \'happy\'.',a:'(example) I am happy.',m:2,unit:''},
+    {sec:'B',q:'Write the opposite of \'hot\'.',a:'cold',m:2,unit:''},
+  ]
+},
+2: {
+  label:'Darjah 2', time:75, totalMarks:22,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:7, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct verb: My mother ___ breakfast every morning.',opts:['cook','cooks','cooking','cooked'],a:1,m:1},
+    {sec:'A',q:'Choose the correct verb: My friends ___ football after school.',opts:['play','plays','playing','played'],a:0,m:1},
+    {sec:'A',q:'Choose the correct plural: one child, two ___',opts:['childs','children','childes','child'],a:1,m:1},
+    {sec:'A',q:'Choose the correct plural: one foot, two ___',opts:['foots','feet','footes','foot'],a:1,m:1},
+    {sec:'A',q:'The cat is ___ the table. (on top of)',opts:['on','under','behind','in'],a:0,m:1},
+    {sec:'A',q:'The ball is ___ the box. (inside)',opts:['on','under','in','behind'],a:2,m:1},
+    {sec:'A',q:'The dog is ___ the tree. (at the back of)',opts:['in','on','behind','under'],a:2,m:1},
+    {sec:'A',q:'The book is ___ the table. (below)',opts:['on','under','in','behind'],a:1,m:1},
+    {sec:'A',q:'Which sentence is grammatically correct?',opts:['She likes reading books.','She like reading books.','She liking reading books.','She liked reading books now.'],a:0,m:1},
+    {sec:'A',q:'Choose the sentence with correct grammar.',opts:['They plays in the park.','They play in the park.','They playing in the park.','They played in the park now.'],a:1,m:1},
+    {sec:'A',q:'Yesterday, I ___ to the market. (past tense of \'go\')',opts:['go','goes','went','going'],a:2,m:1},
+    {sec:'A',q:'Yesterday, she ___ a cake. (past tense of \'bake\')',opts:['bake','bakes','baked','baking'],a:2,m:1},
+    {sec:'A',q:'Last night, we ___ a movie. (past tense of \'watch\')',opts:['watch','watches','watched','watching'],a:2,m:1},
+    {sec:'A',q:'Choose the correct plural: one mouse, two ___',opts:['mouses','mice','mices','mouse'],a:1,m:1},
+    {sec:'A',q:'Choose the correct plural: one tooth, two ___',opts:['tooths','teeth','toothes','tooth'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Fill in the blank with the correct preposition: The keys are ___ the drawer. (inside)',a:'in',m:1,unit:''},
+    {sec:'B',q:'Write the plural of \'baby\'.',a:'babies',m:1,unit:''},
+    {sec:'B',q:'Change to past tense: \'I play football.\'',a:'I played football.',m:2,unit:''},
+    {sec:'B',q:'Write a sentence describing where your school bag is (use a preposition of place).',a:'(example) My school bag is under the table.',m:2,unit:''},
+    {sec:'B',q:'Write the past tense of \'eat\'.',a:'ate',m:1,unit:''},
+  ]
+},
+3: {
+  label:'Darjah 3', time:75, totalMarks:22,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:7, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct past tense: I ___ my homework yesterday. (finish)',opts:['finish','finishes','finished','finishing'],a:2,m:1},
+    {sec:'A',q:'Choose the correct past tense: She ___ the door. (close)',opts:['close','closes','closed','closing'],a:2,m:1},
+    {sec:'A',q:'Choose the correct pronoun: ___ is my sister. (referring to a girl)',opts:['He','She','It','They'],a:1,m:1},
+    {sec:'A',q:'Choose the correct pronoun: ___ is a book. (referring to an object)',opts:['He','She','It','They'],a:2,m:1},
+    {sec:'A',q:'Choose the correct pronoun: Ali and Abu are friends. ___ play together.',opts:['He','She','It','They'],a:3,m:1},
+    {sec:'A',q:'___ is your name? (asking for a name)',opts:['What','Where','When','Who'],a:0,m:1},
+    {sec:'A',q:'___ do you live? (asking for a place)',opts:['What','Where','When','Who'],a:1,m:1},
+    {sec:'A',q:'___ is your birthday? (asking for a time/date)',opts:['What','Where','When','Who'],a:2,m:1},
+    {sec:'A',q:'___ is that boy? (asking about a person)',opts:['What','Where','When','Who'],a:3,m:1},
+    {sec:'A',q:'Choose the correct past tense: We ___ the movie last night. (watch)',opts:['watch','watched','watches','watching'],a:1,m:1},
+    {sec:'A',q:'Choose the correct pronoun: This is my pen. ___ is blue.',opts:['He','She','It','They'],a:2,m:1},
+    {sec:'A',q:'___ many apples do you have? (asking about quantity)',opts:['How','What','Where','Who'],a:0,m:1},
+    {sec:'A',q:'Choose the correct past tense: They ___ to the park. (walk)',opts:['walk','walks','walked','walking'],a:2,m:1},
+    {sec:'A',q:'Choose the correct pronoun: My parents love me. I love ___.',opts:['they','them','he','it'],a:1,m:1},
+    {sec:'A',q:'___ is this pencil? (asking who owns it)',opts:['Whose','Who','What','Where'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Change to past tense: \'I clean my room.\'',a:'I cleaned my room.',m:1,unit:''},
+    {sec:'B',q:'Fill in the blank with the correct question word: ___ is the capital of Malaysia? (asking about a place/thing)',a:'What',m:1,unit:''},
+    {sec:'B',q:'Rewrite using a pronoun: \'Aminah is reading a book. Aminah likes the book.\'',a:'Aminah is reading a book. She likes it.',m:2,unit:''},
+    {sec:'B',q:'Write a question asking where someone lives.',a:'(example) Where do you live?',m:2,unit:''},
+    {sec:'B',q:'Change to past tense: \'She helps her mother.\'',a:'She helped her mother.',m:1,unit:''},
+  ]
+},
+4: {
+  label:'Darjah 4', time:75, totalMarks:23,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:8, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct sentence: Right now, she ___ her homework.',opts:['do','does','is doing','did'],a:2,m:1},
+    {sec:'A',q:'Choose the correct sentence: Right now, they ___ football.',opts:['play','plays','are playing','played'],a:2,m:1},
+    {sec:'A',q:'Choose the comparative form: This book is ___ than that one. (interesting)',opts:['interesting','more interesting','most interesting','interestinger'],a:1,m:1},
+    {sec:'A',q:'Choose the superlative form: This is the ___ book in the library. (interesting)',opts:['interesting','more interesting','most interesting','interestinger'],a:2,m:1},
+    {sec:'A',q:'Choose the comparative form: Ali is ___ than Abu. (tall)',opts:['tall','taller','tallest','more tall'],a:1,m:1},
+    {sec:'A',q:'Choose the superlative form: Ali is the ___ boy in class. (tall)',opts:['tall','taller','tallest','more tall'],a:2,m:1},
+    {sec:'A',q:'Choose the correct conjunction: I like tea ___ coffee.',opts:['and','but','because','so'],a:0,m:1},
+    {sec:'A',q:'Choose the correct conjunction: I was tired, ___ I went to sleep.',opts:['and','but','because','so'],a:3,m:1},
+    {sec:'A',q:'Choose the correct conjunction: I like her ___ she is kind.',opts:['and','but','because','so'],a:2,m:1},
+    {sec:'A',q:'Choose the correct conjunction: I wanted to go out, ___ it was raining.',opts:['and','but','because','so'],a:1,m:1},
+    {sec:'A',q:'Choose the correct sentence: At the moment, the baby ___ .',opts:['sleep','sleeps','is sleeping','slept'],a:2,m:1},
+    {sec:'A',q:'Choose the comparative form: This bag is ___ than that one. (heavy)',opts:['heavy','heavier','heaviest','more heavy'],a:1,m:1},
+    {sec:'A',q:'Choose the superlative form: Mount Everest is the ___ mountain in the world. (high)',opts:['high','higher','highest','more high'],a:2,m:1},
+    {sec:'A',q:'Choose the correct sentence: Look! The dog ___ .',opts:['run','runs','is running','ran'],a:2,m:1},
+    {sec:'A',q:'Choose the correct conjunction: She studied hard ___ she could pass the exam.',opts:['and','but','because','so'],a:2,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Change to present continuous: \'He reads a book.\' (happening now)',a:'He is reading a book.',m:2,unit:''},
+    {sec:'B',q:'Write the comparative form of \'big\'.',a:'bigger',m:1,unit:''},
+    {sec:'B',q:'Write the superlative form of \'fast\'.',a:'fastest',m:1,unit:''},
+    {sec:'B',q:'Combine using a conjunction: \'It was raining. We stayed at home.\'',a:'It was raining, so we stayed at home.',m:2,unit:''},
+    {sec:'B',q:'Write a sentence describing what you are doing right now (use present continuous).',a:'(example) I am writing a sentence.',m:2,unit:''},
+  ]
+},
+5: {
+  label:'Darjah 5', time:75, totalMarks:26,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:11, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct sentence: While I ___ dinner, the phone rang.',opts:['cook','cooked','was cooking','cooks'],a:2,m:1},
+    {sec:'A',q:'Choose the correct sentence: They ___ football when it started to rain.',opts:['play','played','were playing','plays'],a:2,m:1},
+    {sec:'A',q:'Choose the correct modal verb: You ___ finish your homework before playing.',opts:['can','must','may','would'],a:1,m:1},
+    {sec:'A',q:'Choose the correct modal verb: ___ I borrow your pen, please?',opts:['Must','Should','May','Would'],a:2,m:1},
+    {sec:'A',q:'Choose the correct modal verb: She ___ swim very well.',opts:['can','must','should','would'],a:0,m:1},
+    {sec:'A',q:'Choose the correct modal verb: You ___ not run near the pool. (prohibition)',opts:['can','must','should','would'],a:1,m:1},
+    {sec:'A',q:'Direct speech: Ali said, "I am tired." Indirect speech: Ali said that he ___ tired.',opts:['is','was','am','were'],a:1,m:1},
+    {sec:'A',q:'Direct speech: She said, "I like ice cream." Indirect speech: She said that she ___ ice cream.',opts:['like','likes','liked','liking'],a:2,m:1},
+    {sec:'A',q:'Choose the correct sentence: This time yesterday, I ___ TV.',opts:['watch','watched','was watching','watches'],a:2,m:1},
+    {sec:'A',q:'Choose the correct modal verb: We ___ help each other.',opts:['should','must not','can\'t','won\'t'],a:0,m:1},
+    {sec:'A',q:'Choose the correct sentence: They ___ dinner when I called.',opts:['have','had','were having','has'],a:2,m:1},
+    {sec:'A',q:'Choose the correct modal verb: Students ___ wear their uniform to school.',opts:['may','must','would','could'],a:1,m:1},
+    {sec:'A',q:'Direct speech: He said, "I will come tomorrow." Indirect speech: He said that he ___ come the next day.',opts:['will','would','is','was'],a:1,m:1},
+    {sec:'A',q:'Choose the correct sentence: While she ___ , I was cleaning the house.',opts:['sleep','slept','was sleeping','sleeps'],a:2,m:1},
+    {sec:'A',q:'Choose the correct modal verb: ___ you help me with this bag?',opts:['Must','Could','Should','Shall'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Change to past continuous: \'I read a book at 8pm yesterday.\'',a:'I was reading a book at 8pm yesterday.',m:2,unit:''},
+    {sec:'B',q:'Write a sentence using the modal verb \'must\' to show an obligation.',a:'(example) You must wear a seatbelt.',m:2,unit:''},
+    {sec:'B',q:'Change to indirect speech: She said, "I am happy."',a:'She said that she was happy.',m:3,unit:''},
+    {sec:'B',q:'Write a sentence using the modal verb \'can\' to show ability.',a:'(example) I can swim.',m:1,unit:''},
+    {sec:'B',q:'Change to indirect speech: He said, "I like football."',a:'He said that he liked football.',m:3,unit:''},
+  ]
+},
+6: {
+  label:'Darjah 6', time:80, totalMarks:30,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:15, type:'short'},
+  questions:[
+    {sec:'A',q:'Choose the correct future tense: Tomorrow, I ___ visit my grandmother.',opts:['will','would','was','did'],a:0,m:1},
+    {sec:'A',q:'Choose the correct future tense: We ___ going to the beach next week.',opts:['is','am','are','was'],a:2,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'The teacher teaches the students.\'',opts:['The students are taught by the teacher.','The teacher is taught by the students.','The students teach the teacher.','The teacher teaches by the students.'],a:0,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'Ali wrote the letter.\'',opts:['The letter was written by Ali.','Ali was written by the letter.','The letter wrote Ali.','Ali writes the letter.'],a:0,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'They built the house.\'',opts:['The house was built by them.','They were built by the house.','The house builds them.','They build the house by.'],a:0,m:1},
+    {sec:'A',q:'Reported speech: She said, "I am going home." → She said that she ___ going home.',opts:['is','was','will be','has been'],a:1,m:1},
+    {sec:'A',q:'Reported speech: He said, "I have finished my work." → He said that he ___ finished his work.',opts:['have','has','had','was'],a:2,m:1},
+    {sec:'A',q:'Choose the correct future tense: They ___ arrive at noon.',opts:['will','would','was','did'],a:0,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'The chef cooks the meal.\'',opts:['The meal is cooked by the chef.','The chef is cooked by the meal.','The meal cooks the chef.','The chef cooked by the meal.'],a:0,m:1},
+    {sec:'A',q:'Reported speech: They said, "We will help you." → They said that they ___ help us.',opts:['will','would','was','are'],a:1,m:1},
+    {sec:'A',q:'Choose the correct future tense: I think it ___ rain tomorrow.',opts:['will','would','was','did'],a:0,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'Someone stole my bag.\'',opts:['My bag was stolen.','My bag stole someone.','Someone was stolen by my bag.','My bag steals someone.'],a:0,m:1},
+    {sec:'A',q:'Reported speech: She said, "I saw the movie." → She said that she ___ seen the movie.',opts:['have','has','had','was'],a:2,m:1},
+    {sec:'A',q:'Choose the correct future tense with \'going to\': She ___ going to bake a cake.',opts:['is','am','are','was'],a:0,m:1},
+    {sec:'A',q:'Choose the passive voice of: \'The company will launch a new product.\'',opts:['A new product will be launched by the company.','A new product will launch the company.','The company will be launched by a new product.','A new product launches the company.'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Change to future tense: \'I go to Penang.\' (planned for next month)',a:'I will go to Penang next month.',m:2,unit:''},
+    {sec:'B',q:'Change to passive voice: \'The gardener waters the plants.\'',a:'The plants are watered by the gardener.',m:3,unit:''},
+    {sec:'B',q:'Change to reported speech: He said, "I am busy today."',a:'He said that he was busy that day.',m:3,unit:''},
+    {sec:'B',q:'Change to passive voice: \'The workers built the bridge.\'',a:'The bridge was built by the workers.',m:3,unit:''},
+    {sec:'B',q:'Write a summary in ONE sentence of: \'Reading helps us gain knowledge. It also helps us relax and enjoy our free time.\'',a:'(example) Reading gives us knowledge and helps us relax.',m:4,unit:''},
+  ]
+}
+}
+};
+
+// ============================================================
+// STATE
+// ============================================================
+var S={screen:'home',lang:'ms',darjah:null,paper:null,answers:{},secView:'A',submitted:false,timeLeft:0,playerName:'',hof:[],overrides:{}};
+function loadSave(){
+  try{var r=localStorage.getItem('engexam-save');if(r){var d=JSON.parse(r);S.lang=d.lang||'ms';S.scores=d.scores||{};S.playerName=d.playerName||'';S.hof=d.hof||[];}}catch(e){}
+  if(!S.scores)S.scores={};
+  if(!S.hof)S.hof=[];
+}
+function persist(){
+  try{localStorage.setItem('engexam-save',JSON.stringify({lang:S.lang,scores:S.scores,playerName:S.playerName,hof:S.hof}));}catch(e){}
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+var TIMER=null;
+function stopTimer(){if(TIMER){clearInterval(TIMER);TIMER=null;}}
+function startTimer(mins){
+  stopTimer();
+  S.timeLeft=mins*60;
+  updateTimerUI();
+  TIMER=setInterval(function(){
+    S.timeLeft--;
+    updateTimerUI();
+    if(S.timeLeft<=0){stopTimer();autoSubmit();}
+  },1000);
+}
+function updateTimerUI(){
+  var bar=document.getElementById('tbar'),num=document.getElementById('tnum');
+  if(!bar||!num)return;
+  var paper=PAPERS[S.lang][S.darjah];
+  var total=paper.time*60;
+  var pct=Math.max(0,(S.timeLeft/total)*100);
+  bar.style.width=pct+'%';
+  bar.style.background=S.timeLeft<=120?'var(--pen-red)':S.timeLeft<=300?'#E8A21D':'var(--tick-green)';
+  var m=Math.floor(S.timeLeft/60),sc=S.timeLeft%60;
+  num.textContent=(m<10?'0':'')+m+':'+(sc<10?'0':'')+sc;
+  num.style.color=S.timeLeft<=120?'var(--pen-red)':'var(--ink-soft)';
+}
+function autoSubmit(){submitExam(true);}
+
+// ============================================================
+// SOUNDS
+// ============================================================
+var actx=null;
+function getCtx(){try{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx;}catch(e){return null;}}
+function tone(c,f,st,dur,tp,v){var o=c.createOscillator(),g=c.createGain();o.type=tp||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.2,c.currentTime+st);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+st+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+st);o.stop(c.currentTime+st+dur+0.05);}
+function playCorrect(){var c=getCtx();if(!c)return;tone(c,660,0,.12,'sine');tone(c,880,.11,.18,'sine');}
+function playWrong(){var c=getCtx();if(!c)return;tone(c,200,0,.3,'sawtooth',.15);}
+function playDone(){var c=getCtx();if(!c)return;[523,659,784,1047].forEach(function(f,i){tone(c,f,i*.15,.25,'sine',.18);});}
+function playSubmit(){var c=getCtx();if(!c)return;tone(c,440,0,.15,'sine',.15);tone(c,554,.1,.2,'sine',.15);}
+function playTopScore(){var c=getCtx();if(!c)return;[523,659,784,1047,1319].forEach(function(f,i){tone(c,f,i*.12,.3,'sine',.2);});}
+
+// ============================================================
+// HELPERS
+// ============================================================
+var app=document.getElementById('app');
+function starsHTML(n,sz){var h='';for(var i=1;i<=3;i++)h+='<span style="font-size:'+sz+'px" class="'+(i<=n?'':'star-dim')+'">\u2B50</span>';return h;}
+function getGrade(pct){
+  if(pct>=90)return{g:'A+',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=80)return{g:'A',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=70)return{g:'B',c:'#2F6FE4',band:'Kepujian'};
+  if(pct>=60)return{g:'C',c:'#8A4FD3',band:'Lulus'};
+  if(pct>=50)return{g:'D',c:'#E88A2F',band:'Lulus'};
+  return{g:'E',c:'var(--pen-red)',band:'Tidak Lulus'};
+}
+function qKey(qi){return 'q'+qi;}
+
+// ============================================================
+// LENIENT ANSWER MATCHING (for Bahagian B / Section B structured answers)
+// ============================================================
+function normAns(s){
+  return (s||'').toString().trim().toLowerCase()
+    .replace(/[.,!?;:'"\u2018\u2019\u201c\u201d()]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function wordSim(a,b){
+  var wa=a.split(' ').filter(Boolean), wb=b.split(' ').filter(Boolean);
+  if(wa.length===0||wb.length===0) return 0;
+  var pool={}; wb.forEach(function(w){pool[w]=(pool[w]||0)+1;});
+  var matches=0;
+  wa.forEach(function(w){ if(pool[w]>0){matches++; pool[w]--;} });
+  return matches/Math.max(wa.length,wb.length);
+}
+function fuzzyMatch(g,c){
+  if(g===c) return true;
+  var gWords=g.split(' ').filter(Boolean), cWords=c.split(' ').filter(Boolean);
+  if(gWords.length===1 && cWords.length===1) return g===c;
+  if(g.length>=3 && c.length>=3 && gWords.length<=2 && cWords.length<=2 && (g.indexOf(c)!==-1 || c.indexOf(g)!==-1)) return true;
+  return wordSim(g,c)>=0.88;
+}
+function secBMarks(qi, given, q){
+  // returns actual marks earned for a section B question (supports override + partial)
+  if(S.overrides && S.overrides[qKey(qi)]) return q.m;
+  if(isSecBCorrect(given, q.a)) return q.m;
+  if(q.pk && given!=null && given.toString().trim()!==''){
+    var res=scoreByKeywords(given, q.pk, q.m);
+    if(res && res.marks>0) return res.marks;
+  }
+  return 0;
+}
+function scoreByKeywords(given, keywords, maxMarks){
+  if(!keywords || keywords.length===0) return null;
+  var g=(given||'').toString().toLowerCase().replace(/[.,!?;:()]/g,' ');
+  var matched=0;
+  keywords.forEach(function(kw){
+    var alts=kw.toLowerCase().split('|');
+    if(alts.some(function(a){return a.trim().length>0 && g.indexOf(a.trim())!==-1;})) matched++;
+  });
+  var frac=matched/keywords.length;
+  var marks=Math.ceil(frac*maxMarks);
+  return {matched:matched, total:keywords.length, marks:marks, full:(matched===keywords.length)};
+}
+function secBOK(qi, given, correctRaw){
+  if(S.overrides && S.overrides[qKey(qi)]) return true;
+  return isSecBCorrect(given, correctRaw);
+}
+function isSecBCorrect(given, correctRaw){
+  if(given==null) return false;
+  var g=normAns(given);
+  if(g==='') return false;
+  var raw=(correctRaw||'').toString();
+
+  var abMatch=raw.match(/\(a\)\s*(.*?)\s*\(b\)\s*(.*)/i);
+  if(abMatch){
+    var partA=normAns(abMatch[1]);
+    var partB=normAns(abMatch[2]);
+    var altsA=partA.split('/').map(normAns);
+    var altsB=partB.split('/').map(normAns);
+    var hasA=altsA.some(function(alt){return alt.length>0 && (g.indexOf(alt)!==-1 || fuzzyMatch(g,alt));});
+    var hasB=altsB.some(function(alt){return alt.length>0 && (g.indexOf(alt)!==-1 || fuzzyMatch(g,alt));});
+    return hasA && hasB;
+  }
+
+  if(raw.indexOf(';')!==-1){
+    var reqMatch=raw.match(/\(mana-mana\s*(\d+)[^)]*\)|\(any\s*(\d+)[^)]*\)/i);
+    var required=reqMatch?parseInt(reqMatch[1]||reqMatch[2],10):1;
+    var cleanRaw=raw.replace(/\(mana-mana\s*\d+[^)]*\)|\(any\s*\d+[^)]*\)/gi,'');
+    var alts=cleanRaw.split(';').map(normAns).filter(function(s){return s.length>0;});
+    var matched=0;
+    alts.forEach(function(alt){
+      if(g.indexOf(alt)!==-1 || fuzzyMatch(g,alt)) matched++;
+    });
+    return matched>=required;
+  }
+
+  var c=normAns(raw);
+  if(c==='') return false;
+  return fuzzyMatch(g,c);
+}
+
+
+// ============================================================
+// SIMPLE SVG ICON LIBRARY (consistent cross-device diagrams)
+// ============================================================
+var SVGICON = {
+  boy:'<svg viewBox="0 0 48 48" width="46" height="46"><circle cx="24" cy="13" r="7" fill="#F4C89B" stroke="#8A5A2B" stroke-width="1.5"/><path d="M17 12a7 7 0 0114 0" fill="#4A3520"/><rect x="17" y="21" width="14" height="16" rx="4" fill="#4C7BE1"/><rect x="19" y="36" width="4" height="9" fill="#333"/><rect x="25" y="36" width="4" height="9" fill="#333"/></svg>',
+  ball:'<svg viewBox="0 0 48 48" width="46" height="46"><circle cx="24" cy="24" r="16" fill="#fff" stroke="#333" stroke-width="2"/><polygon points="24,14 29,18 27,24 21,24 19,18" fill="#333"/><path d="M24 8v6M40 24h-6M8 24h6M24 40v-6" stroke="#333" stroke-width="1.5"/></svg>',
+  field:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="4" y="20" width="40" height="24" rx="2" fill="#6BBF59"/><rect x="4" y="20" width="40" height="4" fill="#7ED06B"/><rect x="20" y="10" width="2" height="12" fill="#8A5A2B"/><path d="M22 10h8v6h-8z" fill="#E14C4C"/></svg>',
+  elephant:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="22" cy="26" rx="16" ry="12" fill="#9AA5B1"/><circle cx="34" cy="20" r="9" fill="#9AA5B1"/><path d="M38 24q6 2 4 12" stroke="#9AA5B1" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="36" cy="18" r="1.5" fill="#333"/><rect x="12" y="36" width="4" height="7" fill="#9AA5B1"/><rect x="24" y="36" width="4" height="7" fill="#9AA5B1"/><path d="M26 22q-5-3-9 0" stroke="#7A8595" stroke-width="2" fill="none"/></svg>',
+  mouse:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="30" rx="9" ry="7" fill="#B0B0B0"/><circle cx="30" cy="26" r="5" fill="#B0B0B0"/><circle cx="27" cy="21" r="3" fill="#C8C8C8"/><circle cx="33" cy="21" r="3" fill="#C8C8C8"/><circle cx="31" cy="26" r="1" fill="#333"/><path d="M15 32q-6 1-8 5" stroke="#B0B0B0" stroke-width="2" fill="none"/></svg>',
+  cat:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="30" rx="11" ry="9" fill="#E8934A"/><circle cx="24" cy="18" r="8" fill="#E8934A"/><polygon points="17,12 15,5 22,10" fill="#E8934A"/><polygon points="31,12 33,5 26,10" fill="#E8934A"/><circle cx="21" cy="17" r="1.3" fill="#333"/><circle cx="27" cy="17" r="1.3" fill="#333"/><path d="M24 20l-1 2h2z" fill="#333"/><path d="M14 30q-5 2-7 6" stroke="#E8934A" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+  chair:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="14" y="8" width="4" height="34" fill="#8A5A2B"/><rect x="14" y="24" width="20" height="4" fill="#A56C34"/><rect x="30" y="24" width="4" height="18" fill="#8A5A2B"/><rect x="14" y="24" width="20" height="4" fill="#A56C34"/><rect x="16" y="38" width="16" height="4" fill="#8A5A2B"/></svg>',
+  stone:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M10 34q-2-10 8-14t18 4 2 14z" fill="#9098A1" stroke="#6B7280" stroke-width="1.5"/><path d="M18 26q4-3 8 0" stroke="#6B7280" stroke-width="1" fill="none"/></svg>',
+  water:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M24 6C16 18 12 24 12 30a12 12 0 0024 0c0-6-4-12-12-24z" fill="#4FA3E0" stroke="#2C7BB8" stroke-width="1.5"/><path d="M20 28a4 5 0 002 6" stroke="#BFE3F7" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  plant:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="22" y="26" width="4" height="16" fill="#5A8A3C"/><path d="M24 28q-10-2-12-12 10 0 12 8" fill="#6BBF59"/><path d="M24 24q10-3 12-13-10 0-12 9" fill="#7ED06B"/></svg>',
+  rabbit:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="32" rx="10" ry="8" fill="#D8CFC4"/><circle cx="24" cy="22" r="7" fill="#D8CFC4"/><ellipse cx="20" cy="10" rx="2.5" ry="7" fill="#D8CFC4"/><ellipse cx="28" cy="10" rx="2.5" ry="7" fill="#D8CFC4"/><circle cx="21" cy="21" r="1.2" fill="#333"/><circle cx="27" cy="21" r="1.2" fill="#333"/><circle cx="24" cy="24" r="1.3" fill="#E88" /></svg>',
+  eagle:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M24 20l-16-6 12 10z" fill="#6B4A2B"/><path d="M24 20l16-6-12 10z" fill="#6B4A2B"/><ellipse cx="24" cy="26" rx="6" ry="9" fill="#5A3A20"/><circle cx="24" cy="16" r="5" fill="#EFE8DC"/><polygon points="24,17 28,19 24,21" fill="#E0A020"/><circle cx="25" cy="15" r="1" fill="#333"/></svg>',
+  arrow:'<svg viewBox="0 0 48 48" width="30" height="46"><path d="M8 24h26M28 16l10 8-10 8" stroke="#555" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function renderScene(items){
+  var html='<div class="qscene"><div class="qscene-icons">';
+  items.forEach(function(key){
+    html+=(SVGICON[key]||('<span style="font-size:34px">'+key+'</span>'));
+  });
+  html+='</div><div class="qscene-label">Rajah</div></div>';
+  return html;
+}
+
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+  if(S.screen==='home')renderHome();
+  else if(S.screen==='exam')renderExam();
+  else if(S.screen==='hofview')renderHofView();
+  else renderResults();
+}
+
+function renderHofView(){
+  var isMS=S.lang==='ms';
+  var darjahs=['1','2','3','4','5','6'];
+  var labels=isMS?['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6']:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var sections='';
+  darjahs.forEach(function(d,i){
+    var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===d;}).sort(function(a,b){return b.pct-a.pct;});
+    var top5=ranked.slice(0,5);
+    var rows='';
+    if(top5.length===0){
+      rows='<div style="font-size:12.5px;color:var(--ink-soft);font-weight:700;padding:8px 0;text-align:center;">'+(isMS?'Belum ada rekod lagi':'No records yet')+'</div>';
+    } else {
+      top5.forEach(function(e,ri){
+        var rowCls='hof-row'+(ri===0?' top1':'');
+        var medal=ri===0?'\uD83C\uDFC6':(ri+1);
+        rows+='<div class="'+rowCls+'">'
+          +'<span class="hof-rank">'+medal+'</span>'
+          +'<span class="hof-name">'+e.name+'</span>'
+          +'<span class="hof-meta">'+e.date+'</span>'
+          +'<span class="hof-pct">'+e.pct+'%</span>'
+          +'</div>';
+      });
+    }
+    sections+='<div class="hof-wrap"><div class="hof-title" style="color:'+colors[i]+'">\uD83C\uDFC6 '+labels[i]+'</div>'+rows+'</div>';
+  });
+
+  app.innerHTML='<button class="back-btn" id="backHof">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Semua Darjah':'All Year Groups')+'</div>'
+    +'<h1 class="home-title">Hall of Fame</h1>'
+    +'</div>'
+    +'</div>'
+    +sections;
+
+  document.getElementById('backHof').onclick=function(){S.screen='home';render();};
+  }
+
+function renderHome(){
+
+  var isMS=true;
+  var darjahs=['1','2','3','4','5','6'];
+  var labels=['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6'];
+  var infos=darjahs.map(function(d){var p=PAPERS.ms[d];return p.time+' min • '+p.totalMarks+' markah';});
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var cards='';
+  darjahs.forEach(function(d,i){
+    var sc=S.scores&&S.scores[S.lang+d];
+    var scHTML=sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+isMS?'Skor terbaik: ':'Best: '+sc+'%</div>':'';
+    cards+='<button class="darjah-btn" data-d="'+d+'" style="border-color:'+colors[i]+';box-shadow:0 4px 0 '+colors[i]+'">'
+      +'<div class="darjah-label" style="color:'+colors[i]+'">'+labels[i]+'</div>'
+      +'<div class="darjah-info">'+infos[i]+'</div>'
+      +(sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+(isMS?'Skor: ':'Score: ')+sc+'%</div>':'')
+      +'</button>';
+  });
+  app.innerHTML='<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Buku Latihan Saya':'My Exercise Book')+'</div>'
+    +'<h1 class="home-title">'+'English'+'</h1>'
+    +'<div class="home-sub">'+(isMS?'Kertas Peperiksaan':'Examination Paper')+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:7px;align-items:flex-start">'
+    +'<button class="fs-btn" id="hofBtn" title="Hall of Fame">\uD83C\uDFC6</button>'
+    +'<button class="fs-btn" id="fs">\u26F6</button>'
+    +'</div></div>'
+    +'<div class="name-input-wrap">'
+    +'<label class="name-input-label">'+(isMS?'Nama pemain':'Player name')+'</label>'
+    +'<input type="text" id="playerName" class="name-input" maxlength="18" placeholder="'+(isMS?'contoh: Aiman':'e.g. Aiman')+'" value="'+(S.playerName||'')+'">'
+    +'</div>'
+    +'<div class="darjah-grid">'+cards+'</div>'
+    +'<p style="margin-top:18px;font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center">'+(isMS?'Pilih darjah untuk mulakan peperiksaan. Masa akan bermula!':'Pick your year group to start the exam. Timer starts immediately!')+'</p>'
+    +'<p style="margin-top:6px;font-size:11px;font-weight:700;color:#B9C2C8;text-align:center"><a href="javascript:void(0)" id="resetHof" style="color:#B9C2C8;">'+(isMS?'Set semula Hall of Fame':'Reset Hall of Fame')+'</a></p>';
+  var nameInput=document.getElementById('playerName');
+  nameInput.oninput=function(){S.playerName=nameInput.value;persist();};
+  app.querySelectorAll('[data-d]').forEach(function(b){
+    b.onclick=function(){
+      if(!S.playerName||!S.playerName.trim()){
+        nameInput.style.borderColor='var(--pen-red)';
+        nameInput.placeholder=isMS?'Isi nama dulu!':'Enter your name first!';
+        nameInput.focus();
+        return;
+      }
+      startExam(b.dataset.d);
+    };
+  });
+    document.getElementById('fs').onclick=function(){
+    try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}catch(e){}
+  };
+  document.getElementById('hofBtn').onclick=function(){S.screen='hofview';render();};
+  document.getElementById('resetHof').onclick=function(){
+    if(confirm(isMS?'Padam semua rekod Hall of Fame? Tindakan ini tidak boleh diundur.':'Clear all Hall of Fame records? This cannot be undone.')){
+      S.hof=[];
+      persist();
+      render();
+    }
+  };
+}
+
+function startExam(d){
+  S.darjah=d;
+  S.paper=PAPERS[S.lang][d];
+  S.answers={};
+  S.overrides={};
+  S.justAddedHofId=null;
+  S.secView='A';
+  S.submitted=false;
+  S.screen='exam';
+  render();
+  startTimer(S.paper.time);
+}
+
+function renderExam(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var qs=p.questions.filter(function(q){return q.sec===S.secView;});
+  var qOffset=S.secView==='B'?p.questions.filter(function(q){return q.sec==='A';}).length:0;
+  var secInfo=S.secView==='A'?p.secA:p.secB;
+  var answeredA=p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length;
+  var totalA=p.questions.filter(function(q){return q.sec==='A';}).length;
+  var answeredB=p.questions.filter(function(q,i){return q.sec==='B'&&S.answers[qKey(i)]!=null;}).length;
+  var totalB=p.questions.filter(function(q){return q.sec==='B';}).length;
+
+  var qHTML='';
+  qs.forEach(function(q,qi){
+    var globalIdx=qOffset+qi;
+    var ans=S.answers[qKey(globalIdx)];
+    var submitted=S.submitted;
+    var isCorrect=false,showFb=false;
+    if(submitted){
+      isCorrect=q.sec==='A'?(ans===q.a):(secBMarks(globalIdx,ans,q)===q.m);
+      showFb=true;
+    }
+    var qClass='qblock'+(submitted?(isCorrect?' answered-correct':' answered-wrong'):'');
+    var marksLabel=q.m>1?' ('+q.m+' '+(isMS?'markah':'marks')+')':"";
+    var inner='<div class="qnum">'+(isMS?'Soalan ':'Question ')+(globalIdx+1)+marksLabel+'</div>';
+    if(q.context){inner+='<div class="qinfo">'+q.context+'</div>';}
+    if(q.table){
+      inner+='<table class="qtable"><tr>';
+      q.table.headers.forEach(function(h){inner+='<th>'+h+'</th>';});
+      inner+='</tr>';
+      q.table.rows.forEach(function(r){inner+='<tr>';r.forEach(function(c){inner+='<td>'+c+'</td>';});inner+='</tr>';});
+      inner+='</table>';
+    }
+    if(q.grid){
+      inner+='<div class="qgrid">';
+      for(var gr=0; gr<q.grid.rows; gr++){
+        inner+='<div class="qgrid-row">';
+        for(var gc=0; gc<q.grid.cols; gc++){ inner+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+        inner+='</div>';
+      }
+      inner+='<div class="qgrid-label">'+q.grid.rows+' baris \u00d7 '+q.grid.cols+' setiap baris</div>';
+      inner+='</div>';
+    }
+    if(q.scene){
+      inner+=renderScene(q.scene);
+    }
+    if(q.chart){
+      var maxVal=Math.max.apply(null,q.chart.values);
+      inner+='<div class="qchart"><div class="qchart-bars">';
+      q.chart.values.forEach(function(v,vi){
+        var h=Math.round((v/maxVal)*90)+10;
+        inner+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+          +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+          +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+      });
+      inner+='</div></div>';
+    }
+    inner+='<div class="qtext">'+q.q.replace(/\n/g,'<br>')+'</div>';
+    if(q.sec==='A'){
+      inner+='<div class="mcq-opts">';
+      q.opts.forEach(function(opt,oi){
+        var cls='mcq-opt';
+        if(submitted){if(oi===q.a)cls+=' correct';else if(ans===oi)cls+=' wrong';}
+        else if(ans===oi)cls+=' selected';
+        inner+='<button class="'+cls+'" data-qi="'+globalIdx+'" data-oi="'+oi+'" '+(submitted?'disabled':'')+'>'+
+          '<span class="opt-label">'+['A','B','C','D'][oi]+'.</span><span>'+opt+'</span></button>';
+      });
+      inner+='</div>';
+      if(showFb){
+        inner+='<div class="fb-row"><span class="fb-tick">'+(isCorrect?'\u2705':'\u274C')+'</span>';
+        if(!isCorrect)inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct answer: ')+['A','B','C','D'][q.a]+'. '+q.opts[q.a]+'</span>';
+        else inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+'</span>';
+        inner+='</div>';
+      }
+    } else {
+      var inputCls='long-answer'+(submitted?(isCorrect?' correct':' wrong'):'');
+      var modelLen=(q.a||'').toString().length;
+      var rows=modelLen>120?5:(modelLen>60?4:(modelLen>25?3:2));
+      var safeAns=(ans!=null?ans:'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      inner+='<div class="short-wrap" style="display:block;">'
+        +'<div class="long-hint">'+(isMS?'Tulis jawapan anda:':'Write your answer:')+'</div>'
+        +'<textarea class="'+inputCls+'" rows="'+rows+'" '
+        +'data-qi="'+globalIdx+'" '+(submitted?'readonly':'')
+        +' placeholder="'+(isMS?'Taip jawapan di sini...':'Type your answer here...')+'">'+safeAns+'</textarea>'
+        +'</div>';
+      if(showFb){
+        var earnedMarks=secBMarks(globalIdx,ans,q);
+        var isPartial=earnedMarks>0&&earnedMarks<q.m;
+        var tickIcon=isCorrect?'\u2705':(isPartial?'\uD83D\uDFE1':'\u274C');
+        inner+='<div class="fb-row"><span class="fb-tick">'+tickIcon+'</span>';
+        if(isCorrect){
+          inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+' ('+q.m+'/'+q.m+')</span>';
+        } else if(isPartial){
+          inner+='<span class="fb-partial">'+(isMS?'Separa betul: ':'Partly correct: ')+earnedMarks+'/'+q.m+' '+(isMS?'markah':'marks')+'</span>';
+        } else {
+          inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct: ')+q.a+(q.unit?' '+q.unit:'')+'</span>';
+        }
+        inner+='</div>';
+        if(!isCorrect){
+          if(isPartial)inner+='<div class="fb-model">'+(isMS?'Jawapan penuh: ':'Full answer: ')+q.a+'</div>';
+          if(S.overrides&&S.overrides[qKey(globalIdx)]){
+            inner+='<div class="claim-done">\u2714 '+(isMS?'Ditanda betul oleh anda':'Marked correct by you')+'</div>';
+          } else {
+            inner+='<button class="claim-btn" data-claim="'+globalIdx+'">'+(isMS?'Jawapan saya betul? Tuntut markah':'My answer is correct? Claim marks')+'</button>';
+          }
+        }
+      }
+    }
+    qHTML+='<div class="'+qClass+'" id="qb'+globalIdx+'">'+inner+'</div>';
+  });
+
+  var submitBtn=!S.submitted?'<button class="submit-btn" id="submitBtn">'+(isMS?'\uD83D\uDCDD Hantar Jawapan':'📝 Submit Answers')+'</button>':'';
+
+  app.innerHTML=
+    '<button class="back-btn" id="backBtn">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="exam-header">'
+    +'<div class="school">'+'ENGLISH LANGUAGE EXAMINATION'+'</div>'
+    +'<div class="subj">'+p.label+'</div>'
+    +'<div class="meta">'+(isMS?'Masa: ':'Time: ')+p.time+(isMS?' minit &nbsp;|&nbsp; Markah Penuh: ':' minutes &nbsp;|&nbsp; Total Marks: ')+p.totalMarks+'</div>'
+    +'<div class="name-row"><div class="name-field">'+(isMS?'Nama: _______________':'Name: _______________')+'</div><div class="name-field">'+(isMS?'Kelas: _______________':'Class: _______________')+'</div></div>'
+    +'</div>'
+    +'<div class="timer-strip"><span class="tlabel">\u23F1 '+(isMS?'Masa Tinggal':'Time Left')+'</span><div class="tbar-wrap"><div class="tbar" id="tbar" style="width:100%"></div></div><span class="tnum" id="tnum">--:--</span></div>'
+    +'<div class="nav-bar">'
+    +'<button class="nav-btn" id="navA" style="border-color:#2F6FE4;color:#2F6FE4;'+(S.secView==='A'?'background:#E3EDFF;':'')+'">'+p.secA.name+' ('+answeredA+'/'+totalA+')</button>'
+    +'<button class="nav-btn" id="navB" style="border-color:#C0392B;color:#C0392B;'+(S.secView==='B'?'background:#FBE9E7;':'')+'">'+p.secB.name+' ('+answeredB+'/'+totalB+')</button>'
+    +'</div>'
+    +'<div class="section-head"><span class="sname">'+secInfo.name+'</span><span class="smarks">'+secInfo.marks+(isMS?' markah':' marks')+'</span></div>'
+    +'<div class="section-instr">'+secInfo.instr+'</div>'
+    +qHTML
+    +submitBtn;
+
+  document.getElementById('backBtn').onclick=function(){stopTimer();S.screen='home';render();};
+  document.getElementById('navA').onclick=function(){S.secView='A';render();updateTimerUI();};
+  document.getElementById('navB').onclick=function(){S.secView='B';render();updateTimerUI();};
+
+  app.querySelectorAll('[data-qi][data-oi]').forEach(function(b){
+    if(S.submitted)return;
+    b.onclick=function(){
+      var qi=parseInt(b.dataset.qi),oi=parseInt(b.dataset.oi);
+      S.answers[qKey(qi)]=oi;
+      playCorrect();
+      // update UI
+      var qBlock=document.getElementById('qb'+qi);
+      if(qBlock){
+        qBlock.querySelectorAll('.mcq-opt').forEach(function(x,xi){
+          x.classList.toggle('selected',xi===oi);
+        });
+        // update nav count
+        document.getElementById('navA').textContent=p.secA.name+' ('+p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length+'/'+totalA+')';
+      }
+    };
+  });
+
+  app.querySelectorAll('input[data-qi], textarea[data-qi]').forEach(function(inp){
+    if(S.submitted)return;
+    inp.addEventListener('input',function(){
+      var qi=parseInt(inp.dataset.qi);
+      S.answers[qKey(qi)]=inp.value;
+    });
+  });
+
+  app.querySelectorAll('[data-claim]').forEach(function(btn){
+    btn.onclick=function(){
+      var qi=parseInt(btn.dataset.claim);
+      if(!S.overrides)S.overrides={};
+      S.overrides[qKey(qi)]=true;
+      recomputeScore();
+      persist();
+      render();
+    };
+  });
+
+  var sb=document.getElementById('submitBtn');
+  if(sb) sb.onclick=function(){
+    var total=p.questions.length;
+    var done=Object.keys(S.answers).length;
+    if(done<total){
+      var remaining=total-done;
+      var msg=isMS?('Masih ada '+remaining+' soalan belum dijawab. Hantar sekarang?'):('You have '+remaining+' unanswered questions. Submit now?');
+      if(!confirm(msg))return;
+    }
+    submitExam(false);
+  };
+
+  updateTimerUI();
+}
+
+function recomputeScore(){
+  var p=S.paper, score=0;
+  p.questions.forEach(function(q,i){
+    if(q.sec==='A'){if(S.answers[qKey(i)]===q.a)score+=q.m;}
+    else{score+=secBMarks(i,S.answers[qKey(i)],q);}
+  });
+  var pct=Math.round((score/p.totalMarks)*100);
+  S.finalScore=score;
+  S.finalPct=pct;
+  var key=S.lang+S.darjah;
+  if(!S.scores)S.scores={};
+  S.scores[key]=Math.max(S.scores[key]||0,pct);
+  // update the current Hall of Fame entry (the one just added this session)
+  if(S.hof&&S.justAddedHofId){
+    for(var j=0;j<S.hof.length;j++){
+      if(S.hof[j].id===S.justAddedHofId){S.hof[j].pct=pct;S.hof[j].score=score;break;}
+    }
+  }
+}
+
+function submitExam(auto){
+  stopTimer();
+  S.submitted=true;
+  var p=S.paper, score=0;
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    if(q.sec==='A'){if(ans===q.a)score+=q.m;}
+    else{score+=secBMarks(i,ans,q);}
+  });
+  var pct=Math.round((score/p.totalMarks)*100);
+  if(!S.scores)S.scores={};
+  var key=S.lang+S.darjah;
+  S.scores[key]=Math.max(S.scores[key]||0,pct);
+  S.finalScore=score;
+  S.finalPct=pct;
+
+  var entryId='e'+Date.now();
+  var entry={id:entryId,name:(S.playerName||(S.lang==='ms'?'Pemain':'Player')).trim(),lang:S.lang,darjah:S.darjah,pct:pct,score:score,totalMarks:p.totalMarks,date:new Date().toISOString().slice(0,10)};
+  if(!S.hof)S.hof=[];
+  S.hof.push(entry);
+  var ranked=S.hof.filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var myRank=ranked.findIndex(function(e){return e.id===entryId;});
+  S.justAddedHofId=entryId;
+  if(S.hof.length>500)S.hof=S.hof.slice(-500);
+  persist();
+
+  if(myRank>=0&&myRank<3)playTopScore();
+  else playSubmit();
+
+  S.screen='results';
+  render();
+}
+
+function renderResults(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var grade=getGrade(S.finalPct);
+  var secAqs=p.questions.filter(function(q){return q.sec==='A';});
+  var secBqs=p.questions.filter(function(q){return q.sec==='B';});
+  var secAoffset=0, secBoffset=secAqs.length;
+  var secAScore=0,secBScore=0;
+  secAqs.forEach(function(q,i){var ans=S.answers[qKey(secAoffset+i)];if(ans===q.a)secAScore+=q.m;});
+  secBqs.forEach(function(q,i){var ans=S.answers[qKey(secBoffset+i)];secBScore+=secBMarks(secBoffset+i,ans,q);});
+
+  // wrong questions list
+  var wrongHTML='';
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    var isCorrect=q.sec==='A'?(ans===q.a):(secBMarks(i,ans,q)===q.m);
+    if(!isCorrect){
+      var given=ans!=null?(q.sec==='A'?['A','B','C','D'][ans]+'. '+(q.opts&&q.opts[ans]?q.opts[ans]:''):ans):(isMS?'Tiada jawapan':'No answer');
+      var visualHTML='';
+      if(q.table){
+        visualHTML+='<table class="qtable" style="margin:6px 0;"><tr>';
+        q.table.headers.forEach(function(h){visualHTML+='<th>'+h+'</th>';});
+        visualHTML+='</tr>';
+        q.table.rows.forEach(function(r){visualHTML+='<tr>';r.forEach(function(c){visualHTML+='<td>'+c+'</td>';});visualHTML+='</tr>';});
+        visualHTML+='</table>';
+      }
+      if(q.grid){
+        visualHTML+='<div class="qgrid" style="margin:6px 0;">';
+        for(var gr=0; gr<q.grid.rows; gr++){
+          visualHTML+='<div class="qgrid-row">';
+          for(var gc=0; gc<q.grid.cols; gc++){ visualHTML+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+          visualHTML+='</div>';
+        }
+        visualHTML+='</div>';
+      }
+      if(q.scene){
+        visualHTML+=renderScene(q.scene);
+      }
+      if(q.chart){
+        var maxVal=Math.max.apply(null,q.chart.values);
+        visualHTML+='<div class="qchart" style="margin:6px 0;"><div class="qchart-bars">';
+        q.chart.values.forEach(function(v,vi){
+          var h=Math.round((v/maxVal)*70)+10;
+          visualHTML+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+            +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+            +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+        });
+        visualHTML+='</div></div>';
+      }
+      wrongHTML+='<div class="rq rq-wrong">'
+        +'<div class="rq-num">'+(isMS?'Soalan ':'Q.')+(i+1)+'</div>'
+        +'<div class="rq-q">'+q.q.replace(/\n/g,' ')+'</div>'
+        +visualHTML
+        +'<div class="rq-ans" style="color:var(--pen-red)">'+(isMS?'Jawapan anda: ':'Your answer: ')+given+'</div>'
+        +'<div class="rq-ans" style="color:var(--tick-green)">'+(isMS?'Jawapan betul: ':'Correct: ')+(q.sec==='A'?['A','B','C','D'][q.a]+'. '+q.opts[q.a]:q.a+(q.unit?' '+q.unit:''))+'</div>'
+        +'</div>';
+    }
+  });
+
+  // Hall of Fame — top 5 for this lang + darjah
+  var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var top5=ranked.slice(0,5);
+  var hofHTML='';
+  top5.forEach(function(e,i){
+    var isMine=e.id===S.justAddedHofId;
+    var rowCls='hof-row'+(i===0?' top1':'')+(isMine?' mine':'');
+    var medal=i===0?'\uD83C\uDFC6':(i+1);
+    hofHTML+='<div class="'+rowCls+'">'
+      +'<span class="hof-rank">'+medal+'</span>'
+      +'<span class="hof-name">'+e.name+'</span>'
+      +'<span class="hof-meta">'+e.date+'</span>'
+      +'<span class="hof-pct">'+e.pct+'%</span>'
+      +'</div>';
+  });
+  var hofBlock='<div class="hof-wrap"><div class="hof-title">\uD83C\uDFC6 '+(isMS?'Hall of Fame — ':'Hall of fame — ')+p.label+'</div>'+hofHTML+'</div>';
+
+  app.innerHTML='<div class="result-header">'
+    +'<div class="home-eyebrow">'+p.label+' &nbsp;|&nbsp; '+(isMS?'Keputusan':'Results')+'</div>'
+    +'<div class="result-grade" style="color:'+grade.c+'">'+grade.g+'</div>'
+    +'<div class="result-pct">'+S.finalScore+' / '+p.totalMarks+' &nbsp;('+S.finalPct+'%)</div>'
+    +'<span class="result-band" style="background:'+grade.c+'">'+grade.band+'</span>'
+    +'</div>'
+    +'<div class="result-breakdown">'
+    +'<div class="rb-row"><span>'+p.secA.name+'</span><span>'+secAScore+' / '+p.secA.marks+'</span></div>'
+    +'<div class="rb-row"><span>'+p.secB.name+'</span><span>'+secBScore+' / '+p.secB.marks+'</span></div>'
+    +'<div class="rb-row" style="color:var(--ink);font-size:15px"><span>'+(isMS?'Jumlah':'Total')+'</span><span>'+S.finalScore+' / '+p.totalMarks+'</span></div>'
+    +'</div>'
+    +hofBlock
+    +(wrongHTML?'<div style="font-family:Fredoka;font-size:14px;font-weight:700;color:var(--ink-soft);margin-bottom:8px">'+(isMS?'Soalan yang salah:':'Questions to review:')+'</div>'
+    +'<div class="result-review">'+wrongHTML+'</div>':'<div style="text-align:center;font-size:18px;font-weight:800;color:var(--tick-green);margin:16px 0">'+(isMS?'Semua betul! Luar biasa! 🎉':'All correct! Excellent! 🎉')+'</div>')
+    +'<div class="res-btns">'
+    +'<button class="big-btn" id="retry" style="background:#1E2A4A;border-color:#1E2A4A;color:#fff;box-shadow:0 4px 0 #0D1520">'+(isMS?'Cuba Semula':'Try Again')+'</button>'
+    +'<button class="home-btn2" id="home">\uD83C\uDFE0 '+(isMS?'Utama':'Home')+'</button>'
+    +'</div>';
+
+  document.getElementById('retry').onclick=function(){startExam(S.darjah);};
+  document.getElementById('home').onclick=function(){S.justAddedHofId=null;S.screen='home';render();};
+}
+
+loadSave();
+render();
+</script>
+</body>
+</html>
