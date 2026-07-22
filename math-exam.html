@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FBFDFF">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Matematik Exam","short_name":"MatExam","display":"fullscreen","orientation":"portrait","background_color":"%23FBFDFF","theme_color":"%23FBFDFF","start_url":"."}'>
+<title>Matematik — Kertas Peperiksaan</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1E2A4A;--ink-soft:#5A6785;--paper:#FBFDFF;--grid:#DCE8F7;--margin-red:#F0857A;--pen-red:#E8503A;--tick-green:#2FA45C;--gold:#D4A017;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;color:var(--ink);font-family:'Nunito',system-ui,sans-serif;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;position:relative;}
+body::before{content:'';position:fixed;top:0;bottom:0;left:34px;width:2px;background:var(--margin-red);opacity:.7;z-index:0;}
+#app{position:relative;max-width:580px;margin:0 auto;padding:16px 14px 40px;z-index:1;}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer;font-family:inherit;}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.home-eyebrow{font-family:'Fredoka';font-size:14px;font-weight:600;color:var(--pen-red);letter-spacing:1.5px;text-transform:uppercase;}
+h1.home-title{font-family:'Fredoka';font-size:34px;font-weight:700;margin:4px 0 6px;line-height:1.1;}
+.home-sub{font-weight:700;color:var(--ink-soft);font-size:14px;margin-bottom:20px;}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;}
+.lang-toggle{display:inline-flex;border:2px solid var(--ink);border-radius:99px;overflow:hidden;}
+.lang-toggle button{font-family:'Fredoka';font-size:13px;font-weight:700;padding:5px 12px;border:none;background:transparent;color:var(--ink);}
+.lang-toggle button.active{background:var(--ink);color:#fff;}
+.fs-btn{font-size:17px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);padding:3px 8px;}
+.darjah-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.darjah-btn{border-radius:18px;padding:16px 12px;text-align:center;border-width:3px;border-style:solid;background:#fff;}
+.darjah-label{font-family:'Fredoka';font-size:20px;font-weight:700;}
+.darjah-info{font-size:12px;font-weight:800;color:var(--ink-soft);margin-top:4px;}
+.darjah-score{font-size:13px;font-weight:800;margin-top:6px;}
+
+/* EXAM HEADER */
+.exam-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+.exam-header .school{font-size:13px;font-weight:800;color:var(--ink-soft);letter-spacing:.5px;}
+.exam-header .subj{font-family:'Fredoka';font-size:22px;font-weight:700;margin:4px 0 2px;}
+.exam-header .meta{font-size:13px;font-weight:800;color:var(--ink-soft);}
+.exam-header .name-row{display:flex;gap:12px;margin-top:10px;font-size:13px;font-weight:800;}
+.exam-header .name-field{flex:1;border-bottom:2px solid var(--ink);padding-bottom:2px;}
+
+/* TIMER BAR */
+.timer-strip{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #B7C6E2;border-radius:12px;padding:8px 14px;margin-bottom:14px;}
+.timer-strip .tlabel{font-family:'Fredoka';font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+.tbar-wrap{flex:1;height:10px;background:#E7EEF9;border-radius:99px;overflow:hidden;}
+.tbar{height:100%;border-radius:99px;background:var(--tick-green);transition:width 1s linear,background .3s;}
+.tnum{font-family:'Fredoka';font-weight:700;font-size:15px;min-width:42px;text-align:right;}
+
+/* SECTION HEADER */
+.section-head{background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;margin:18px 0 12px;display:flex;justify-content:space-between;align-items:center;}
+.section-head .sname{font-family:'Fredoka';font-size:17px;font-weight:700;}
+.section-head .smarks{font-size:13px;font-weight:800;opacity:.85;}
+.section-instr{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:14px;line-height:1.5;}
+
+/* QUESTION CARDS */
+.qblock{background:#fff;border-radius:16px;border:2px solid #DCE8F7;padding:16px;margin-bottom:12px;animation:fadeIn .25s;}
+.qblock.answered-correct{border-color:var(--tick-green);}
+.qblock.answered-wrong{border-color:var(--pen-red);}
+.qnum{font-family:'Fredoka';font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+.qtext{font-size:16px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+.qtable{width:100%;border-collapse:collapse;font-size:15px;font-weight:800;margin:8px 0 12px;}
+.qtable th{background:#E7EEF9;padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qtable td{padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qgrid{margin:8px 0 12px;padding:12px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qgrid-row{display:flex;gap:6px;justify-content:center;margin-bottom:6px;}
+.qgrid-row:last-child{margin-bottom:0;}
+.qgrid-icon{font-size:22px;line-height:1;}
+.qgrid-label{text-align:center;font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;}
+.qchart{margin:8px 0 12px;padding:14px 10px 6px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qchart-bars{display:flex;align-items:flex-end;justify-content:space-around;height:110px;gap:10px;}
+.qchart-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;}
+.qchart-bar-val{font-size:11px;font-weight:800;margin-bottom:3px;}
+.qchart-bar{width:100%;max-width:38px;background:#5B8DEF;border-radius:4px 4px 0 0;}
+.qchart-bar-label{font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;text-align:center;}
+.name-input-wrap{margin:4px 0 16px;}
+.name-input-label{display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:5px;}
+.name-input{width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;font-weight:700;border:2px solid var(--grid);border-radius:8px;background:#fff;color:var(--ink);font-family:'Nunito',sans-serif;}
+.name-input:focus{outline:none;border-color:#2F6FE4;}
+.hof-wrap{margin:18px 0;padding:14px;background:#FBF8EE;border:2px solid #E9DFB8;border-radius:12px;}
+.hof-title{display:flex;align-items:center;gap:6px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#8A6D1D;margin-bottom:10px;}
+.hof-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dotted #E9DFB8;font-size:13px;}
+.hof-row:last-child{border-bottom:none;}
+.hof-rank{width:20px;font-weight:800;color:var(--ink-soft);text-align:center;flex:0 0 auto;}
+.hof-row.top1 .hof-rank{color:#D4A017;}
+.hof-name{flex:1;font-weight:800;color:var(--ink);}
+.hof-meta{font-size:10.5px;color:var(--ink-soft);font-weight:600;}
+.hof-pct{font-weight:800;color:#2F6FE4;}
+.hof-row.mine{background:#FFF6DC;border-radius:6px;padding:7px 6px;margin:0 -6px;}
+.qinfo{background:#F0F4FF;border:2px solid #B7C6E2;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+
+/* MCQ OPTIONS */
+.mcq-opts{display:grid;gap:8px;}
+.mcq-opt{font-size:15px;font-weight:800;text-align:left;padding:11px 14px;border-radius:12px;border:2px solid #B7C6E2;background:#fff;color:var(--ink);box-shadow:0 2px 0 #C9D4E8;display:flex;align-items:flex-start;gap:10px;}
+.mcq-opt .opt-label{font-family:'Fredoka';font-size:15px;font-weight:700;color:var(--ink-soft);min-width:20px;}
+.mcq-opt.selected{border-color:#2F6FE4;background:#E3EDFF;box-shadow:0 2px 0 #2F6FE4;}
+.mcq-opt.correct{border-color:var(--tick-green);background:#E8F6EC;box-shadow:0 2px 0 var(--tick-green);}
+.mcq-opt.wrong{border-color:var(--pen-red);background:#FDEAE7;box-shadow:0 2px 0 var(--pen-red);}
+.mcq-opt:disabled{cursor:default;}
+
+/* SHORT ANSWER */
+.short-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.short-input{font-family:'Fredoka';font-size:22px;font-weight:700;width:100px;text-align:center;border:3px solid #B7C6E2;border-radius:10px;padding:8px 4px;background:#fff;color:var(--ink);}
+.short-input:focus{outline:none;border-color:#2F6FE4;}
+.short-input.correct{border-color:var(--tick-green);background:#E8F6EC;color:var(--tick-green);}
+.short-input.wrong{border-color:var(--pen-red);background:#FDEAE7;color:var(--pen-red);}
+.short-unit{font-size:15px;font-weight:800;color:var(--ink-soft);}
+
+/* FEEDBACK */
+.fb-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;font-weight:800;}
+.fb-tick{font-size:20px;}
+.fb-why{color:var(--ink-soft);}
+.fb-correct-ans{color:var(--pen-red);}
+
+/* NAV BUTTONS */
+.nav-bar{display:flex;gap:10px;margin:20px 0 10px;}
+.nav-btn{flex:1;font-family:'Fredoka';font-size:18px;font-weight:700;padding:13px 0;border-radius:14px;border:3px solid;background:#fff;}
+.submit-btn{width:100%;font-family:'Fredoka';font-size:20px;font-weight:700;padding:15px 0;border-radius:16px;border:none;background:#1E2A4A;color:#fff;margin-top:16px;box-shadow:0 4px 0 #0D1520;}
+.back-btn{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:6px 0;margin-bottom:4px;}
+
+/* RESULTS */
+.result-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:20px 16px;text-align:center;margin-bottom:16px;}
+.result-grade{font-family:'Fredoka';font-size:52px;font-weight:700;line-height:1;}
+.result-pct{font-family:'Fredoka';font-size:22px;font-weight:600;color:var(--ink-soft);}
+.result-band{display:inline-block;font-family:'Fredoka';font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;border-radius:99px;padding:4px 16px;margin:8px 0;}
+.result-breakdown{background:#fff;border:2px solid #DCE8F7;border-radius:14px;padding:14px 16px;margin-bottom:14px;}
+.rb-row{display:flex;justify-content:space-between;font-size:14px;font-weight:800;padding:6px 0;border-bottom:1px solid #E7EEF9;}
+.rb-row:last-child{border-bottom:none;}
+.result-review{margin-bottom:14px;}
+.rq{background:#fff;border:2px solid #DCE8F7;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.rq .rq-num{font-family:'Fredoka';font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
+.rq .rq-q{font-size:14px;font-weight:800;line-height:1.5;margin-bottom:6px;}
+.rq .rq-ans{font-size:13px;font-weight:800;}
+.rq.rq-wrong{border-color:var(--pen-red);}
+.rq.rq-correct{border-color:var(--tick-green);}
+.res-btns{display:grid;gap:10px;margin-top:16px;}
+.big-btn{font-family:'Fredoka';font-size:19px;font-weight:700;padding:14px 0;border-radius:16px;border-width:3px;border-style:solid;}
+.home-btn2{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:8px;}
+.star-dim{filter:grayscale(1) opacity(.35);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ============================================================
+// EXAM PAPERS DATA
+// ============================================================
+var PAPERS = {
+ms: {
+1: {
+  label:'Darjah 1', time:75, totalMarks:30,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:20, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:10, type:'short'},
+  questions:[
+    // --- BAHAGIAN A (20 MCQ) ---
+    {sec:'A',q:'Berapakah nilai 7 + 5?',opts:['10','11','12','13'],a:2,m:1},
+    {sec:'A',q:'Pilih nombor yang paling besar.',opts:['34','29','41','37'],a:2,m:1},
+    {sec:'A',q:'18 − 9 = ?',opts:['7','8','9','10'],a:2,m:1},
+    {sec:'A',q:'Ali ada 6 biji epal. Kakak beri dia 4 biji lagi. Berapa jumlah epal Ali?',opts:['8','9','10','11'],a:2,m:1},
+    {sec:'A',q:'Nombor manakah yang ganjil?',opts:['12','16','19','22'],a:2,m:1},
+    {sec:'A',q:'5 + __ = 13. Apakah nombor dalam kotak?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Susun nombor berikut dari yang terkecil: 23, 15, 31, 8',opts:['8, 15, 23, 31','8, 23, 15, 31','15, 8, 23, 31','31, 23, 15, 8'],a:0,m:1},
+    {sec:'A',q:'17 − __ = 9. Apakah nombor dalam kotak?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Berapakah 30 + 40?',opts:['60','65','70','75'],a:2,m:1},
+    {sec:'A',q:'Siti ada 15 sen. Dia belanja 8 sen. Berapakah baki wangnya?',opts:['5 sen','6 sen','7 sen','8 sen'],a:2,m:1},
+    {sec:'A',q:'Apakah nombor yang datang selepas 49?',opts:['48','50','51','52'],a:1,m:1},
+    {sec:'A',q:'2 + 2 + 2 + 2 = ?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Berapa jumlah pokok semuanya?',grid:{rows:3,cols:4,icon:'🌳'},opts:['9','10','11','12'],a:3,m:1},
+    {sec:'A',q:'Nombor manakah antara 25 dan 30?',opts:['24','26','31','32'],a:1,m:1},
+    {sec:'A',q:'50 − 20 = ?',opts:['20','25','30','35'],a:2,m:1},
+    {sec:'A',q:'Sebuah balang ada 20 gula-gula. 7 biji diambil. Berapa yang tinggal?',opts:['11','12','13','14'],a:2,m:1},
+    {sec:'A',q:'Pilih nombor genap.',opts:['13','17','21','24'],a:3,m:1},
+    {sec:'A',q:'Berapakah 10 tambah 10 tambah 10?',opts:['20','25','30','35'],a:2,m:1},
+    {sec:'A',q:'Amir ada 9 pen biru dan 6 pen merah. Berapa jumlah pen Amir?',opts:['13','14','15','16'],a:2,m:1},
+    {sec:'A',q:'Apakah nilai tempat digit 3 dalam nombor 35?',opts:['Sa','Puluh','Ratus','Ribu'],a:1,m:1},
+    // --- BAHAGIAN B (10 short) ---
+    {sec:'B',q:'8 + 7 = ___',a:'15',m:1,unit:''},
+    {sec:'B',q:'20 − 6 = ___',a:'14',m:1,unit:''},
+    {sec:'B',q:'Tulis nombor ini dalam perkataan: 17',a:'tujuh belas',m:1,unit:''},
+    {sec:'B',q:'Sebuah kotak ada 5 biji coklat. Berapa biji coklat dalam 3 kotak?',a:'15',m:1,unit:'biji'},
+    {sec:'B',q:'Apakah nombor genap yang terbesar antara 11 dan 20?',a:'20',m:1,unit:''},
+    {sec:'B',q:'45 + 5 = ___',a:'50',m:1,unit:''},
+    {sec:'B',q:'Ibu ada 12 telur. Dia gunakan 4 biji untuk memasak. Berapa biji yang tinggal?',a:'8',m:1,unit:'biji'},
+    {sec:'B',q:'Tulis nombor yang bernilai puluh = 3, sa = 6.',a:'36',m:1,unit:''},
+    {sec:'B',q:'9 + __ = 16. Isi tempat kosong.',a:'7',m:1,unit:''},
+    {sec:'B',q:'Ali ada 25 sen. Dia dapat lagi 15 sen. Berapa jumlah wang Ali?',a:'40',m:1,unit:'sen'}
+  ]
+},
+2: {
+  label:'Darjah 2', time:75, totalMarks:40,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:25, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tunjukkan cara pengiraan dan tulis jawapan.', marks:15, type:'short'},
+  questions:[
+    {sec:'A',q:'Berapakah 47 + 36?',opts:['73','82','83','84'],a:2,m:1},
+    {sec:'A',q:'Nilai digit 5 dalam nombor 253 ialah?',opts:['5','50','500','5000'],a:1,m:1},
+    {sec:'A',q:'90 − 43 = ?',opts:['44','46','47','53'],a:2,m:1},
+    {sec:'A',q:'Sebuah bakul ada 8 biji mangga. Berapa biji mangga dalam 4 bakul?',opts:['24','28','30','32'],a:3,m:1},
+    {sec:'A',q:'48 ÷ 6 = ?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Berdasarkan jadual harga di atas, berapa harga pensil dan pemadam?',table:{headers:['Barang','Harga'],rows:[['Pensil','35 sen'],['Pemadam','20 sen'],['Pembaris','50 sen']]},opts:['45 sen','50 sen','55 sen','60 sen'],a:2,m:1},
+    {sec:'A',q:'Nombor manakah yang paling dekat dengan 100?',opts:['89','94','97','101'],a:2,m:1},
+    {sec:'A',q:'5 × 7 = ?',opts:['30','32','35','40'],a:2,m:1},
+    {sec:'A',q:'Susun dari terbesar: 109, 190, 91, 119',opts:['190, 119, 109, 91','91, 109, 119, 190','190, 109, 119, 91','119, 190, 109, 91'],a:0,m:1},
+    {sec:'A',q:'Sebuah kelas ada 36 murid. 17 orang perempuan. Berapa orang lelaki?',opts:['17','18','19','20'],a:2,m:1},
+    {sec:'A',q:'3 × 9 = ?',opts:['24','25','26','27'],a:3,m:1},
+    {sec:'A',q:'150 + 250 = ?',opts:['350','380','400','420'],a:2,m:1},
+    {sec:'A',q:'Kedai ada 500 biji roti. 235 biji terjual. Berapa biji yang tinggal?',opts:['255','265','275','285'],a:1,m:1},
+    {sec:'A',q:'Apakah 1/2 daripada 20?',opts:['5','8','10','15'],a:2,m:1},
+    {sec:'A',q:'28 ÷ 4 = ?',opts:['5','6','7','8'],a:2,m:1},
+    {sec:'A',q:'Nilai tempat digit 4 dalam 342 ialah?',opts:['Sa','Puluh','Ratus','Ribu'],a:1,m:1},
+    {sec:'A',q:'Sebuah tin mengandungi 45 biji gula-gula. Ada 6 tin. Berapa jumlah gula-gula?',opts:['240','260','270','280'],a:2,m:1},
+    {sec:'A',q:'900 − 350 = ?',opts:['450','500','550','600'],a:2,m:1},
+    {sec:'A',q:'Farah jimat RM5 setiap minggu. Selepas 8 minggu berapa dia jimat?',opts:['RM35','RM40','RM45','RM50'],a:1,m:1},
+    {sec:'A',q:'2 × 2 × 2 = ?',opts:['4','6','8','10'],a:2,m:1},
+    {sec:'A',q:'Apakah pecahan berlorek jika 3 daripada 8 bahagian dilorek?',opts:['1/3','3/5','3/8','5/8'],a:2,m:1},
+    {sec:'A',q:'63 + 29 = ?',opts:['81','82','91','92'],a:3,m:1},
+    {sec:'A',q:'Sebuah kotak ada 24 pensel. Bahagikan sama rata kepada 4 orang. Berapa dapat seorang?',opts:['4','5','6','7'],a:2,m:1},
+    {sec:'A',q:'400 + 60 + 7 = ?',opts:['467','476','647','674'],a:0,m:1},
+    {sec:'A',q:'Antara pecahan berikut, yang mana paling besar?\n1/2, 1/3, 1/4, 1/5',opts:['1/5','1/4','1/3','1/2'],a:3,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Sebuah taman ada 125 pokok bunga merah dan 248 pokok bunga kuning. Berapa jumlah pokok bunga di taman itu?',a:'373',m:2,unit:'pokok'},
+    {sec:'B',q:'Pak Ali mempunyai 96 biji telur. Dia membahagikan telur itu sama rata ke dalam 8 bakul. Berapa biji telur dalam setiap bakul?',a:'12',m:2,unit:'biji'},
+    {sec:'B',q:'Harga sebuah baju ialah RM35. Harga sebuah seluar ialah RM28. Berapa jumlah harga kedua-dua barang itu?',a:'63',m:2,unit:'RM'},
+    {sec:'B',q:'Sebuah kedai mempunyai 500 buku. Pada hari Isnin, 175 buku terjual. Pada hari Selasa, 130 buku lagi terjual. Berapa buku yang masih tinggal?',a:'195',m:2,unit:'buku'},
+    {sec:'B',q:'Sebuah van boleh membawa 8 orang penumpang. Berapa orang penumpang boleh dibawa oleh 7 van?',a:'56',m:2,unit:'orang'},
+    {sec:'B',q:'Mak Cik Rohani memasak 240 biji kuih. Dia bahagikan kuih itu sama rata kepada 6 bekas. Berapa biji kuih dalam setiap bekas?',a:'40',m:1,unit:'biji'},
+    {sec:'B',q:'Harga sebungkus nasi lemak ialah RM2. Harga segelas air ialah RM1. Siti membeli 3 bungkus nasi lemak dan 3 gelas air. Berapa jumlah wang yang Siti bayar?',a:'9',m:1,unit:'RM'},
+    {sec:'B',q:'450 + 275 = ___',a:'725',m:1,unit:''},
+    {sec:'B',q:'700 − 364 = ___',a:'336',m:1,unit:''},
+    {sec:'B',q:'9 × 8 = ___',a:'72',m:1,unit:''}
+  ]
+},
+3: {
+  label:'Darjah 3', time:75, totalMarks:50,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:30, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tunjukkan cara pengiraan dan tulis jawapan.', marks:20, type:'short'},
+  questions:[
+    {sec:'A',q:'3 456 + 2 187 = ?',opts:['5 533','5 543','5 633','5 643'],a:3,m:1},
+    {sec:'A',q:'Nilai digit 7 dalam 7 284 ialah?',opts:['7','70','700','7 000'],a:3,m:1},
+    {sec:'A',q:'6 000 − 2 345 = ?',opts:['3 545','3 655','3 755','4 345'],a:1,m:1},
+    {sec:'A',q:'24 × 5 = ?',opts:['100','110','115','120'],a:3,m:1},
+    {sec:'A',q:'144 ÷ 6 = ?',opts:['22','23','24','25'],a:2,m:1},
+    {sec:'A',q:'Seorang petani menuai 1 250 biji padi sehari. Berapa biji padi dituai dalam 4 hari?',opts:['4 000','4 500','5 000','5 250'],a:2,m:1},
+    {sec:'A',q:'1/4 daripada 200 = ?',opts:['25','40','50','80'],a:2,m:1},
+    {sec:'A',q:'Tukar 3.5 km kepada m.',opts:['350 m','3 050 m','3 500 m','35 000 m'],a:2,m:1},
+    {sec:'A',q:'Pukul 10.30 pagi + 2 jam 45 minit = ?',opts:['Pukul 12.15 tengah hari','Pukul 1.00 tengah hari','Pukul 1.15 tengah hari','Pukul 1.30 tengah hari'],a:2,m:1},
+    {sec:'A',q:'Perimeter sebuah segi empat sama dengan sisi 9 cm ialah?',opts:['27 cm','32 cm','36 cm','40 cm'],a:2,m:1},
+    {sec:'A',q:'2/5 + 1/5 = ?',opts:['1/5','2/5','3/5','4/5'],a:2,m:1},
+    {sec:'A',q:'Harga 1 kg gula ialah RM2.50. Berapa harga 4 kg gula?',opts:['RM8.00','RM9.00','RM10.00','RM12.00'],a:2,m:1},
+    {sec:'A',q:'4 500 ÷ 9 = ?',opts:['400','450','500','550'],a:2,m:1},
+    {sec:'A',q:'Nyatakan masa dalam angka: Dua belas minit lewat pukul lapan malam.',opts:['8.12 p.m.','8.20 p.m.','8.12 a.m.','12.08 p.m.'],a:0,m:1},
+    {sec:'A',q:'Luas sebuah segi empat tepat 8 cm panjang dan 5 cm lebar ialah?',opts:['26 cm²','36 cm²','40 cm²','45 cm²'],a:2,m:1},
+    {sec:'A',q:'2 345 + 1 678 − 900 = ?',opts:['2 923','3 023','3 123','3 223'],a:2,m:1},
+    {sec:'A',q:'3/8 daripada 80 = ?',opts:['24','30','35','40'],a:1,m:1},
+    {sec:'A',q:'Seorang pekerja dibayar RM45 sehari. Berapa dia dapat dalam 6 hari?',opts:['RM240','RM260','RM270','RM280'],a:2,m:1},
+    {sec:'A',q:'Tukar 4 kg 500 g kepada gram.',opts:['450 g','4 050 g','4 500 g','45 000 g'],a:2,m:1},
+    {sec:'A',q:'Sebuah segi tiga sama sisi mempunyai perimeter 27 cm. Berapakah panjang setiap sisi?',opts:['7 cm','8 cm','9 cm','10 cm'],a:2,m:1},
+    {sec:'A',q:'5/6 − 2/6 = ?',opts:['1/6','2/6','3/6','4/6'],a:2,m:1},
+    {sec:'A',q:'Tukar 2 jam 30 minit kepada minit.',opts:['130 min','140 min','150 min','160 min'],a:2,m:1},
+    {sec:'A',q:'Harga 3 baju ialah RM87. Berapa harga 1 baju?',opts:['RM25','RM27','RM28','RM29'],a:3,m:1},
+    {sec:'A',q:'6 × 8 × 2 = ?',opts:['84','92','96','104'],a:2,m:1},
+    {sec:'A',q:'800 × 7 = ?',opts:['4 800','5 400','5 600','6 400'],a:2,m:1},
+    {sec:'A',q:'Sebuah tangki air muat 5 000 liter. Sudah diisi 1 750 liter. Berapa liter lagi perlu diisi?',opts:['2 750','3 000','3 250','3 500'],a:2,m:1},
+    {sec:'A',q:'1 1/4 + 2 1/4 = ?',opts:['3 1/4','3 2/4','3 3/4','4'],a:1,m:1},
+    {sec:'A',q:'Tukar 3.75 kg kepada g.',opts:['375 g','3 075 g','3 750 g','37 500 g'],a:2,m:1},
+    {sec:'A',q:'Seorang pelajar dapat 78 markah daripada 100. Berapa peratus markahnya?',opts:['7.8%','70%','78%','80%'],a:2,m:1},
+    {sec:'A',q:'Apakah nombor perdana antara 10 dan 20?',opts:['11, 13, 17, 19','11, 13, 15, 19','12, 14, 16, 18','10, 15, 17, 20'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Sebuah kilang menghasilkan 1 250 unit barang sehari. Berapa unit barang dihasilkan dalam 6 hari?',a:'7500',m:2,unit:'unit'},
+    {sec:'B',q:'Harga sebuah televisyen ialah RM1 299. Harga sebuah radio ialah RM348. Berapa jumlah harga kedua-dua barang itu?',a:'1647',m:2,unit:'RM'},
+    {sec:'B',q:'Encik Azlan ada RM5 000. Dia membelanjakan RM1 875 untuk membeli perabot dan RM980 untuk membeli elektrik. Berapa baki wang Encik Azlan?',a:'2145',m:3,unit:'RM'},
+    {sec:'B',q:'Sebuah taman berbentuk segi empat tepat. Panjangnya 45 m dan lebarnya 28 m. Berapakah perimeter taman itu?',a:'146',m:3,unit:'m'},
+    {sec:'B',q:'Sebuah beg berat 2 kg 750 g. Berapa gram berat beg itu?',a:'2750',m:2,unit:'g'},
+    {sec:'B',q:'3/7 + 2/7 = ___',a:'5/7',m:2,unit:''},
+    {sec:'B',q:'Pukul 9.15 pagi + 3 jam 30 minit = pukul ___',a:'12.45',m:2,unit:'tengah hari'},
+    {sec:'B',q:'Luas sebuah segi empat sama dengan sisi 12 cm ialah?',a:'144',m:2,unit:'cm²'},
+    {sec:'B',q:'4 500 ÷ 5 = ___',a:'900',m:1,unit:''},
+    {sec:'B',q:'Harga 1 kg beras ialah RM3.20. Mak membeli 5 kg beras. Berapa jumlah wang yang dibayar?',a:'16',m:1,unit:'RM'}
+  ]
+},
+4: {
+  label:'Darjah 4', time:75, totalMarks:60,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:35, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tunjukkan cara pengiraan dan tulis jawapan.', marks:25, type:'short'},
+  questions:[
+    {sec:'A',q:'23 456 + 14 875 = ?',opts:['37 231','38 231','38 331','38 431'],a:2,m:1},
+    {sec:'A',q:'Nilai digit 6 dalam 364 582 ialah?',opts:['6','600','6 000','60 000'],a:3,m:1},
+    {sec:'A',q:'80 000 − 34 567 = ?',opts:['44 333','45 333','45 433','46 333'],a:2,m:1},
+    {sec:'A',q:'365 × 8 = ?',opts:['2 820','2 900','2 920','2 980'],a:2,m:1},
+    {sec:'A',q:'4 752 ÷ 9 = ?',opts:['526','527','528','529'],a:2,m:1},
+    {sec:'A',q:'Tukar 4.75 km kepada m.',opts:['475 m','4 075 m','4 750 m','47 500 m'],a:2,m:1},
+    {sec:'A',q:'3/4 daripada 360 = ?',opts:['240','260','270','280'],a:2,m:1},
+    {sec:'A',q:'Luas sebuah segi empat tepat 15 cm × 12 cm = ?',opts:['54 cm²','150 cm²','170 cm²','180 cm²'],a:3,m:1},
+    {sec:'A',q:'Perimeter sebuah segi tiga bersisi 13 cm, 15 cm dan 18 cm = ?',opts:['44 cm','46 cm','48 cm','50 cm'],a:1,m:1},
+    {sec:'A',q:'0.3 + 0.45 = ?',opts:['0.48','0.70','0.75','0.78'],a:2,m:1},
+    {sec:'A',q:'Harga sebuah meja ialah RM245.50. Harga sebuah kerusi ialah RM87.90. Berapa jumlah harga?',opts:['RM323.30','RM333.40','RM343.40','RM353.40'],a:1,m:1},
+    {sec:'A',q:'3 2/5 + 1 3/5 = ?',opts:['4 4/5','4 5/5','5','5 1/5'],a:2,m:1},
+    {sec:'A',q:'Nombor manakah boleh dibahagikan tepat dengan 6?',opts:['38','42','46','50'],a:1,m:1},
+    {sec:'A',q:'Pukul 2.45 petang + 4 jam 35 minit = ?',opts:['Pukul 7.10 malam','Pukul 7.15 malam','Pukul 7.20 malam','Pukul 7.30 malam'],a:2,m:1},
+    {sec:'A',q:'1 kg 250 g × 4 = ?',opts:['4 kg','4 kg 500 g','5 kg','5 kg 500 g'],a:2,m:1},
+    {sec:'A',q:'Tukar 3 jam 20 minit kepada minit.',opts:['180 min','200 min','220 min','240 min'],a:1,m:1},
+    {sec:'A',q:'5/8 × 40 = ?',opts:['20','25','30','35'],a:1,m:1},
+    {sec:'A',q:'Sebuah kereta bergerak dengan kelajuan 80 km/j. Berapa km dilalui dalam 3 jam?',opts:['200 km','220 km','240 km','260 km'],a:2,m:1},
+    {sec:'A',q:'Harga asal sehelai baju RM80. Diskaun 25%. Berapa harga selepas diskaun?',opts:['RM55','RM60','RM65','RM70'],a:1,m:1},
+    {sec:'A',q:'2.5 + 3.75 − 1.25 = ?',opts:['4.00','4.50','5.00','5.50'],a:2,m:1},
+    {sec:'A',q:'Seorang peniaga ada 4 guni gula. Setiap guni 25 kg. Dia jual 60 kg. Berapa kg yang tinggal?',opts:['30 kg','35 kg','40 kg','45 kg'],a:2,m:1},
+    {sec:'A',q:'Pecahan yang setara dengan 3/4 ialah?',opts:['6/9','8/12','9/12','9/16'],a:1,m:1},
+    {sec:'A',q:'Volume sebuah kuboid 5 cm × 4 cm × 3 cm = ?',opts:['47 cm³','55 cm³','60 cm³','65 cm³'],a:2,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 12, 18, 24, 30, 6?',opts:['16','17','18','19'],a:2,m:1},
+    {sec:'A',q:'RM7.50 × 12 = ?',opts:['RM80','RM85','RM90','RM95'],a:2,m:1},
+    {sec:'A',q:'Nombor perdana yang pertama selepas 20 ialah?',opts:['21','22','23','24'],a:2,m:1},
+    {sec:'A',q:'Sebuah tangki berbentuk kuboid 4 m × 3 m × 2 m. Berapa liter air boleh diisi? (1 m³ = 1 000 liter)',opts:['20 000 liter','22 000 liter','24 000 liter','26 000 liter'],a:2,m:1},
+    {sec:'A',q:'0.75 × 200 = ?',opts:['100','120','140','150'],a:3,m:1},
+    {sec:'A',q:'Encik Karim dapat gaji RM2 800 sebulan. Dia simpan 1/4 daripada gajinya. Berapa yang disimpan?',opts:['RM600','RM700','RM800','RM900'],a:1,m:1},
+    {sec:'A',q:'Tukar 3 1/4 jam kepada minit.',opts:['175 min','185 min','195 min','205 min'],a:2,m:1},
+    {sec:'A',q:'Seorang pelajar mendapat markah 85/100 dalam ujian. Nyatakan markah itu sebagai perpuluhan.',opts:['0.085','0.85','8.5','85.0'],a:1,m:1},
+    {sec:'A',q:'4 kg 750 g + 2 kg 500 g = ?',opts:['6 kg 250 g','7 kg 250 g','7 kg 500 g','8 kg'],a:1,m:1},
+    {sec:'A',q:'Berdasarkan carta palang di atas, berapa purata jumlah buku sebulan?',chart:{values:[120,95,140],labels:['Januari','Februari','Mac']},opts:['105','115','118','120'],a:2,m:1},
+    {sec:'A',q:'3/5 ÷ 3 = ?',opts:['1/5','2/5','3/5','1'],a:0,m:1},
+    {sec:'A',q:'Harga 5 kg beras ialah RM22.50. Berapa harga 1 kg beras?',opts:['RM4.00','RM4.50','RM5.00','RM5.50'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Sebuah kilang menghasilkan 2 450 unit barang sehari. Selepas 5 hari, 3 275 unit barang telah dijual. Berapa unit yang tinggal?',a:'8975',m:3,unit:'unit'},
+    {sec:'B',q:'Encik Hassan mempunyai sebidang tanah berbentuk segi empat tepat dengan panjang 45 m dan lebar 32 m. Harga tanah itu ialah RM85 per meter persegi. Berapakah harga keseluruhan tanah itu?',a:'122400',m:3,unit:'RM'},
+    {sec:'B',q:'Sebuah besen mengandungi 12.5 liter air. Mak menuang 4.75 liter untuk memasak dan 2.8 liter untuk mencuci. Berapa liter air yang tinggal dalam besen?',a:'4.95',m:3,unit:'liter'},
+    {sec:'B',q:'Seorang peniaga membeli 480 biji telur dengan harga RM0.35 sebiji. Dia menjual telur itu dengan harga RM0.50 sebiji. Berapa keuntungan peniaga itu?',a:'72',m:3,unit:'RM'},
+    {sec:'B',q:'Dalam sebuah majlis, 2/5 daripada tetamu ialah kanak-kanak dan bakinya ialah dewasa. Jika bilangan dewasa ialah 180 orang, berapa jumlah tetamu dalam majlis itu?',a:'300',m:3,unit:'orang'},
+    {sec:'B',q:'Sebuah kereta bergerak dari bandar A ke bandar B sejauh 240 km. Kereta itu bertolak pada pukul 8.30 pagi dengan kelajuan purata 80 km/j. Pukul berapakah kereta itu tiba di bandar B?',a:'11.30',m:2,unit:'pagi'},
+    {sec:'B',q:'Harga 3 kg daging ialah RM67.50. Harga 2 kg ayam ialah RM18.00. Berapa jumlah wang yang perlu dibayar?',a:'85.50',m:2,unit:'RM'},
+    {sec:'B',q:'Luas sebuah segi tiga dengan tapak 24 cm dan tinggi 15 cm ialah? (Luas = 1/2 × tapak × tinggi)',a:'180',m:2,unit:'cm²'},
+    {sec:'B',q:'0.45 × 80 = ___',a:'36',m:2,unit:''},
+    {sec:'B',q:'12 500 ÷ 25 = ___',a:'500',m:2,unit:''}
+  ]
+},
+5: {
+  label:'Darjah 5', time:75, totalMarks:70,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:40, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tunjukkan cara pengiraan dan tulis jawapan.', marks:30, type:'short'},
+  questions:[
+    {sec:'A',q:'Nilai digit 5 dalam 756 423 ialah?',opts:['49 950','49 700','49 930','50 000'],a:3,m:1},
+    {sec:'A',q:'Nilai digit 3 dalam 923 184 ialah?',opts:['3 000','3 800','2 100','3 030'],a:0,m:1},
+    {sec:'A',q:'Nilai digit 8 dalam 487 965 ialah?',opts:['74 000','79 400','80 000','79 930'],a:2,m:1},
+    {sec:'A',q:'Nilai digit 7 dalam 614 758 ialah?',opts:['-19300','660','700','4 700'],a:2,m:1},
+    {sec:'A',q:'Nilai digit 3 dalam 359 672 ialah?',opts:['250 000','300 000','304 000','303 000'],a:1,m:1},
+    {sec:'A',q:'456 789 + 123 456 = ?',opts:['585 245','580 145','580 245','580 215'],a:2,m:1},
+    {sec:'A',q:'823 456 - 345 678 = ?',opts:['477 378','477 778','485 778','477 978'],a:1,m:1},
+    {sec:'A',q:'2 450 × 36 = ?',opts:['87 500','88 600','86 200','88 200'],a:3,m:1},
+    {sec:'A',q:'48 600 ÷ 45 = ?',opts:['1 080','-920','1 082','9 080'],a:0,m:1},
+    {sec:'A',q:'356 + 289 = ?',opts:['735','-55','-355','645'],a:3,m:1},
+    {sec:'A',q:'2/5 + 1/5 = ?',opts:['1','1/2','3/5','2/6'],a:2,m:1},
+    {sec:'A',q:'3/4 - 1/4 = ?',opts:['1/4','3/4','1','2/4'],a:3,m:1},
+    {sec:'A',q:'1/3 + 1/6 = ?',opts:['3/6','1/5','2/6','4/6'],a:0,m:1},
+    {sec:'A',q:'2/3 × 3 = ?',opts:['1/2','2','3/4','1/4'],a:1,m:1},
+    {sec:'A',q:'5/6 ÷ 5 = ?',opts:['3/4','1/2','1/6','1/4'],a:2,m:1},
+    {sec:'A',q:'4.5 + 2.75 = ?',opts:['7.0','7.25','8.25','7.5'],a:1,m:1},
+    {sec:'A',q:'8.6 − 3.25 = ?',opts:['5.25','5.35','5.85','6.35'],a:1,m:1},
+    {sec:'A',q:'0.5 × 12 = ?',opts:['6.5','5.75','6.0','5.9'],a:2,m:1},
+    {sec:'A',q:'7.2 + 4.8 = ?',opts:['11.5','12.25','11.0','12.0'],a:3,m:1},
+    {sec:'A',q:'15.6 ÷ 3 = ?',opts:['4.95','5.2','5.1','4.2'],a:1,m:1},
+    {sec:'A',q:'10% daripada 200 = ?',opts:['20','30','25','10'],a:0,m:1},
+    {sec:'A',q:'20% daripada 500 = ?',opts:['80','95','105','100'],a:3,m:1},
+    {sec:'A',q:'25% daripada 80 = ?',opts:['15','0','40','20'],a:3,m:1},
+    {sec:'A',q:'15% daripada 600 = ?',opts:['80','90','95','70'],a:1,m:1},
+    {sec:'A',q:'50% daripada 400 = ?',opts:['200','180','205','210'],a:0,m:1},
+    {sec:'A',q:'Seorang peniaga membeli sebuah barang pada harga RM45 dan menjualnya pada harga RM60. Berapakah untung yang diperoleh?',opts:['RM0','RM10','RM15','RM30'],a:2,m:1},
+    {sec:'A',q:'Seorang peniaga membeli sebuah barang pada harga RM80 dan menjualnya pada harga RM65. Berapakah rugi yang diperoleh?',opts:['RM10','RM15','RM5','RM25'],a:1,m:1},
+    {sec:'A',q:'Harga asal sehelai baju ialah RM120. Diskaun 15% diberikan. Berapakah harga selepas diskaun?',opts:['RM117','RM107','RM97','RM102'],a:3,m:1},
+    {sec:'A',q:'Seorang peniaga membeli sebuah barang pada harga RM25 dan menjualnya pada harga RM38. Berapakah untung yang diperoleh?',opts:['RM13','RM23','RM18','RM-2'],a:0,m:1},
+    {sec:'A',q:'Harga asal sehelai baju ialah RM250. Diskaun 20% diberikan. Berapakah harga selepas diskaun?',opts:['RM185','RM205','RM210','RM200'],a:3,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 15, 20, 25, 10, 30?',opts:['17','20','21','23'],a:1,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 12, 18, 24, 6?',opts:['12','15','13','14'],a:1,m:1},
+    {sec:'A',q:'Sebuah bekas mengandungi 4.5 liter air. 2.75 liter air ditambah. Berapakah jumlah air sekarang?',opts:['6.25 liter','7.5 liter','6.75 liter','7.25 liter'],a:3,m:1},
+    {sec:'A',q:'Sebuah tangki mengandungi 10 liter air. 3.25 liter digunakan. Berapakah baki air?',opts:['5.75 liter','6.75 liter','6.5 liter','7.0 liter'],a:1,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 100, 150, 200, 50?',opts:['125','123','126','124'],a:0,m:1},
+    {sec:'A',q:'Isipadu sebuah kuboid dengan panjang 4 cm, lebar 3 cm dan tinggi 2 cm ialah?',opts:['19 cm³','24 cm³','22 cm³','14 cm³'],a:1,m:1},
+    {sec:'A',q:'Isipadu sebuah kuboid dengan panjang 5 cm, lebar 5 cm dan tinggi 5 cm ialah?',opts:['135 cm³','127 cm³','130 cm³','125 cm³'],a:3,m:1},
+    {sec:'A',q:'Isipadu sebuah kuboid dengan panjang 6 cm, lebar 4 cm dan tinggi 3 cm ialah?',opts:['77 cm³','72 cm³','74 cm³','62 cm³'],a:1,m:1},
+    {sec:'A',q:'Isipadu sebuah kuboid dengan panjang 10 cm, lebar 2 cm dan tinggi 2 cm ialah?',opts:['50 cm³','35 cm³','40 cm³','30 cm³'],a:2,m:1},
+    {sec:'A',q:'Isipadu sebuah kuboid dengan panjang 3 cm, lebar 3 cm dan tinggi 3 cm ialah?',opts:['32 cm³','27 cm³','37 cm³','17 cm³'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Sebuah kilang mengeluarkan 3 850 unit barang sehari. Selepas 6 hari, 18 200 unit telah dijual. Berapa unit barang yang masih tinggal?',a:'4900',m:4,unit:'unit'},
+    {sec:'B',q:'Puan Aina membeli sebidang tanah seluas 65 m panjang dan 40 m lebar dengan harga RM120 per meter persegi. Berapakah jumlah harga tanah itu?',a:'312000',m:4,unit:'RM'},
+    {sec:'B',q:'Sebuah tangki air berbentuk kuboid berukuran 2 m × 1.5 m × 1 m. Berapa liter air yang boleh diisi sepenuhnya? (1 m³ = 1 000 liter)',a:'3000',m:4,unit:'liter'},
+    {sec:'B',q:'Encik Zul mendapat gaji RM3 600 sebulan. Dia membelanjakan 2/5 untuk sewa rumah dan 1/4 untuk perbelanjaan makanan. Berapakah baki wangnya?',a:'1260',m:3,unit:'RM'},
+    {sec:'B',q:'Sebuah kedai menjual 480 biji telur pada RM0.45 sebiji. Kos untuk membeli semua telur itu ialah RM172.80. Berapakah keuntungan kedai itu?',a:'43.2',m:3,unit:'RM'},
+    {sec:'B',q:'Sebuah bekas mengandungi 18.5 liter jus. 6.75 liter dituang ke dalam botol A dan 4.5 liter ke dalam botol B. Berapa liter jus yang tinggal dalam bekas itu?',a:'7.25',m:3,unit:'liter'},
+    {sec:'B',q:'Harga asal sebuah basikal ialah RM320. Kedai memberi diskaun 15%. Berapakah harga basikal itu selepas diskaun?',a:'272',m:3,unit:'RM'},
+    {sec:'B',q:'Sebuah kubus mempunyai sisi 6 cm. Berapakah isipadunya?',a:'216',m:2,unit:'cm³'},
+    {sec:'B',q:'3/8 + 1/4 = ___ (tulis dalam bentuk paling ringkas)',a:'5/8',m:2,unit:''},
+    {sec:'B',q:'Apakah min (purata) bagi 45, 60, 75, 30, 90?',a:'60',m:2,unit:''},
+  ]
+},
+6: {
+  label:'Darjah 6', time:80, totalMarks:80,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:45, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tunjukkan cara pengiraan dan tulis jawapan.', marks:35, type:'short'},
+  questions:[
+    {sec:'A',q:'Nilai digit 5 dalam 3 456 789 ialah?',opts:['5 000','40 000','50 000','500 000'],a:2,m:1},
+    {sec:'A',q:'Nilai digit 4 dalam 8 123 456 ialah?',opts:['420','400','310','20 400'],a:1,m:1},
+    {sec:'A',q:'Nilai digit 5 dalam 5 967 234 ialah?',opts:['5 030 000','5 000 040','4 700 000','5 000 000'],a:3,m:1},
+    {sec:'A',q:'Nilai digit 7 dalam 2 345 678 ialah?',opts:['70','160','-99 930','30'],a:0,m:1},
+    {sec:'A',q:'Nilai digit 8 dalam 9 081 234 ialah?',opts:['80 000','160 000','79 800','84 000'],a:0,m:1},
+    {sec:'A',q:'1/4 sebagai perpuluhan = ?',opts:['25%','40%','0.25','0.2'],a:2,m:1},
+    {sec:'A',q:'0.6 sebagai pecahan paling ringkas = ?',opts:['0.2','3/5','0.4','0.5'],a:1,m:1},
+    {sec:'A',q:'3/5 sebagai peratus = ?',opts:['0.4','60%','70%','40%'],a:1,m:1},
+    {sec:'A',q:'75% sebagai pecahan paling ringkas = ?',opts:['3/4','70%','0.4','1/2'],a:0,m:1},
+    {sec:'A',q:'0.125 sebagai peratus = ?',opts:['0.2','25%','12.5%','2/3'],a:2,m:1},
+    {sec:'A',q:'1/2 + 3/4 = ?',opts:['5/4','3/4','4.75','6.75'],a:0,m:1},
+    {sec:'A',q:'30% daripada 120 = ?',opts:['5/8','40','35%','36'],a:3,m:1},
+    {sec:'A',q:'2.5 + 3.25 = ?',opts:['5.75','0.5','0.15','55%'],a:0,m:1},
+    {sec:'A',q:'9/20 sebagai peratus ialah?',opts:['6.75','45%','48','24'],a:1,m:1},
+    {sec:'A',q:'0.4 − 0.35 = ?',opts:['55%','0.15','0.05','3/4'],a:2,m:1},
+    {sec:'A',q:'Seorang peniaga membeli barang dengan harga RM150 dan menjualnya dengan harga RM195. Berapakah untung yang diperoleh?',opts:['RM30','RM45','RM60','RM40'],a:1,m:1},
+    {sec:'A',q:'Seorang peniaga membeli barang dengan harga RM280 dan menjualnya dengan harga RM240. Berapakah rugi yang diperoleh?',opts:['RM40','RM35','RM25','RM50'],a:0,m:1},
+    {sec:'A',q:'Harga asal sebuah basikal ialah RM500. Diskaun 12% diberikan. Harga selepas diskaun ialah?',opts:['RM450','RM425','RM435','RM440'],a:3,m:1},
+    {sec:'A',q:'Seorang peniaga membeli barang dengan harga RM85 dan menjualnya dengan harga RM110. Berapakah untung yang diperoleh?',opts:['RM40','RM10','RM15','RM25'],a:3,m:1},
+    {sec:'A',q:'Harga asal sebuah basikal ialah RM400. Diskaun 25% diberikan. Harga selepas diskaun ialah?',opts:['RM305','RM300','RM315','RM310'],a:1,m:1},
+    {sec:'A',q:'Sebuah kereta melalui jarak 240 km dalam masa 4 jam. Berapakah kelajuan purata kereta itu?',opts:['65 km/j','50 km/j','60 km/j','55 km/j'],a:2,m:1},
+    {sec:'A',q:'Sebuah kereta melalui jarak 360 km dalam masa 6 jam. Berapakah kelajuan purata kereta itu?',opts:['55 km/j','65 km/j','60 km/j','70 km/j'],a:2,m:1},
+    {sec:'A',q:'Sebuah bas bergerak dengan kelajuan 90 km/j selama 4 jam. Berapa jauh jarak yang dilalui?',opts:['380 km','370 km','360 km','350 km'],a:2,m:1},
+    {sec:'A',q:'Sebuah kereta melalui jarak 150 km dalam masa 3 jam. Berapakah kelajuan purata kereta itu?',opts:['45 km/j','60 km/j','40 km/j','50 km/j'],a:3,m:1},
+    {sec:'A',q:'Sebuah bas bergerak dengan kelajuan 70 km/j selama 3 jam. Berapa jauh jarak yang dilalui?',opts:['220 km','200 km','190 km','210 km'],a:3,m:1},
+    {sec:'A',q:'Lilitan sebuah bulatan dengan jejari 14 cm ialah? (guna π = 22/7)',opts:['94 cm','88 cm','82 cm','92 cm'],a:1,m:1},
+    {sec:'A',q:'Lilitan sebuah bulatan dengan jejari 21 cm ialah? (guna π = 22/7)',opts:['138 cm','136 cm','128 cm','132 cm'],a:3,m:1},
+    {sec:'A',q:'Lilitan sebuah bulatan dengan jejari 7 cm ialah? (guna π = 22/7)',opts:['46 cm','38 cm','44 cm','40 cm'],a:2,m:1},
+    {sec:'A',q:'Lilitan sebuah bulatan dengan jejari 28 cm ialah? (guna π = 22/7)',opts:['182 cm','170 cm','176 cm','180 cm'],a:2,m:1},
+    {sec:'A',q:'Lilitan sebuah bulatan dengan jejari 35 cm ialah? (guna π = 22/7)',opts:['224 cm','226 cm','222 cm','220 cm'],a:3,m:1},
+    {sec:'A',q:'RM20 dibahagikan antara Ali dan Bakar dengan nisbah 4:5. Berapakah bahagian yang lebih besar?',opts:['RM16','RM6','RM10','RM8'],a:2,m:1},
+    {sec:'A',q:'RM30 dibahagikan antara Ali dan Bakar dengan nisbah 6:5. Berapakah bahagian yang lebih besar?',opts:['RM12','RM16','RM18','RM14'],a:0,m:1},
+    {sec:'A',q:'RM45 dibahagikan antara Ali dan Bakar dengan nisbah 9:5. Berapakah bahagian yang lebih besar?',opts:['RM23','RM21','RM29','RM27'],a:3,m:1},
+    {sec:'A',q:'RM24 dibahagikan antara Ali dan Bakar dengan nisbah 4:6. Berapakah bahagian yang lebih besar?',opts:['RM14','RM12','RM10','RM18'],a:1,m:1},
+    {sec:'A',q:'RM50 dibahagikan antara Ali dan Bakar dengan nisbah 10:5. Berapakah bahagian yang lebih besar?',opts:['RM24','RM28','RM26','RM30'],a:3,m:1},
+    {sec:'A',q:'x + 3 = 9. Nilai x ialah?',opts:['9','7','6','4'],a:2,m:1},
+    {sec:'A',q:'2x = 10. Nilai x ialah?',opts:['5','2','6','8'],a:0,m:1},
+    {sec:'A',q:'x − 4 = 8. Nilai x ialah?',opts:['12','11','13','15'],a:0,m:1},
+    {sec:'A',q:'3x = 18. Nilai x ialah?',opts:['6','5','8','3'],a:0,m:1},
+    {sec:'A',q:'x + 7 = 14. Nilai x ialah?',opts:['8','4','7','5'],a:2,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 12, 15, 18, 20, 10?',opts:['16','15','13','17'],a:1,m:1},
+    {sec:'A',q:'Apakah mod bagi data: 5, 5, 7, 8, 5?',opts:['7','6','5','3'],a:2,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 22, 25, 28, 30, 15?',opts:['23','27','22','24'],a:3,m:1},
+    {sec:'A',q:'Apakah mod bagi data: 3, 3, 3, 6, 9?',opts:['3','2','5','0'],a:0,m:1},
+    {sec:'A',q:'Apakah min (purata) bagi 40, 50, 60, 70, 30?',opts:['53','50','49','48'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Sebuah kilang mengeluarkan 5 250 unit barang sehari. Selepas 8 hari, 32 400 unit telah dijual. Berapa unit yang masih tinggal?',a:'9600',m:4,unit:'unit'},
+    {sec:'B',q:'Encik Fauzi membeli sebidang tanah berukuran 80 m × 55 m dengan harga RM95 per meter persegi. Berapakah jumlah harga tanah itu?',a:'418000',m:4,unit:'RM'},
+    {sec:'B',q:'Sebuah kereta bergerak dengan kelajuan purata 85 km/j selama 3 jam 30 minit. Berapakah jarak yang dilalui?',a:'297.5',m:4,unit:'km'},
+    {sec:'B',q:'Sebuah kedai menjual 650 biji telur pada harga RM0.42 sebiji. Kos untuk membeli semua telur ialah RM214.50. Berapakah keuntungan kedai itu?',a:'58.5',m:4,unit:'RM'},
+    {sec:'B',q:'RM960 dibahagikan antara Amin, Bob dan Chong dengan nisbah 2:3:5. Berapakah bahagian Chong?',a:'480',m:4,unit:'RM'},
+    {sec:'B',q:'Encik Rashid mendapat gaji RM4 200 sebulan. Dia membelanjakan 3/7 untuk perbelanjaan rumah dan 20% daripada bakinya untuk simpanan. Berapakah jumlah simpanannya?',a:'480',m:3,unit:'RM'},
+    {sec:'B',q:'Harga asal sebuah peti sejuk ialah RM1 800. Diskaun 12% diberikan semasa jualan. Berapakah harga peti sejuk itu selepas diskaun?',a:'1584',m:3,unit:'RM'},
+    {sec:'B',q:'Lilitan sebuah taman berbentuk bulatan berjejari 21 m ialah? (guna π = 22/7)',a:'132',m:3,unit:'m'},
+    {sec:'B',q:'3x + 5 = 26. Nilai x ialah?',a:'7',m:3,unit:''},
+    {sec:'B',q:'Apakah min (purata) bagi 65, 72, 80, 58, 90?',a:'73',m:3,unit:''},
+  ]
+}
+},
+en: {
+1: {
+  label:'Year 1', time:75, totalMarks:30,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:20, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'What is 6 + 8?',opts:['12','13','14','15'],a:2,m:1},
+    {sec:'A',q:'Which number is the greatest?',opts:['27','32','19','45'],a:3,m:1},
+    {sec:'A',q:'15 − 7 = ?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Tom has 8 stickers. He gives 3 to his friend. How many does he have left?',opts:['4','5','6','7'],a:1,m:1},
+    {sec:'A',q:'Which number is odd?',opts:['14','16','21','24'],a:2,m:1},
+    {sec:'A',q:'6 + __ = 14. What is the missing number?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'Arrange from smallest to largest: 19, 7, 31, 25',opts:['7, 19, 25, 31','7, 25, 19, 31','19, 7, 25, 31','31, 25, 19, 7'],a:0,m:1},
+    {sec:'A',q:'20 − __ = 13. What is the missing number?',opts:['5','6','7','8'],a:2,m:1},
+    {sec:'A',q:'What is 20 + 50?',opts:['60','65','70','75'],a:2,m:1},
+    {sec:'A',q:'Mary has 18 cents. She spends 9 cents. How much does she have left?',opts:['7 cents','8 cents','9 cents','10 cents'],a:2,m:1},
+    {sec:'A',q:'What number comes after 39?',opts:['38','40','41','42'],a:1,m:1},
+    {sec:'A',q:'3 + 3 + 3 = ?',opts:['6','7','8','9'],a:3,m:1},
+    {sec:'A',q:'There are 4 rows of chairs with 5 chairs each. How many chairs altogether?',opts:['18','19','20','21'],a:2,m:1},
+    {sec:'A',q:'Which number is between 30 and 35?',opts:['28','32','36','38'],a:1,m:1},
+    {sec:'A',q:'60 − 30 = ?',opts:['20','25','30','35'],a:2,m:1},
+    {sec:'A',q:'A jar has 25 sweets. 8 are taken out. How many are left?',opts:['15','16','17','18'],a:2,m:1},
+    {sec:'A',q:'Which number is even?',opts:['11','15','23','28'],a:3,m:1},
+    {sec:'A',q:'What is 10 + 10 + 10 + 10?',opts:['30','35','40','45'],a:2,m:1},
+    {sec:'A',q:'Amy has 7 red pens and 8 blue pens. How many pens does she have altogether?',opts:['13','14','15','16'],a:2,m:1},
+    {sec:'A',q:'What is the place value of digit 4 in the number 47?',opts:['Ones','Tens','Hundreds','Thousands'],a:1,m:1},
+    // SECTION B
+    {sec:'B',q:'9 + 6 = ___',a:'15',m:1,unit:''},
+    {sec:'B',q:'25 − 8 = ___',a:'17',m:1,unit:''},
+    {sec:'B',q:'Write this number in words: 13',a:'thirteen',m:1,unit:''},
+    {sec:'B',q:'A box has 4 chocolates. How many chocolates are in 3 boxes?',a:'12',m:1,unit:'chocolates'},
+    {sec:'B',q:'What is the largest even number between 10 and 20?',a:'20',m:1,unit:''},
+    {sec:'B',q:'35 + 15 = ___',a:'50',m:1,unit:''},
+    {sec:'B',q:'Mother has 16 eggs. She uses 5 to bake a cake. How many are left?',a:'11',m:1,unit:'eggs'},
+    {sec:'B',q:'Write the number with tens = 4 and ones = 7.',a:'47',m:1,unit:''},
+    {sec:'B',q:'6 + __ = 15. Fill in the blank.',a:'9',m:1,unit:''},
+    {sec:'B',q:'John has 20 cents. He gets 15 more cents. How much does he have now?',a:'35',m:1,unit:'cents'}
+  ]
+},
+2: {
+  label:'Year 2', time:75, totalMarks:40,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:25, type:'mcq'},
+  secB:{name:'Section B', instr:'Show your working and write the answer.', marks:15, type:'short'},
+  questions:[
+    {sec:'A',q:'What is 56 + 37?',opts:['83','92','93','94'],a:2,m:1},
+    {sec:'A',q:'What is the value of digit 4 in 342?',opts:['4','40','400','4 000'],a:1,m:1},
+    {sec:'A',q:'95 − 47 = ?',opts:['42','47','48','52'],a:2,m:1},
+    {sec:'A',q:'A basket has 9 oranges. How many oranges in 4 baskets?',opts:['28','32','36','40'],a:2,m:1},
+    {sec:'A',q:'56 ÷ 7 = ?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'The table shows: Pencil: 30 cents, Eraser: 15 cents, Ruler: 45 cents.\nHow much does a pencil and eraser cost altogether?',opts:['40 cents','45 cents','50 cents','55 cents'],a:1,m:1},
+    {sec:'A',q:'Which number is closest to 100?',opts:['88','93','96','102'],a:2,m:1},
+    {sec:'A',q:'6 × 8 = ?',opts:['42','46','48','54'],a:2,m:1},
+    {sec:'A',q:'Arrange from largest: 205, 250, 205, 520',opts:['520, 250, 205, 205','205, 205, 250, 520','250, 520, 205, 205','520, 205, 250, 205'],a:0,m:1},
+    {sec:'A',q:'A class has 34 pupils. 16 are girls. How many are boys?',opts:['16','17','18','19'],a:2,m:1},
+    {sec:'A',q:'4 × 9 = ?',opts:['32','34','36','38'],a:2,m:1},
+    {sec:'A',q:'120 + 350 = ?',opts:['450','460','470','480'],a:2,m:1},
+    {sec:'A',q:'A shop has 400 loaves. 175 are sold. How many are left?',opts:['215','225','235','245'],a:1,m:1},
+    {sec:'A',q:'What is 1/2 of 18?',opts:['6','7','8','9'],a:3,m:1},
+    {sec:'A',q:'32 ÷ 4 = ?',opts:['6','7','8','9'],a:2,m:1},
+    {sec:'A',q:'What is the place value of 3 in 530?',opts:['Ones','Tens','Hundreds','Thousands'],a:1,m:1},
+    {sec:'A',q:'A tin has 36 sweets. There are 5 tins. How many sweets altogether?',opts:['160','170','180','190'],a:2,m:1},
+    {sec:'A',q:'800 − 425 = ?',opts:['365','375','385','395'],a:1,m:1},
+    {sec:'A',q:'Emma saves RM4 every week. How much does she save in 9 weeks?',opts:['RM32','RM36','RM40','RM44'],a:1,m:1},
+    {sec:'A',q:'3 × 3 × 3 = ?',opts:['9','18','27','36'],a:2,m:1},
+    {sec:'A',q:'Which fraction is shaded if 2 out of 6 parts are shaded?',opts:['1/3','2/4','2/6','3/6'],a:2,m:1},
+    {sec:'A',q:'74 + 28 = ?',opts:['91','92','102','112'],a:2,m:1},
+    {sec:'A',q:'30 pencils are shared equally among 6 pupils. How many does each pupil get?',opts:['4','5','6','7'],a:1,m:1},
+    {sec:'A',q:'300 + 50 + 8 = ?',opts:['358','385','508','538'],a:0,m:1},
+    {sec:'A',q:'Which fraction is the largest?\n1/2, 1/3, 1/4, 1/6',opts:['1/6','1/4','1/3','1/2'],a:3,m:1},
+    // SECTION B
+    {sec:'B',q:'A garden has 134 red flowers and 219 yellow flowers. How many flowers are there altogether?',a:'353',m:2,unit:'flowers'},
+    {sec:'B',q:'Mr. Lee has 72 eggs. He puts them equally into 8 trays. How many eggs are in each tray?',a:'9',m:2,unit:'eggs'},
+    {sec:'B',q:'A shirt costs RM28. A pair of trousers costs RM35. What is the total cost?',a:'63',m:2,unit:'RM'},
+    {sec:'B',q:'A bookshop has 600 books. On Monday, 185 books were sold. On Tuesday, 145 books were sold. How many books are left?',a:'270',m:2,unit:'books'},
+    {sec:'B',q:'A minibus can carry 9 passengers. How many passengers can 8 minibuses carry?',a:'72',m:2,unit:'passengers'},
+    {sec:'B',q:'Mrs. Chan bakes 180 cookies. She packs them equally into 6 boxes. How many cookies are in each box?',a:'30',m:1,unit:'cookies'},
+    {sec:'B',q:'A packet of noodles costs RM3. A bottle of water costs RM2. Ali buys 4 packets of noodles and 3 bottles of water. How much does he pay altogether?',a:'18',m:1,unit:'RM'},
+    {sec:'B',q:'350 + 275 = ___',a:'625',m:1,unit:''},
+    {sec:'B',q:'600 − 248 = ___',a:'352',m:1,unit:''},
+    {sec:'B',q:'7 × 9 = ___',a:'63',m:1,unit:''}
+  ]
+},
+3: {
+  label:'Year 3', time:75, totalMarks:50,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:30, type:'mcq'},
+  secB:{name:'Section B', instr:'Show your working and write the answer.', marks:20, type:'short'},
+  questions:[
+    {sec:'A',q:'4 321 + 3 456 = ?',opts:['7 677','7 767','7 777','7 877'],a:2,m:1},
+    {sec:'A',q:'What is the value of digit 8 in 8 514?',opts:['8','80','800','8 000'],a:3,m:1},
+    {sec:'A',q:'7 000 − 3 456 = ?',opts:['3 444','3 544','3 644','3 744'],a:1,m:1},
+    {sec:'A',q:'35 × 6 = ?',opts:['180','200','210','220'],a:2,m:1},
+    {sec:'A',q:'168 ÷ 7 = ?',opts:['22','24','26','28'],a:1,m:1},
+    {sec:'A',q:'A farmer harvests 1 350 kg of rice each day. How many kg in 4 days?',opts:['4 800','5 200','5 400','5 800'],a:2,m:1},
+    {sec:'A',q:'1/5 of 250 = ?',opts:['25','40','50','75'],a:2,m:1},
+    {sec:'A',q:'Convert 4.5 km to metres.',opts:['45 m','450 m','4 500 m','45 000 m'],a:2,m:1},
+    {sec:'A',q:'9.45 a.m. + 2 hours 30 minutes = ?',opts:['11.15 a.m.','11.45 a.m.','12.00 noon','12.15 p.m.'],a:3,m:1},
+    {sec:'A',q:'The perimeter of a square with side 11 cm is?',opts:['33 cm','40 cm','44 cm','48 cm'],a:2,m:1},
+    {sec:'A',q:'3/7 + 2/7 = ?',opts:['1/7','4/7','5/7','6/7'],a:2,m:1},
+    {sec:'A',q:'1 kg of sugar costs RM2.80. How much for 5 kg?',opts:['RM12.00','RM13.00','RM14.00','RM15.00'],a:2,m:1},
+    {sec:'A',q:'3 600 ÷ 9 = ?',opts:['300','350','400','450'],a:2,m:1},
+    {sec:'A',q:'Write in figures: Seven minutes past ten in the morning.',opts:['7.10 a.m.','10.07 a.m.','10.17 a.m.','10.70 a.m.'],a:1,m:1},
+    {sec:'A',q:'Area of a rectangle 9 cm long and 6 cm wide is?',opts:['30 cm²','44 cm²','54 cm²','60 cm²'],a:2,m:1},
+    {sec:'A',q:'2 456 + 1 789 − 800 = ?',opts:['3 245','3 345','3 445','3 545'],a:2,m:1},
+    {sec:'A',q:'2/5 of 60 = ?',opts:['20','24','28','30'],a:1,m:1},
+    {sec:'A',q:'A worker earns RM55 a day. How much in 6 days?',opts:['RM300','RM310','RM320','RM330'],a:3,m:1},
+    {sec:'A',q:'Convert 3 kg 750 g to grams.',opts:['375 g','3 075 g','3 750 g','37 500 g'],a:2,m:1},
+    {sec:'A',q:'An equilateral triangle has perimeter 33 cm. What is the length of each side?',opts:['9 cm','10 cm','11 cm','12 cm'],a:2,m:1},
+    {sec:'A',q:'4/5 − 2/5 = ?',opts:['1/5','2/5','3/5','4/5'],a:1,m:1},
+    {sec:'A',q:'Convert 2 hours 45 minutes to minutes.',opts:['145 min','155 min','165 min','175 min'],a:2,m:1},
+    {sec:'A',q:'The price of 4 shirts is RM96. What is the price of one shirt?',opts:['RM22','RM24','RM26','RM28'],a:1,m:1},
+    {sec:'A',q:'7 × 6 × 3 = ?',opts:['116','122','126','132'],a:2,m:1},
+    {sec:'A',q:'700 × 9 = ?',opts:['5 600','5 800','6 000','6 300'],a:3,m:1},
+    {sec:'A',q:'A tank holds 6 000 litres. 2 450 litres is used. How many litres remain?',opts:['3 350','3 450','3 550','3 650'],a:2,m:1},
+    {sec:'A',q:'1 2/5 + 2 1/5 = ?',opts:['3 2/5','3 3/5','3 4/5','4'],a:1,m:1},
+    {sec:'A',q:'Convert 2.25 kg to grams.',opts:['225 g','2 025 g','2 250 g','22 500 g'],a:2,m:1},
+    {sec:'A',q:'A pupil scores 92 out of 100. What percentage is this?',opts:['9.2%','90%','92%','95%'],a:2,m:1},
+    {sec:'A',q:'Which are prime numbers between 10 and 20?',opts:['11, 13, 17, 19','11, 13, 15, 19','12, 14, 16, 18','10, 15, 17, 20'],a:0,m:1},
+    // SECTION B
+    {sec:'B',q:'A factory produces 1 450 units per day. How many units are produced in 6 days?',a:'8700',m:2,unit:'units'},
+    {sec:'B',q:'A television costs RM1 389. A radio costs RM256. What is the total cost of both items?',a:'1645',m:2,unit:'RM'},
+    {sec:'B',q:'Mr. Tan has RM5 000. He spends RM1 925 on furniture and RM875 on electrical items. How much money does he have left?',a:'2200',m:3,unit:'RM'},
+    {sec:'B',q:'A rectangular garden is 48 m long and 25 m wide. What is its perimeter?',a:'146',m:3,unit:'m'},
+    {sec:'B',q:'A bag weighs 3 kg 250 g. Convert this to grams.',a:'3250',m:2,unit:'g'},
+    {sec:'B',q:'2/9 + 5/9 = ___',a:'7/9',m:2,unit:''},
+    {sec:'B',q:'8.30 a.m. + 4 hours 15 minutes = ___',a:'12.45',m:2,unit:'p.m.'},
+    {sec:'B',q:'The area of a square with side 13 cm is?',a:'169',m:2,unit:'cm²'},
+    {sec:'B',q:'5 400 ÷ 6 = ___',a:'900',m:1,unit:''},
+    {sec:'B',q:'1 kg of rice costs RM2.80. Mother buys 6 kg. How much does she pay?',a:'16.80',m:1,unit:'RM'}
+  ]
+},
+4: {
+  label:'Year 4', time:75, totalMarks:60,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:35, type:'mcq'},
+  secB:{name:'Section B', instr:'Show your working and write the answer.', marks:25, type:'short'},
+  questions:[
+    {sec:'A',q:'34 567 + 25 876 = ?',opts:['59 333','60 333','60 443','60 543'],a:2,m:1},
+    {sec:'A',q:'What is the value of digit 7 in 475 823?',opts:['7','700','7 000','70 000'],a:3,m:1},
+    {sec:'A',q:'90 000 − 46 875 = ?',opts:['43 125','43 225','44 125','44 225'],a:0,m:1},
+    {sec:'A',q:'425 × 9 = ?',opts:['3 725','3 800','3 825','3 900'],a:2,m:1},
+    {sec:'A',q:'5 832 ÷ 8 = ?',opts:['728','729','730','731'],a:1,m:1},
+    {sec:'A',q:'Convert 6.25 km to metres.',opts:['625 m','6 025 m','6 250 m','62 500 m'],a:2,m:1},
+    {sec:'A',q:'2/3 of 270 = ?',opts:['160','170','180','190'],a:2,m:1},
+    {sec:'A',q:'Area of a rectangle 18 cm × 14 cm = ?',opts:['64 cm²','232 cm²','252 cm²','272 cm²'],a:2,m:1},
+    {sec:'A',q:'Perimeter of a triangle with sides 14 cm, 17 cm and 21 cm = ?',opts:['50 cm','52 cm','54 cm','56 cm'],a:1,m:1},
+    {sec:'A',q:'0.4 + 0.55 = ?',opts:['0.59','0.85','0.95','0.99'],a:2,m:1},
+    {sec:'A',q:'A table costs RM312.50. A chair costs RM95.80. What is the total price?',opts:['RM398.20','RM408.30','RM418.30','RM428.30'],a:1,m:1},
+    {sec:'A',q:'2 3/5 + 1 4/5 = ?',opts:['3 7/5','4 2/5','4 3/5','4 7/5'],a:1,m:1},
+    {sec:'A',q:'Which number is exactly divisible by 7?',opts:['44','49','54','59'],a:1,m:1},
+    {sec:'A',q:'3.15 p.m. + 3 hours 55 minutes = ?',opts:['6.50 p.m.','7.00 p.m.','7.05 p.m.','7.10 p.m.'],a:3,m:1},
+    {sec:'A',q:'2 kg 400 g × 5 = ?',opts:['10 kg','11 kg','12 kg','13 kg'],a:2,m:1},
+    {sec:'A',q:'Convert 4 hours 15 minutes to minutes.',opts:['245 min','255 min','265 min','275 min'],a:1,m:1},
+    {sec:'A',q:'3/4 × 56 = ?',opts:['38','40','42','44'],a:2,m:1},
+    {sec:'A',q:'A car travels at 90 km/h. How far does it travel in 4 hours?',opts:['320 km','340 km','360 km','380 km'],a:2,m:1},
+    {sec:'A',q:'Original price of a jacket: RM120. Discount: 20%. What is the price after discount?',opts:['RM90','RM92','RM96','RM100'],a:2,m:1},
+    {sec:'A',q:'3.6 + 2.75 − 1.5 = ?',opts:['4.50','4.75','4.85','5.00'],a:2,m:1},
+    {sec:'A',q:'A trader has 5 sacks of rice, each 25 kg. He sells 80 kg. How many kg remain?',opts:['35 kg','40 kg','45 kg','50 kg'],a:2,m:1},
+    {sec:'A',q:'Which fraction is equivalent to 2/3?',opts:['4/8','6/9','8/9','4/9'],a:1,m:1},
+    {sec:'A',q:'Volume of a cuboid 6 cm × 5 cm × 4 cm = ?',opts:['110 cm³','120 cm³','130 cm³','140 cm³'],a:1,m:1},
+    {sec:'A',q:'What is the mean (average) of 10, 15, 20, 25, 5?',opts:['13','14','15','16'],a:2,m:1},
+    {sec:'A',q:'RM8.50 × 15 = ?',opts:['RM115.50','RM125.50','RM127.50','RM130.00'],a:2,m:1},
+    {sec:'A',q:'What is the first prime number after 30?',opts:['31','32','33','34'],a:0,m:1},
+    {sec:'A',q:'A cuboid tank measures 5 m × 3 m × 2 m. How many litres can it hold? (1 m³ = 1 000 litres)',opts:['25 000 L','28 000 L','30 000 L','32 000 L'],a:2,m:1},
+    {sec:'A',q:'0.8 × 150 = ?',opts:['100','110','120','130'],a:2,m:1},
+    {sec:'A',q:'Mrs. Lim earns RM3 200 per month. She saves 1/4 of her salary. How much does she save?',opts:['RM700','RM800','RM900','RM1 000'],a:1,m:1},
+    {sec:'A',q:'Convert 2 3/4 hours to minutes.',opts:['155 min','160 min','165 min','170 min'],a:2,m:1},
+    {sec:'A',q:'A pupil scores 92/100 in a test. Express this as a decimal.',opts:['0.092','0.92','9.2','92.0'],a:1,m:1},
+    {sec:'A',q:'5 kg 650 g + 3 kg 500 g = ?',opts:['8 kg 150 g','9 kg 150 g','9 kg 650 g','10 kg'],a:1,m:1},
+    {sec:'A',q:'Bar chart: January 110 books, February 90 books, March 130 books. What is the average per month?',opts:['100','110','120','130'],a:1,m:1},
+    {sec:'A',q:'2/6 ÷ 2 = ?',opts:['1/6','2/6','3/6','1'],a:0,m:1},
+    {sec:'A',q:'5 kg of flour costs RM27.50. What is the cost of 1 kg?',opts:['RM4.50','RM5.00','RM5.50','RM6.00'],a:2,m:1},
+    // SECTION B
+    {sec:'B',q:'A factory produces 3 150 units per day. After 5 days, 4 875 units are sold. How many units remain?',a:'10875',m:3,unit:'units'},
+    {sec:'B',q:'Mr. Wong owns a rectangular plot of land measuring 52 m by 38 m. The land costs RM95 per square metre. What is the total price of the land?',a:'187420',m:3,unit:'RM'},
+    {sec:'B',q:'A pail contains 15.5 litres of water. Mother uses 6.75 litres for cooking and 3.4 litres for washing. How many litres of water are left?',a:'5.35',m:3,unit:'litres'},
+    {sec:'B',q:'A trader buys 360 eggs at RM0.40 each. He sells them at RM0.60 each. What is his profit?',a:'72',m:3,unit:'RM'},
+    {sec:'B',q:'At a party, 3/5 of the guests are children and the rest are adults. If there are 160 adults, how many guests are there altogether?',a:'400',m:3,unit:'guests'},
+    {sec:'B',q:'A train departs from Station A at 9.45 a.m. and travels to Station B, a distance of 280 km, at an average speed of 80 km/h. At what time does it arrive?',a:'13.15',m:2,unit:'(1.15 p.m.)'},
+    {sec:'B',q:'4 kg of beef costs RM92. 3 kg of chicken costs RM27. What is the total amount paid?',a:'119',m:2,unit:'RM'},
+    {sec:'B',q:'The area of a triangle with base 30 cm and height 18 cm is? (Area = 1/2 × base × height)',a:'270',m:2,unit:'cm²'},
+    {sec:'B',q:'0.65 × 60 = ___',a:'39',m:2,unit:''},
+    {sec:'B',q:'14 400 ÷ 24 = ___',a:'600',m:2,unit:''}
+  ]
+},
+5: {
+  label:'Year 5', time:75, totalMarks:70,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:40, type:'mcq'},
+  secB:{name:'Section B', instr:'Show your working and write the answer.', marks:30, type:'short'},
+  questions:[
+    {sec:'A',q:'The value of digit 5 in 756 423 is?',opts:['49 950','49 700','49 930','50 000'],a:3,m:1},
+    {sec:'A',q:'The value of digit 3 in 923 184 is?',opts:['3 000','3 800','2 100','3 030'],a:0,m:1},
+    {sec:'A',q:'The value of digit 8 in 487 965 is?',opts:['74 000','79 400','80 000','79 930'],a:2,m:1},
+    {sec:'A',q:'The value of digit 7 in 614 758 is?',opts:['-19300','660','700','4 700'],a:2,m:1},
+    {sec:'A',q:'The value of digit 3 in 359 672 is?',opts:['250 000','300 000','304 000','303 000'],a:1,m:1},
+    {sec:'A',q:'456 789 + 123 456 = ?',opts:['585 245','580 145','580 245','580 215'],a:2,m:1},
+    {sec:'A',q:'823 456 - 345 678 = ?',opts:['477 378','477 778','485 778','477 978'],a:1,m:1},
+    {sec:'A',q:'2 450 × 36 = ?',opts:['87 500','88 600','86 200','88 200'],a:3,m:1},
+    {sec:'A',q:'48 600 ÷ 45 = ?',opts:['1 080','-920','1 082','9 080'],a:0,m:1},
+    {sec:'A',q:'356 + 289 = ?',opts:['735','-55','-355','645'],a:3,m:1},
+    {sec:'A',q:'2/5 + 1/5 = ?',opts:['1','1/2','3/5','2/6'],a:2,m:1},
+    {sec:'A',q:'3/4 - 1/4 = ?',opts:['1/4','3/4','1','2/4'],a:3,m:1},
+    {sec:'A',q:'1/3 + 1/6 = ?',opts:['3/6','1/5','2/6','4/6'],a:0,m:1},
+    {sec:'A',q:'2/3 × 3 = ?',opts:['1/2','2','3/4','1/4'],a:1,m:1},
+    {sec:'A',q:'5/6 ÷ 5 = ?',opts:['3/4','1/2','1/6','1/4'],a:2,m:1},
+    {sec:'A',q:'4.5 + 2.75 = ?',opts:['7.0','7.25','8.25','7.5'],a:1,m:1},
+    {sec:'A',q:'8.6 − 3.25 = ?',opts:['5.25','5.35','5.85','6.35'],a:1,m:1},
+    {sec:'A',q:'0.5 × 12 = ?',opts:['6.5','5.75','6.0','5.9'],a:2,m:1},
+    {sec:'A',q:'7.2 + 4.8 = ?',opts:['11.5','12.25','11.0','12.0'],a:3,m:1},
+    {sec:'A',q:'15.6 ÷ 3 = ?',opts:['4.95','5.2','5.1','4.2'],a:1,m:1},
+    {sec:'A',q:'10% of 200 = ?',opts:['20','30','25','10'],a:0,m:1},
+    {sec:'A',q:'20% of 500 = ?',opts:['80','95','105','100'],a:3,m:1},
+    {sec:'A',q:'25% of 80 = ?',opts:['15','0','40','20'],a:3,m:1},
+    {sec:'A',q:'15% of 600 = ?',opts:['80','90','95','70'],a:1,m:1},
+    {sec:'A',q:'50% of 400 = ?',opts:['200','180','205','210'],a:0,m:1},
+    {sec:'A',q:'A trader buys an item for RM45 and sells it for RM60. What is the profit?',opts:['RM0','RM10','RM15','RM30'],a:2,m:1},
+    {sec:'A',q:'A trader buys an item for RM80 and sells it for RM65. What is the loss?',opts:['RM10','RM15','RM5','RM25'],a:1,m:1},
+    {sec:'A',q:'The original price of a shirt is RM120. A 15% discount is given. What is the price after discount?',opts:['RM117','RM107','RM97','RM102'],a:3,m:1},
+    {sec:'A',q:'A trader buys an item for RM25 and sells it for RM38. What is the profit?',opts:['RM13','RM23','RM18','RM-2'],a:0,m:1},
+    {sec:'A',q:'The original price of a shirt is RM250. A 20% discount is given. What is the price after discount?',opts:['RM185','RM205','RM210','RM200'],a:3,m:1},
+    {sec:'A',q:'What is the mean (average) of 15, 20, 25, 10, 30?',opts:['17','20','21','23'],a:1,m:1},
+    {sec:'A',q:'What is the mean (average) of 12, 18, 24, 6?',opts:['12','15','13','14'],a:1,m:1},
+    {sec:'A',q:'A container has 4.5 litres of water. 2.75 litres are added. What is the total volume now?',opts:['6.25 liter','7.5 liter','6.75 liter','7.25 liter'],a:3,m:1},
+    {sec:'A',q:'A tank has 10 litres of water. 3.25 litres are used. How much water remains?',opts:['5.75 liter','6.75 liter','6.5 liter','7.0 liter'],a:1,m:1},
+    {sec:'A',q:'What is the mean (average) of 100, 150, 200, 50?',opts:['125','123','126','124'],a:0,m:1},
+    {sec:'A',q:'The volume of a cuboid with length 4 cm, width 3 cm and height 2 cm is?',opts:['19 cm³','24 cm³','22 cm³','14 cm³'],a:1,m:1},
+    {sec:'A',q:'The volume of a cuboid with length 5 cm, width 5 cm and height 5 cm is?',opts:['135 cm³','127 cm³','130 cm³','125 cm³'],a:3,m:1},
+    {sec:'A',q:'The volume of a cuboid with length 6 cm, width 4 cm and height 3 cm is?',opts:['77 cm³','72 cm³','74 cm³','62 cm³'],a:1,m:1},
+    {sec:'A',q:'The volume of a cuboid with length 10 cm, width 2 cm and height 2 cm is?',opts:['50 cm³','35 cm³','40 cm³','30 cm³'],a:2,m:1},
+    {sec:'A',q:'The volume of a cuboid with length 3 cm, width 3 cm and height 3 cm is?',opts:['32 cm³','27 cm³','37 cm³','17 cm³'],a:1,m:1},
+    // SECTION B
+    {sec:'B',q:'A factory produces 3 850 units a day. After 6 days, 18 200 units have been sold. How many units remain?',a:'4900',m:4,unit:'units'},
+    {sec:'B',q:'Mrs. Aina buys a piece of land 65 m long and 40 m wide at RM120 per square metre. What is the total price of the land?',a:'312000',m:4,unit:'RM'},
+    {sec:'B',q:'A cuboid water tank measures 2 m × 1.5 m × 1 m. How many litres can it hold when full? (1 m³ = 1 000 litres)',a:'3000',m:4,unit:'litres'},
+    {sec:'B',q:'Mr. Zul earns RM3 600 a month. He spends 2/5 on rent and 1/4 on food. How much money does he have left?',a:'1260',m:3,unit:'RM'},
+    {sec:'B',q:'A shop sells 480 eggs at RM0.45 each. The cost to buy all the eggs was RM172.80. What is the shop\'s profit?',a:'43.2',m:3,unit:'RM'},
+    {sec:'B',q:'A container holds 18.5 litres of juice. 6.75 litres is poured into bottle A and 4.5 litres into bottle B. How many litres of juice remain in the container?',a:'7.25',m:3,unit:'litres'},
+    {sec:'B',q:'The original price of a bicycle is RM320. The shop gives a 15% discount. What is the price after the discount?',a:'272',m:3,unit:'RM'},
+    {sec:'B',q:'A cube has a side of 6 cm. What is its volume?',a:'216',m:2,unit:'cm³'},
+    {sec:'B',q:'3/8 + 1/4 = ___ (write in simplest form)',a:'5/8',m:2,unit:''},
+    {sec:'B',q:'What is the mean (average) of 45, 60, 75, 30, 90?',a:'60',m:2,unit:''},
+  ]
+},
+6: {
+  label:'Year 6', time:80, totalMarks:80,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:45, type:'mcq'},
+  secB:{name:'Section B', instr:'Show your working and write the answer.', marks:35, type:'short'},
+  questions:[
+    {sec:'A',q:'The value of digit 5 in 3 456 789 is?',opts:['5 000','40 000','50 000','500 000'],a:2,m:1},
+    {sec:'A',q:'The value of digit 4 in 8 123 456 is?',opts:['420','400','310','20 400'],a:1,m:1},
+    {sec:'A',q:'The value of digit 5 in 5 967 234 is?',opts:['5 030 000','5 000 040','4 700 000','5 000 000'],a:3,m:1},
+    {sec:'A',q:'The value of digit 7 in 2 345 678 is?',opts:['70','160','-99 930','30'],a:0,m:1},
+    {sec:'A',q:'The value of digit 8 in 9 081 234 is?',opts:['80 000','160 000','79 800','84 000'],a:0,m:1},
+    {sec:'A',q:'1/4 as a decimal = ?',opts:['25%','40%','0.25','0.2'],a:2,m:1},
+    {sec:'A',q:'0.6 as the simplest fraction = ?',opts:['0.2','3/5','0.4','0.5'],a:1,m:1},
+    {sec:'A',q:'3/5 as a percentage = ?',opts:['0.4','60%','70%','40%'],a:1,m:1},
+    {sec:'A',q:'75% as the simplest fraction = ?',opts:['3/4','70%','0.4','1/2'],a:0,m:1},
+    {sec:'A',q:'0.125 as a percentage = ?',opts:['0.2','25%','12.5%','2/3'],a:2,m:1},
+    {sec:'A',q:'1/2 + 3/4 = ?',opts:['5/4','3/4','4.75','6.75'],a:0,m:1},
+    {sec:'A',q:'30% of 120 = ?',opts:['5/8','40','35%','36'],a:3,m:1},
+    {sec:'A',q:'2.5 + 3.25 = ?',opts:['5.75','0.5','0.15','55%'],a:0,m:1},
+    {sec:'A',q:'9/20 as a percentage is?',opts:['6.75','45%','48','24'],a:1,m:1},
+    {sec:'A',q:'0.4 − 0.35 = ?',opts:['55%','0.15','0.05','3/4'],a:2,m:1},
+    {sec:'A',q:'A trader buys goods for RM150 and sells them for RM195. What is the profit?',opts:['RM30','RM45','RM60','RM40'],a:1,m:1},
+    {sec:'A',q:'A trader buys goods for RM280 and sells them for RM240. What is the loss?',opts:['RM40','RM35','RM25','RM50'],a:0,m:1},
+    {sec:'A',q:'The original price of a bicycle is RM500. A 12% discount is given. The price after discount is?',opts:['RM450','RM425','RM435','RM440'],a:3,m:1},
+    {sec:'A',q:'A trader buys goods for RM85 and sells them for RM110. What is the profit?',opts:['RM40','RM10','RM15','RM25'],a:3,m:1},
+    {sec:'A',q:'The original price of a bicycle is RM400. A 25% discount is given. The price after discount is?',opts:['RM305','RM300','RM315','RM310'],a:1,m:1},
+    {sec:'A',q:'A car travels 240 km in 4 hours. What is the average speed of the car?',opts:['65 km/j','50 km/j','60 km/j','55 km/j'],a:2,m:1},
+    {sec:'A',q:'A car travels 360 km in 6 hours. What is the average speed of the car?',opts:['55 km/j','65 km/j','60 km/j','70 km/j'],a:2,m:1},
+    {sec:'A',q:'A bus travels at 90 km/h for 4 hours. What distance is covered?',opts:['380 km','370 km','360 km','350 km'],a:2,m:1},
+    {sec:'A',q:'A car travels 150 km in 3 hours. What is the average speed of the car?',opts:['45 km/j','60 km/j','40 km/j','50 km/j'],a:3,m:1},
+    {sec:'A',q:'A bus travels at 70 km/h for 3 hours. What distance is covered?',opts:['220 km','200 km','190 km','210 km'],a:3,m:1},
+    {sec:'A',q:'The circumference of a circle with radius 14 cm is? (use π = 22/7)',opts:['94 cm','88 cm','82 cm','92 cm'],a:1,m:1},
+    {sec:'A',q:'The circumference of a circle with radius 21 cm is? (use π = 22/7)',opts:['138 cm','136 cm','128 cm','132 cm'],a:3,m:1},
+    {sec:'A',q:'The circumference of a circle with radius 7 cm is? (use π = 22/7)',opts:['46 cm','38 cm','44 cm','40 cm'],a:2,m:1},
+    {sec:'A',q:'The circumference of a circle with radius 28 cm is? (use π = 22/7)',opts:['182 cm','170 cm','176 cm','180 cm'],a:2,m:1},
+    {sec:'A',q:'The circumference of a circle with radius 35 cm is? (use π = 22/7)',opts:['224 cm','226 cm','222 cm','220 cm'],a:3,m:1},
+    {sec:'A',q:'RM20 is divided between Ali and Bakar in the ratio 4:5. What is the larger share?',opts:['RM16','RM6','RM10','RM8'],a:2,m:1},
+    {sec:'A',q:'RM30 is divided between Ali and Bakar in the ratio 6:5. What is the larger share?',opts:['RM12','RM16','RM18','RM14'],a:0,m:1},
+    {sec:'A',q:'RM45 is divided between Ali and Bakar in the ratio 9:5. What is the larger share?',opts:['RM23','RM21','RM29','RM27'],a:3,m:1},
+    {sec:'A',q:'RM24 is divided between Ali and Bakar in the ratio 4:6. What is the larger share?',opts:['RM14','RM12','RM10','RM18'],a:1,m:1},
+    {sec:'A',q:'RM50 is divided between Ali and Bakar in the ratio 10:5. What is the larger share?',opts:['RM24','RM28','RM26','RM30'],a:3,m:1},
+    {sec:'A',q:'x + 3 = 9. The value of x is?',opts:['9','7','6','4'],a:2,m:1},
+    {sec:'A',q:'2x = 10. The value of x is?',opts:['5','2','6','8'],a:0,m:1},
+    {sec:'A',q:'x − 4 = 8. The value of x is?',opts:['12','11','13','15'],a:0,m:1},
+    {sec:'A',q:'3x = 18. The value of x is?',opts:['6','5','8','3'],a:0,m:1},
+    {sec:'A',q:'x + 7 = 14. The value of x is?',opts:['8','4','7','5'],a:2,m:1},
+    {sec:'A',q:'What is the mean (average) of 12, 15, 18, 20, 10?',opts:['16','15','13','17'],a:1,m:1},
+    {sec:'A',q:'What is the mode of the data: 5, 5, 7, 8, 5?',opts:['7','6','5','3'],a:2,m:1},
+    {sec:'A',q:'What is the mean (average) of 22, 25, 28, 30, 15?',opts:['23','27','22','24'],a:3,m:1},
+    {sec:'A',q:'What is the mode of the data: 3, 3, 3, 6, 9?',opts:['3','2','5','0'],a:0,m:1},
+    {sec:'A',q:'What is the mean (average) of 40, 50, 60, 70, 30?',opts:['53','50','49','48'],a:1,m:1},
+    // SECTION B
+    {sec:'B',q:'A factory produces 5 250 units a day. After 8 days, 32 400 units have been sold. How many units remain?',a:'9600',m:4,unit:'units'},
+    {sec:'B',q:'Mr. Fauzi buys a piece of land measuring 80 m × 55 m at RM95 per square metre. What is the total price of the land?',a:'418000',m:4,unit:'RM'},
+    {sec:'B',q:'A car travels at an average speed of 85 km/h for 3 hours 30 minutes. What distance is covered?',a:'297.5',m:4,unit:'km'},
+    {sec:'B',q:'A shop sells 650 eggs at RM0.42 each. The cost to buy all the eggs was RM214.50. What is the shop\'s profit?',a:'58.5',m:4,unit:'RM'},
+    {sec:'B',q:'RM960 is divided among Amin, Bob and Chong in the ratio 2:3:5. What is Chong\'s share?',a:'480',m:4,unit:'RM'},
+    {sec:'B',q:'Mr. Rashid earns RM4 200 a month. He spends 3/7 on household expenses and saves 20% of the remainder. How much does he save?',a:'480',m:3,unit:'RM'},
+    {sec:'B',q:'The original price of a refrigerator is RM1 800. A 12% discount is given during the sale. What is the price after the discount?',a:'1584',m:3,unit:'RM'},
+    {sec:'B',q:'The circumference of a circular park with radius 21 m is? (use π = 22/7)',a:'132',m:3,unit:'m'},
+    {sec:'B',q:'3x + 5 = 26. The value of x is?',a:'7',m:3,unit:''},
+    {sec:'B',q:'What is the mean (average) of 65, 72, 80, 58, 90?',a:'73',m:3,unit:''},
+  ]
+}
+}
+};
+
+// ============================================================
+// STATE
+// ============================================================
+var S={screen:'home',lang:'ms',darjah:null,paper:null,answers:{},secView:'A',submitted:false,timeLeft:0,playerName:'',hof:[]};
+function loadSave(){
+  try{var r=localStorage.getItem('matexam-save');if(r){var d=JSON.parse(r);S.lang=d.lang||'ms';S.scores=d.scores||{};S.playerName=d.playerName||'';S.hof=d.hof||[];}}catch(e){}
+  if(!S.scores)S.scores={};
+  if(!S.hof)S.hof=[];
+}
+function persist(){
+  try{localStorage.setItem('matexam-save',JSON.stringify({lang:S.lang,scores:S.scores,playerName:S.playerName,hof:S.hof}));}catch(e){}
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+var TIMER=null;
+function stopTimer(){if(TIMER){clearInterval(TIMER);TIMER=null;}}
+function startTimer(mins){
+  stopTimer();
+  S.timeLeft=mins*60;
+  updateTimerUI();
+  TIMER=setInterval(function(){
+    S.timeLeft--;
+    updateTimerUI();
+    if(S.timeLeft<=0){stopTimer();autoSubmit();}
+  },1000);
+}
+function updateTimerUI(){
+  var bar=document.getElementById('tbar'),num=document.getElementById('tnum');
+  if(!bar||!num)return;
+  var paper=PAPERS[S.lang][S.darjah];
+  var total=paper.time*60;
+  var pct=Math.max(0,(S.timeLeft/total)*100);
+  bar.style.width=pct+'%';
+  bar.style.background=S.timeLeft<=120?'var(--pen-red)':S.timeLeft<=300?'#E8A21D':'var(--tick-green)';
+  var m=Math.floor(S.timeLeft/60),sc=S.timeLeft%60;
+  num.textContent=(m<10?'0':'')+m+':'+(sc<10?'0':'')+sc;
+  num.style.color=S.timeLeft<=120?'var(--pen-red)':'var(--ink-soft)';
+}
+function autoSubmit(){submitExam(true);}
+
+// ============================================================
+// SOUNDS
+// ============================================================
+var actx=null;
+function getCtx(){try{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx;}catch(e){return null;}}
+function tone(c,f,st,dur,tp,v){var o=c.createOscillator(),g=c.createGain();o.type=tp||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.2,c.currentTime+st);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+st+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+st);o.stop(c.currentTime+st+dur+0.05);}
+function playCorrect(){var c=getCtx();if(!c)return;tone(c,660,0,.12,'sine');tone(c,880,.11,.18,'sine');}
+function playWrong(){var c=getCtx();if(!c)return;tone(c,200,0,.3,'sawtooth',.15);}
+function playDone(){var c=getCtx();if(!c)return;[523,659,784,1047].forEach(function(f,i){tone(c,f,i*.15,.25,'sine',.18);});}
+function playSubmit(){var c=getCtx();if(!c)return;tone(c,440,0,.15,'sine',.15);tone(c,554,.1,.2,'sine',.15);}
+function playTopScore(){var c=getCtx();if(!c)return;[523,659,784,1047,1319].forEach(function(f,i){tone(c,f,i*.12,.3,'sine',.2);});}
+
+// ============================================================
+// HELPERS
+// ============================================================
+var app=document.getElementById('app');
+function starsHTML(n,sz){var h='';for(var i=1;i<=3;i++)h+='<span style="font-size:'+sz+'px" class="'+(i<=n?'':'star-dim')+'">\u2B50</span>';return h;}
+function getGrade(pct){
+  if(pct>=90)return{g:'A+',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=80)return{g:'A',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=70)return{g:'B',c:'#2F6FE4',band:'Kepujian'};
+  if(pct>=60)return{g:'C',c:'#8A4FD3',band:'Lulus'};
+  if(pct>=50)return{g:'D',c:'#E88A2F',band:'Lulus'};
+  return{g:'E',c:'var(--pen-red)',band:'Tidak Lulus'};
+}
+function qKey(qi){return 'q'+qi;}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+  if(S.screen==='home')renderHome();
+  else if(S.screen==='exam')renderExam();
+  else if(S.screen==='hofview')renderHofView();
+  else renderResults();
+}
+
+function renderHofView(){
+  var isMS=S.lang==='ms';
+  var darjahs=['1','2','3','4','5','6'];
+  var labels=isMS?['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6']:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var sections='';
+  darjahs.forEach(function(d,i){
+    var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===d;}).sort(function(a,b){return b.pct-a.pct;});
+    var top5=ranked.slice(0,5);
+    var rows='';
+    if(top5.length===0){
+      rows='<div style="font-size:12.5px;color:var(--ink-soft);font-weight:700;padding:8px 0;text-align:center;">'+(isMS?'Belum ada rekod lagi':'No records yet')+'</div>';
+    } else {
+      top5.forEach(function(e,ri){
+        var rowCls='hof-row'+(ri===0?' top1':'');
+        var medal=ri===0?'\uD83C\uDFC6':(ri+1);
+        rows+='<div class="'+rowCls+'">'
+          +'<span class="hof-rank">'+medal+'</span>'
+          +'<span class="hof-name">'+e.name+'</span>'
+          +'<span class="hof-meta">'+e.date+'</span>'
+          +'<span class="hof-pct">'+e.pct+'%</span>'
+          +'</div>';
+      });
+    }
+    sections+='<div class="hof-wrap"><div class="hof-title" style="color:'+colors[i]+'">\uD83C\uDFC6 '+labels[i]+'</div>'+rows+'</div>';
+  });
+
+  app.innerHTML='<button class="back-btn" id="backHof">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Semua Darjah':'All Year Groups')+'</div>'
+    +'<h1 class="home-title">Hall of Fame</h1>'
+    +'</div>'
+    +'<div class="lang-toggle"><button data-lang="ms" class="'+(S.lang==='ms'?'active':'')+'">BM</button><button data-lang="en" class="'+(S.lang==='en'?'active':'')+'">EN</button></div>'
+    +'</div>'
+    +sections;
+
+  document.getElementById('backHof').onclick=function(){S.screen='home';render();};
+  app.querySelectorAll('[data-lang]').forEach(function(b){
+    b.onclick=function(){S.lang=b.dataset.lang;persist();render();};
+  });
+}
+
+function renderHome(){
+
+  var isMS=S.lang==='ms';
+  var darjahs=isMS?['1','2','3','4','5','6']:['1','2','3','4','5','6'];
+  var labels=isMS?['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6']:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
+  var infos=isMS?['75 min • 30 markah','75 min • 40 markah','75 min • 50 markah','75 min • 60 markah','75 min • 70 markah','80 min • 80 markah']:
+                 ['75 min • 30 marks','75 min • 40 marks','75 min • 50 marks','75 min • 60 marks','75 min • 70 marks','80 min • 80 marks'];
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var cards='';
+  darjahs.forEach(function(d,i){
+    var sc=S.scores&&S.scores[S.lang+d];
+    var scHTML=sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+isMS?'Skor terbaik: ':'Best: '+sc+'%</div>':'';
+    cards+='<button class="darjah-btn" data-d="'+d+'" style="border-color:'+colors[i]+';box-shadow:0 4px 0 '+colors[i]+'">'
+      +'<div class="darjah-label" style="color:'+colors[i]+'">'+labels[i]+'</div>'
+      +'<div class="darjah-info">'+infos[i]+'</div>'
+      +(sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+(isMS?'Skor: ':'Score: ')+sc+'%</div>':'')
+      +'</button>';
+  });
+  app.innerHTML='<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Buku Latihan Saya':'My Exercise Book')+'</div>'
+    +'<h1 class="home-title">'+(isMS?'Matematik':'Mathematics')+'</h1>'
+    +'<div class="home-sub">'+(isMS?'Kertas Peperiksaan':'Examination Paper')+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:7px;align-items:flex-start">'
+    +'<div class="lang-toggle"><button data-lang="ms" class="'+(S.lang==='ms'?'active':'')+'">BM</button><button data-lang="en" class="'+(S.lang==='en'?'active':'')+'">EN</button></div>'
+    +'<button class="fs-btn" id="hofBtn" title="Hall of Fame">\uD83C\uDFC6</button>'
+    +'<button class="fs-btn" id="fs">\u26F6</button>'
+    +'</div></div>'
+    +'<div class="name-input-wrap">'
+    +'<label class="name-input-label">'+(isMS?'Nama pemain':'Player name')+'</label>'
+    +'<input type="text" id="playerName" class="name-input" maxlength="18" placeholder="'+(isMS?'contoh: Aiman':'e.g. Aiman')+'" value="'+(S.playerName||'')+'">'
+    +'</div>'
+    +'<div class="darjah-grid">'+cards+'</div>'
+    +'<p style="margin-top:18px;font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center">'+(isMS?'Pilih darjah untuk mulakan peperiksaan. Masa akan bermula!':'Pick your year group to start the exam. Timer starts immediately!')+'</p>'
+    +'<p style="margin-top:6px;font-size:11px;font-weight:700;color:#B9C2C8;text-align:center"><a href="javascript:void(0)" id="resetHof" style="color:#B9C2C8;">'+(isMS?'Set semula Hall of Fame':'Reset Hall of Fame')+'</a></p>';
+  var nameInput=document.getElementById('playerName');
+  nameInput.oninput=function(){S.playerName=nameInput.value;persist();};
+  app.querySelectorAll('[data-d]').forEach(function(b){
+    b.onclick=function(){
+      if(!S.playerName||!S.playerName.trim()){
+        nameInput.style.borderColor='var(--pen-red)';
+        nameInput.placeholder=isMS?'Isi nama dulu!':'Enter your name first!';
+        nameInput.focus();
+        return;
+      }
+      startExam(b.dataset.d);
+    };
+  });
+  app.querySelectorAll('[data-lang]').forEach(function(b){
+    b.onclick=function(){S.lang=b.dataset.lang;persist();render();};
+  });
+  document.getElementById('fs').onclick=function(){
+    try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}catch(e){}
+  };
+  document.getElementById('hofBtn').onclick=function(){S.screen='hofview';render();};
+  document.getElementById('resetHof').onclick=function(){
+    if(confirm(isMS?'Padam semua rekod Hall of Fame? Tindakan ini tidak boleh diundur.':'Clear all Hall of Fame records? This cannot be undone.')){
+      S.hof=[];
+      persist();
+      render();
+    }
+  };
+}
+
+function startExam(d){
+  S.darjah=d;
+  S.paper=PAPERS[S.lang][d];
+  S.answers={};
+  S.secView='A';
+  S.submitted=false;
+  S.screen='exam';
+  render();
+  startTimer(S.paper.time);
+}
+
+function renderExam(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var qs=p.questions.filter(function(q){return q.sec===S.secView;});
+  var qOffset=S.secView==='B'?p.questions.filter(function(q){return q.sec==='A';}).length:0;
+  var secInfo=S.secView==='A'?p.secA:p.secB;
+  var answeredA=p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length;
+  var totalA=p.questions.filter(function(q){return q.sec==='A';}).length;
+  var answeredB=p.questions.filter(function(q,i){return q.sec==='B'&&S.answers[qKey(i)]!=null;}).length;
+  var totalB=p.questions.filter(function(q){return q.sec==='B';}).length;
+
+  var qHTML='';
+  qs.forEach(function(q,qi){
+    var globalIdx=qOffset+qi;
+    var ans=S.answers[qKey(globalIdx)];
+    var submitted=S.submitted;
+    var isCorrect=false,showFb=false;
+    if(submitted){
+      isCorrect=q.sec==='A'?(ans===q.a):(ans!=null&&ans.toString().trim().toLowerCase()===q.a.toString().trim().toLowerCase());
+      showFb=true;
+    }
+    var qClass='qblock'+(submitted?(isCorrect?' answered-correct':' answered-wrong'):'');
+    var marksLabel=q.m>1?' ('+q.m+' '+(isMS?'markah':'marks')+')':"";
+    var inner='<div class="qnum">'+(isMS?'Soalan ':'Question ')+(globalIdx+1)+marksLabel+'</div>';
+    if(q.context){inner+='<div class="qinfo">'+q.context+'</div>';}
+    if(q.table){
+      inner+='<table class="qtable"><tr>';
+      q.table.headers.forEach(function(h){inner+='<th>'+h+'</th>';});
+      inner+='</tr>';
+      q.table.rows.forEach(function(r){inner+='<tr>';r.forEach(function(c){inner+='<td>'+c+'</td>';});inner+='</tr>';});
+      inner+='</table>';
+    }
+    if(q.grid){
+      inner+='<div class="qgrid">';
+      for(var gr=0; gr<q.grid.rows; gr++){
+        inner+='<div class="qgrid-row">';
+        for(var gc=0; gc<q.grid.cols; gc++){ inner+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+        inner+='</div>';
+      }
+      inner+='<div class="qgrid-label">'+q.grid.rows+' baris \u00d7 '+q.grid.cols+' setiap baris</div>';
+      inner+='</div>';
+    }
+    if(q.chart){
+      var maxVal=Math.max.apply(null,q.chart.values);
+      inner+='<div class="qchart"><div class="qchart-bars">';
+      q.chart.values.forEach(function(v,vi){
+        var h=Math.round((v/maxVal)*90)+10;
+        inner+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+          +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+          +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+      });
+      inner+='</div></div>';
+    }
+    inner+='<div class="qtext">'+q.q.replace(/\n/g,'<br>')+'</div>';
+    if(q.sec==='A'){
+      inner+='<div class="mcq-opts">';
+      q.opts.forEach(function(opt,oi){
+        var cls='mcq-opt';
+        if(submitted){if(oi===q.a)cls+=' correct';else if(ans===oi)cls+=' wrong';}
+        else if(ans===oi)cls+=' selected';
+        inner+='<button class="'+cls+'" data-qi="'+globalIdx+'" data-oi="'+oi+'" '+(submitted?'disabled':'')+'>'+
+          '<span class="opt-label">'+['A','B','C','D'][oi]+'.</span><span>'+opt+'</span></button>';
+      });
+      inner+='</div>';
+      if(showFb){
+        inner+='<div class="fb-row"><span class="fb-tick">'+(isCorrect?'\u2705':'\u274C')+'</span>';
+        if(!isCorrect)inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct answer: ')+['A','B','C','D'][q.a]+'. '+q.opts[q.a]+'</span>';
+        else inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+'</span>';
+        inner+='</div>';
+      }
+    } else {
+      var inputCls='short-input'+(submitted?(isCorrect?' correct':' wrong'):'');
+      inner+='<div class="short-wrap">'
+        +'<input class="'+inputCls+'" type="text" inputmode="decimal" '
+        +'data-qi="'+globalIdx+'" value="'+(ans!=null?ans:'')+'" '+(submitted?'readonly':'')
+        +' placeholder="___">'
+        +(q.unit?'<span class="short-unit">'+q.unit+'</span>':'')
+        +'</div>';
+      if(showFb){
+        inner+='<div class="fb-row"><span class="fb-tick">'+(isCorrect?'\u2705':'\u274C')+'</span>';
+        if(!isCorrect)inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct: ')+q.a+(q.unit?' '+q.unit:'')+'</span>';
+        else inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+'</span>';
+        inner+='</div>';
+      }
+    }
+    qHTML+='<div class="'+qClass+'" id="qb'+globalIdx+'">'+inner+'</div>';
+  });
+
+  var submitBtn=!S.submitted?'<button class="submit-btn" id="submitBtn">'+(isMS?'\uD83D\uDCDD Hantar Jawapan':'📝 Submit Answers')+'</button>':'';
+
+  app.innerHTML=
+    '<button class="back-btn" id="backBtn">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="exam-header">'
+    +'<div class="school">'+(isMS?'PEPERIKSAAN MATEMATIK':'MATHEMATICS EXAMINATION')+'</div>'
+    +'<div class="subj">'+p.label+'</div>'
+    +'<div class="meta">'+(isMS?'Masa: ':'Time: ')+p.time+(isMS?' minit &nbsp;|&nbsp; Markah Penuh: ':' minutes &nbsp;|&nbsp; Total Marks: ')+p.totalMarks+'</div>'
+    +'<div class="name-row"><div class="name-field">'+(isMS?'Nama: _______________':'Name: _______________')+'</div><div class="name-field">'+(isMS?'Kelas: _______________':'Class: _______________')+'</div></div>'
+    +'</div>'
+    +'<div class="timer-strip"><span class="tlabel">\u23F1 '+(isMS?'Masa Tinggal':'Time Left')+'</span><div class="tbar-wrap"><div class="tbar" id="tbar" style="width:100%"></div></div><span class="tnum" id="tnum">--:--</span></div>'
+    +'<div class="nav-bar">'
+    +'<button class="nav-btn" id="navA" style="border-color:#2F6FE4;color:#2F6FE4;'+(S.secView==='A'?'background:#E3EDFF;':'')+'">'+p.secA.name+' ('+answeredA+'/'+totalA+')</button>'
+    +'<button class="nav-btn" id="navB" style="border-color:#C0392B;color:#C0392B;'+(S.secView==='B'?'background:#FBE9E7;':'')+'">'+p.secB.name+' ('+answeredB+'/'+totalB+')</button>'
+    +'</div>'
+    +'<div class="section-head"><span class="sname">'+secInfo.name+'</span><span class="smarks">'+secInfo.marks+(isMS?' markah':' marks')+'</span></div>'
+    +'<div class="section-instr">'+secInfo.instr+'</div>'
+    +qHTML
+    +submitBtn;
+
+  document.getElementById('backBtn').onclick=function(){stopTimer();S.screen='home';render();};
+  document.getElementById('navA').onclick=function(){S.secView='A';render();updateTimerUI();};
+  document.getElementById('navB').onclick=function(){S.secView='B';render();updateTimerUI();};
+
+  app.querySelectorAll('[data-qi][data-oi]').forEach(function(b){
+    if(S.submitted)return;
+    b.onclick=function(){
+      var qi=parseInt(b.dataset.qi),oi=parseInt(b.dataset.oi);
+      S.answers[qKey(qi)]=oi;
+      playCorrect();
+      // update UI
+      var qBlock=document.getElementById('qb'+qi);
+      if(qBlock){
+        qBlock.querySelectorAll('.mcq-opt').forEach(function(x,xi){
+          x.classList.toggle('selected',xi===oi);
+        });
+        // update nav count
+        document.getElementById('navA').textContent=p.secA.name+' ('+p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length+'/'+totalA+')';
+      }
+    };
+  });
+
+  app.querySelectorAll('input[data-qi]').forEach(function(inp){
+    if(S.submitted)return;
+    inp.addEventListener('input',function(){
+      var qi=parseInt(inp.dataset.qi);
+      S.answers[qKey(qi)]=inp.value;
+    });
+  });
+
+  var sb=document.getElementById('submitBtn');
+  if(sb) sb.onclick=function(){
+    var total=p.questions.length;
+    var done=Object.keys(S.answers).length;
+    if(done<total){
+      var remaining=total-done;
+      var msg=isMS?('Masih ada '+remaining+' soalan belum dijawab. Hantar sekarang?'):('You have '+remaining+' unanswered questions. Submit now?');
+      if(!confirm(msg))return;
+    }
+    submitExam(false);
+  };
+
+  updateTimerUI();
+}
+
+function submitExam(auto){
+  stopTimer();
+  S.submitted=true;
+  var p=S.paper, score=0;
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    if(q.sec==='A'){if(ans===q.a)score+=q.m;}
+    else{if(ans!=null&&ans.toString().trim().toLowerCase()===q.a.toString().trim().toLowerCase())score+=q.m;}
+  });
+  var pct=Math.round((score/p.totalMarks)*100);
+  if(!S.scores)S.scores={};
+  var key=S.lang+S.darjah;
+  S.scores[key]=Math.max(S.scores[key]||0,pct);
+  S.finalScore=score;
+  S.finalPct=pct;
+
+  var entryId='e'+Date.now();
+  var entry={id:entryId,name:(S.playerName||(S.lang==='ms'?'Pemain':'Player')).trim(),lang:S.lang,darjah:S.darjah,pct:pct,score:score,totalMarks:p.totalMarks,date:new Date().toISOString().slice(0,10)};
+  if(!S.hof)S.hof=[];
+  S.hof.push(entry);
+  var ranked=S.hof.filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var myRank=ranked.findIndex(function(e){return e.id===entryId;});
+  S.justAddedHofId=entryId;
+  if(S.hof.length>500)S.hof=S.hof.slice(-500);
+  persist();
+
+  if(myRank>=0&&myRank<3)playTopScore();
+  else playSubmit();
+
+  S.screen='results';
+  render();
+}
+
+function renderResults(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var grade=getGrade(S.finalPct);
+  var secAqs=p.questions.filter(function(q){return q.sec==='A';});
+  var secBqs=p.questions.filter(function(q){return q.sec==='B';});
+  var secAoffset=0, secBoffset=secAqs.length;
+  var secAScore=0,secBScore=0;
+  secAqs.forEach(function(q,i){var ans=S.answers[qKey(secAoffset+i)];if(ans===q.a)secAScore+=q.m;});
+  secBqs.forEach(function(q,i){var ans=S.answers[qKey(secBoffset+i)];if(ans!=null&&ans.toString().trim().toLowerCase()===q.a.toString().trim().toLowerCase())secBScore+=q.m;});
+
+  // wrong questions list
+  var wrongHTML='';
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    var isCorrect=q.sec==='A'?(ans===q.a):(ans!=null&&ans.toString().trim().toLowerCase()===q.a.toString().trim().toLowerCase());
+    if(!isCorrect){
+      var given=ans!=null?(q.sec==='A'?['A','B','C','D'][ans]+'. '+(q.opts&&q.opts[ans]?q.opts[ans]:''):ans):(isMS?'Tiada jawapan':'No answer');
+      var visualHTML='';
+      if(q.table){
+        visualHTML+='<table class="qtable" style="margin:6px 0;"><tr>';
+        q.table.headers.forEach(function(h){visualHTML+='<th>'+h+'</th>';});
+        visualHTML+='</tr>';
+        q.table.rows.forEach(function(r){visualHTML+='<tr>';r.forEach(function(c){visualHTML+='<td>'+c+'</td>';});visualHTML+='</tr>';});
+        visualHTML+='</table>';
+      }
+      if(q.grid){
+        visualHTML+='<div class="qgrid" style="margin:6px 0;">';
+        for(var gr=0; gr<q.grid.rows; gr++){
+          visualHTML+='<div class="qgrid-row">';
+          for(var gc=0; gc<q.grid.cols; gc++){ visualHTML+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+          visualHTML+='</div>';
+        }
+        visualHTML+='</div>';
+      }
+      if(q.chart){
+        var maxVal=Math.max.apply(null,q.chart.values);
+        visualHTML+='<div class="qchart" style="margin:6px 0;"><div class="qchart-bars">';
+        q.chart.values.forEach(function(v,vi){
+          var h=Math.round((v/maxVal)*70)+10;
+          visualHTML+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+            +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+            +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+        });
+        visualHTML+='</div></div>';
+      }
+      wrongHTML+='<div class="rq rq-wrong">'
+        +'<div class="rq-num">'+(isMS?'Soalan ':'Q.')+(i+1)+'</div>'
+        +'<div class="rq-q">'+q.q.replace(/\n/g,' ')+'</div>'
+        +visualHTML
+        +'<div class="rq-ans" style="color:var(--pen-red)">'+(isMS?'Jawapan anda: ':'Your answer: ')+given+'</div>'
+        +'<div class="rq-ans" style="color:var(--tick-green)">'+(isMS?'Jawapan betul: ':'Correct: ')+(q.sec==='A'?['A','B','C','D'][q.a]+'. '+q.opts[q.a]:q.a+(q.unit?' '+q.unit:''))+'</div>'
+        +'</div>';
+    }
+  });
+
+  // Hall of Fame — top 5 for this lang + darjah
+  var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var top5=ranked.slice(0,5);
+  var hofHTML='';
+  top5.forEach(function(e,i){
+    var isMine=e.id===S.justAddedHofId;
+    var rowCls='hof-row'+(i===0?' top1':'')+(isMine?' mine':'');
+    var medal=i===0?'\uD83C\uDFC6':(i+1);
+    hofHTML+='<div class="'+rowCls+'">'
+      +'<span class="hof-rank">'+medal+'</span>'
+      +'<span class="hof-name">'+e.name+'</span>'
+      +'<span class="hof-meta">'+e.date+'</span>'
+      +'<span class="hof-pct">'+e.pct+'%</span>'
+      +'</div>';
+  });
+  var hofBlock='<div class="hof-wrap"><div class="hof-title">\uD83C\uDFC6 '+(isMS?'Hall of Fame — ':'Hall of fame — ')+p.label+'</div>'+hofHTML+'</div>';
+
+  app.innerHTML='<div class="result-header">'
+    +'<div class="home-eyebrow">'+p.label+' &nbsp;|&nbsp; '+(isMS?'Keputusan':'Results')+'</div>'
+    +'<div class="result-grade" style="color:'+grade.c+'">'+grade.g+'</div>'
+    +'<div class="result-pct">'+S.finalScore+' / '+p.totalMarks+' &nbsp;('+S.finalPct+'%)</div>'
+    +'<span class="result-band" style="background:'+grade.c+'">'+grade.band+'</span>'
+    +'</div>'
+    +'<div class="result-breakdown">'
+    +'<div class="rb-row"><span>'+p.secA.name+'</span><span>'+secAScore+' / '+p.secA.marks+'</span></div>'
+    +'<div class="rb-row"><span>'+p.secB.name+'</span><span>'+secBScore+' / '+p.secB.marks+'</span></div>'
+    +'<div class="rb-row" style="color:var(--ink);font-size:15px"><span>'+(isMS?'Jumlah':'Total')+'</span><span>'+S.finalScore+' / '+p.totalMarks+'</span></div>'
+    +'</div>'
+    +hofBlock
+    +(wrongHTML?'<div style="font-family:Fredoka;font-size:14px;font-weight:700;color:var(--ink-soft);margin-bottom:8px">'+(isMS?'Soalan yang salah:':'Questions to review:')+'</div>'
+    +'<div class="result-review">'+wrongHTML+'</div>':'<div style="text-align:center;font-size:18px;font-weight:800;color:var(--tick-green);margin:16px 0">'+(isMS?'Semua betul! Luar biasa! 🎉':'All correct! Excellent! 🎉')+'</div>')
+    +'<div class="res-btns">'
+    +'<button class="big-btn" id="retry" style="background:#1E2A4A;border-color:#1E2A4A;color:#fff;box-shadow:0 4px 0 #0D1520">'+(isMS?'Cuba Semula':'Try Again')+'</button>'
+    +'<button class="home-btn2" id="home">\uD83C\uDFE0 '+(isMS?'Utama':'Home')+'</button>'
+    +'</div>';
+
+  document.getElementById('retry').onclick=function(){startExam(S.darjah);};
+  document.getElementById('home').onclick=function(){S.justAddedHofId=null;S.screen='home';render();};
+}
+
+loadSave();
+render();
+</script>
+</body>
+</html>

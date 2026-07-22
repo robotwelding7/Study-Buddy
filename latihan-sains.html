@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Sains — Buku Latihan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sriracha&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#f2ece0;
+    --paper-line:#d0c3a5;
+    --ink:#2a2620;
+    --plum:#5c3d5c;
+    --plum-mid:#8a6a8a;
+    --plum-light:#d3c0d3;
+    --teal:#3a7d6e;
+    --teal-dark:#2a5c50;
+    --amber:#d9932b;
+    --card:#fffdf7;
+    --shadow:rgba(42,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 34px, var(--paper-line) 35px),
+      var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+    padding:26px 14px 60px;
+  }
+  .book{ width:100%; max-width:660px; }
+
+  .back-link{
+    display:inline-block; margin-bottom:12px; font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:13px; color:var(--plum); text-decoration:none;
+  }
+
+  .cover{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:6px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px 24px 18px;
+    position:relative;
+    margin-bottom:18px;
+  }
+  .cover::before{
+    content:"";
+    position:absolute; left:16px; top:0; bottom:0; width:2px;
+    background:repeating-linear-gradient(0deg,var(--amber) 0 8px, transparent 8px 16px);
+    opacity:0.5;
+  }
+  .stamp{
+    position:absolute; top:14px; right:18px;
+    width:66px; height:66px;
+    border:3px solid var(--plum);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-12deg);
+    color:var(--plum);
+    font-family:'Sriracha',cursive;
+    font-size:11.5px; text-align:center; line-height:1.15;
+    opacity:0.85;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase;
+    font-size:11px; color:var(--teal-dark);
+    margin-left:22px;
+  }
+  h1{
+    font-family:'Sriracha',cursive; font-weight:400;
+    font-size:26px; margin:4px 0 2px 22px; color:var(--plum);
+  }
+  .sub{ margin:0 0 4px 22px; font-size:13.5px; color:#5a5346; }
+
+  .startBtn{
+    margin-top:16px; width:100%; padding:14px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .startBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  /* ===== quiz area ===== */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin:0 0 14px;
+  }
+  .hud-box{
+    background:var(--card); border:2px solid var(--ink); border-radius:6px;
+    box-shadow:3px 3px 0 var(--shadow); padding:8px 14px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hud-box .val{ font-size:18px; }
+  #timerBox{
+    position:relative; overflow:hidden;
+    min-width:88px; justify-content:center;
+  }
+  #timerBar{
+    position:absolute; left:0; bottom:0; top:0; width:100%;
+    background:var(--plum-light); z-index:0;
+    transition:width 1s linear, background 0.3s ease;
+  }
+  #timerBox span{ position:relative; z-index:1; }
+  #timerBox.low #timerBar{ background:#e79a8a; }
+  .soundToggle{
+    background:var(--card); border:2px solid var(--ink); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); font-size:16px; user-select:none;
+  }
+  .soundToggle:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .progressWrap{
+    height:8px; background:#e6ddc4; border-radius:20px; overflow:hidden;
+    margin-bottom:16px; border:1.5px solid var(--ink);
+  }
+  .progressBar{
+    height:100%; background:linear-gradient(90deg, var(--plum-mid), var(--plum));
+    width:0%; transition:width 0.4s ease;
+  }
+
+  .card{
+    background:var(--card); border:2px solid var(--ink); border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow); padding:22px 22px 20px; position:relative;
+  }
+  .expTag{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.05em; background:var(--teal-dark); color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .qnum{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--plum); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .qtext{
+    font-size:17px; line-height:1.5; font-weight:600; margin:0 0 16px; color:var(--ink);
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:#fff; border:2px solid #ddd3ba; border-radius:7px;
+    padding:12px 14px; font-size:15px; font-family:'Inter',sans-serif; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:background 0.15s, border-color 0.15s, transform 0.08s;
+  }
+  .opt:hover{ border-color:var(--plum-mid); background:#faf6ec; }
+  .opt:active{ transform:scale(0.99); }
+  .opt .letter{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  }
+  .opt.correct{ background:#e0efe9; border-color:var(--teal-dark); }
+  .opt.correct .letter{ background:var(--teal-dark); color:#fff; }
+  .opt.wrong{ background:#f4e2ea; border-color:var(--plum); }
+  .opt.wrong .letter{ background:var(--plum); color:#fff; }
+  .opt.disabled{ pointer-events:none; opacity:0.75; }
+  .opt.disabled.correct, .opt.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:14px; padding:12px 14px; border-radius:7px;
+    font-size:14px; line-height:1.55; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:#e0efe9; border:1.5px dashed var(--teal-dark); color:var(--teal-dark); }
+  .feedback.bad{ background:#f4e2ea; border:1.5px dashed var(--plum); color:var(--plum); }
+  .feedback b{ display:block; margin-bottom:3px; font-family:'Space Grotesk',sans-serif; }
+
+  .nextBtn{
+    margin-top:16px; width:100%; padding:13px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.03em; cursor:pointer; display:none; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .nextBtn.show{ display:block; }
+  .nextBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .result{ text-align:center; padding:10px 6px; }
+  .result .emoji{ font-size:52px; }
+  .result h2{
+    font-family:'Sriracha',cursive; font-weight:400; color:var(--plum);
+    font-size:26px; margin:6px 0 2px;
+  }
+  .result .scoreLine{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin:8px 0 4px; }
+  .result p{ color:#5a5346; font-size:14px; margin:6px 0 18px; }
+  .restartBtn, .homeBtn{
+    padding:13px 22px; background:var(--amber); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); margin:4px;
+  }
+  .homeBtn{ background:var(--plum); }
+  .restartBtn:active, .homeBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .breakdown{ text-align:left; margin-top:18px; border-top:1.5px dashed var(--paper-line); padding-top:14px; }
+  .breakdown-item{
+    display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:6px 0;
+    border-bottom:1px dotted #e6ddc4;
+  }
+  .breakdown-item .mark{ flex:0 0 auto; font-size:16px; }
+  .breakdown-item{ flex-direction:column; }
+  .breakdown-item .row{ display:flex; gap:8px; align-items:flex-start; width:100%; }
+  .breakdown-item .answer-detail{
+    margin:6px 0 2px 24px; font-size:12.5px; line-height:1.5;
+    background:#FBEAEA; border-left:3px solid #D9534F; border-radius:4px;
+    padding:6px 10px;
+  }
+  .breakdown-item .answer-detail .yourans{ color:#B93A2E; }
+  .breakdown-item .answer-detail .rightans{ color:#2F7A4F; font-weight:600; }
+
+  footer{ text-align:center; font-size:11.5px; color:#8a8371; margin-top:20px; }
+
+  @media (max-width:420px){
+    h1{ font-size:20px; }
+    .qtext{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="sains-latihan-hub.html">← Kembali ke senarai topik</a>
+
+  <div class="cover">
+    <div class="stamp" id="coverStamp">SAINS</div>
+    <div class="eyebrow" id="coverEyebrow">Buku Latihan</div>
+    <h1 id="coverTitle">Latihan Sains</h1>
+    <p class="sub" id="coverSub">Sedia menanti...</p>
+  </div>
+
+  <div class="cover" id="startCard">
+    <button class="startBtn" id="startBtn">Mula Latihan →</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quizArea" style="display:none;">
+    <div class="hud">
+      <div class="hud-box">⭐ <span class="val" id="scoreVal">0</span></div>
+      <div class="hud-box" id="timerBox"><div id="timerBar"></div><span>⏱ <span id="timeVal">30</span>s</span></div>
+      <div class="hud-box">📋 <span class="val" id="qCounter">1/12</span></div>
+      <div class="soundToggle" id="soundToggle" title="Bunyi hidup/mati">🔊</div>
+    </div>
+
+    <div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+
+    <div class="card" id="quizCard">
+      <span class="expTag" id="expTag">Soalan</span>
+      <div class="qnum" id="qNum">&nbsp;</div>
+      <p class="qtext" id="qText">...</p>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nextBtn" id="nextBtn">Seterusnya →</button>
+    </div>
+  </div>
+
+  <div class="card result" id="resultArea" style="display:none;">
+    <div class="emoji" id="resultEmoji">🎉</div>
+    <h2 id="resultTitle">Syabas!</h2>
+    <div class="scoreLine" id="resultScore">0 / 12</div>
+    <p id="resultMsg">Cuba lagi untuk skor lebih tinggi!</p>
+    <button class="restartBtn" id="restartBtn">Ulang Latihan</button>
+    <button class="homeBtn" id="homeBtn">🏠 Senarai Topik</button>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <footer id="footerText">Latihan Sains · Study Buddy</footer>
+</div>
+
+<script>
+var TOPIC_BANKS = {
+  'd1-diri-saya': [
+    {q:'Deria manakah yang kita guna untuk MELIHAT?',options:['Mata','Telinga','Hidung','Lidah'],correct:'Mata'},
+    {q:'Deria manakah yang kita guna untuk MENDENGAR?',options:['Mata','Telinga','Kulit','Lidah'],correct:'Telinga'},
+    {q:'Deria manakah yang kita guna untuk MERASA makanan?',options:['Hidung','Telinga','Lidah','Mata'],correct:'Lidah'},
+    {q:'Deria manakah yang kita guna untuk MENGHIDU bau?',options:['Hidung','Mata','Telinga','Lidah'],correct:'Hidung'},
+    {q:'Deria manakah yang kita guna untuk MENYENTUH?',options:['Kulit','Lidah','Hidung','Mata'],correct:'Kulit'},
+    {q:'Berapa banyakkah deria yang ada pada manusia?',options:['3','4','5','6'],correct:'5'},
+    {q:'Apabila kita makan aiskrim, deria manakah yang kita guna untuk rasa sejuknya?',options:['Kulit','Lidah sahaja','Mata','Telinga'],correct:'Kulit'},
+    {q:'Bunga yang harum dapat kita kesan menggunakan deria?',options:['Penglihatan','Bau','Rasa','Sentuhan'],correct:'Bau'},
+    {q:'Muzik yang dimainkan dapat kita dengar menggunakan?',options:['Mata','Telinga','Hidung','Kulit'],correct:'Telinga'},
+    {q:'Warna pelangi dapat kita lihat menggunakan deria?',options:['Penglihatan','Pendengaran','Bau','Rasa'],correct:'Penglihatan'},
+    {q:'Gula rasa manis dapat dikesan menggunakan deria?',options:['Rasa','Bau','Sentuhan','Penglihatan'],correct:'Rasa'},
+    {q:'Air panas terasa panas apabila disentuh — ini melibatkan deria?',options:['Sentuhan','Rasa','Bau','Penglihatan'],correct:'Sentuhan'},
+    {q:'Apabila kita pejamkan mata, deria manakah yang tidak berfungsi?',options:['Penglihatan','Pendengaran','Bau','Rasa'],correct:'Penglihatan'},
+    {q:'Mata terletak di?',options:['Muka','Belakang kepala','Tangan','Kaki'],correct:'Muka'},
+    {q:'Kita menggunakan __ untuk merasa tekstur kasar atau licin.',options:['Kulit','Mata','Telinga','Hidung'],correct:'Kulit'},
+    {q:'Bunyi loceng sekolah dapat didengar menggunakan deria?',options:['Pendengaran','Penglihatan','Bau','Rasa'],correct:'Pendengaran'},
+    {q:'Sup panas yang dihidu sebelum dimakan melibatkan deria?',options:['Bau','Rasa sahaja','Penglihatan sahaja','Sentuhan sahaja'],correct:'Bau'},
+    {q:'Jika seseorang tidak dapat mendengar, deria yang terjejas ialah?',options:['Pendengaran','Penglihatan','Rasa','Bau'],correct:'Pendengaran'},
+    {q:'Rasa pahit ubat dapat dikesan menggunakan deria?',options:['Rasa','Bau','Sentuhan','Penglihatan'],correct:'Rasa'},
+    {q:'Duri yang mencucuk jari dirasai melalui deria?',options:['Sentuhan','Penglihatan','Bau','Rasa'],correct:'Sentuhan'},
+  ],
+  'd1-hidupan': [
+    {q:'Yang manakah tergolong dalam HIDUPAN?',options:['Batu','Kucing','Kerusi','Meja'],correct:'Kucing'},
+    {q:'Yang manakah tergolong dalam BUKAN HIDUPAN?',options:['Ayam','Pokok','Basikal','Ikan'],correct:'Basikal'},
+    {q:'Antara pilihan berikut, yang manakah HIDUPAN?',options:['Buku','Bunga','Pensel','Beg'],correct:'Bunga'},
+    {q:'Antara pilihan berikut, yang manakah BUKAN HIDUPAN?',options:['Kambing','Rumput','Botol','Itik'],correct:'Botol'},
+    {q:'Hidupan boleh membesar, manakala bukan hidupan?',options:['Juga boleh membesar','Tidak boleh membesar','Boleh berjalan','Boleh bernafas'],correct:'Tidak boleh membesar'},
+    {q:'Yang manakah TIDAK boleh bernafas?',options:['Manusia','Kucing','Kereta','Pokok'],correct:'Kereta'},
+    {q:'Yang manakah boleh MEMBIAK (menghasilkan generasi baharu)?',options:['Ayam','Kerusi','Meja','Buku'],correct:'Ayam'},
+    {q:'Batu tergolong dalam?',options:['Hidupan','Bukan hidupan','Haiwan','Tumbuhan'],correct:'Bukan hidupan'},
+    {q:'Pokok mangga tergolong dalam?',options:['Bukan hidupan','Hidupan','Batu','Objek buatan manusia'],correct:'Hidupan'},
+    {q:'Yang manakah TIDAK memerlukan makanan untuk hidup?',options:['Kucing','Ikan','Payung','Burung'],correct:'Payung'},
+    {q:'Awan tergolong dalam?',options:['Hidupan','Bukan hidupan','Haiwan','Tumbuhan'],correct:'Bukan hidupan'},
+    {q:'Ciri utama yang membezakan hidupan dengan bukan hidupan ialah?',options:['Warna','Boleh bernafas, membesar dan bergerak balas','Saiz','Harga'],correct:'Boleh bernafas, membesar dan bergerak balas'},
+    {q:'Pilih yang tergolong dalam kumpulan HIDUPAN.',options:['Meja','Anjing','Payung','Basikal'],correct:'Anjing'},
+    {q:'Pilih yang tergolong dalam kumpulan BUKAN HIDUPAN.',options:['Ikan','Pensel','Burung','Semut'],correct:'Pensel'},
+    {q:'Manakah antara berikut boleh bergerak dengan sendiri (tanpa bantuan manusia)?',options:['Kucing','Kerusi','Buku','Jam dinding'],correct:'Kucing'},
+    {q:'Manakah antara berikut memerlukan makanan untuk hidup?',options:['Ayam','Meja','Kereta mainan','Bola'],correct:'Ayam'},
+    {q:'Patung boneka tergolong dalam?',options:['Bukan hidupan','Hidupan','Haiwan','Tumbuhan'],correct:'Bukan hidupan'},
+    {q:'Pokok bunga tergolong dalam?',options:['Hidupan','Bukan hidupan','Haiwan','Objek buatan manusia'],correct:'Hidupan'},
+    {q:'Yang manakah TIDAK boleh membiak?',options:['Kereta','Kucing','Pokok','Ikan'],correct:'Kereta'},
+    {q:'Manakah antara berikut BOLEH membesar dari kecil kepada besar?',options:['Anak ayam','Kerusi','Meja','Buku'],correct:'Anak ayam'},
+  ],
+  'd1-haiwan-tumbuhan': [
+    {q:'Manakah antara berikut ialah HAIWAN?',options:['Mawar','Kucing','Rumput','Pokok'],correct:'Kucing'},
+    {q:'Manakah antara berikut ialah TUMBUHAN?',options:['Kambing','Ayam','Pokok kelapa','Itik'],correct:'Pokok kelapa'},
+    {q:'Ikan hidup di?',options:['Darat sahaja','Air','Udara sahaja','Salji'],correct:'Air'},
+    {q:'Burung boleh?',options:['Terbang','Berenang sahaja','Menggali sahaja','Tidak bergerak'],correct:'Terbang'},
+    {q:'Manakah haiwan yang hidup di darat?',options:['Ikan','Kucing','Udang','Sotong'],correct:'Kucing'},
+    {q:'Pokok memerlukan __ untuk membesar.',options:['Air dan cahaya matahari','Televisyen','Buku','Wang'],correct:'Air dan cahaya matahari'},
+    {q:'Bahagian tumbuhan yang menyerap air dari tanah ialah?',options:['Daun','Bunga','Akar','Batang'],correct:'Akar'},
+    {q:'Bahagian tumbuhan yang membuat makanan ialah?',options:['Akar','Daun','Batang','Bunga'],correct:'Daun'},
+    {q:'Manakah antara berikut haiwan berkaki empat?',options:['Ayam','Burung','Kambing','Itik'],correct:'Kambing'},
+    {q:'Lebah membantu tumbuhan melalui proses?',options:['Pendebungaan','Pernafasan','Pencernaan','Peredaran darah'],correct:'Pendebungaan'},
+    {q:'Manakah tumbuhan yang boleh dimakan buahnya?',options:['Pokok mangga','Pokok getah','Rumput liar','Paku pakis'],correct:'Pokok mangga'},
+    {q:'Haiwan yang hidup di dua alam (darat dan air) dikenali sebagai?',options:['Amfibia','Mamalia','Burung','Serangga'],correct:'Amfibia'},
+    {q:'Manakah haiwan yang boleh berenang dengan baik?',options:['Ikan','Kucing','Ayam','Kambing'],correct:'Ikan'},
+    {q:'Bahagian tumbuhan yang cantik dan berwarna-warni dipanggil?',options:['Bunga','Akar','Batang sahaja','Duri'],correct:'Bunga'},
+    {q:'Manakah antara berikut haiwan yang bertelur?',options:['Ayam','Kucing','Kambing','Lembu'],correct:'Ayam'},
+    {q:'Batang pokok berfungsi untuk?',options:['Menyokong pokok dan mengalirkan air','Membuat makanan sahaja','Menyerap cahaya sahaja','Berbunga sahaja'],correct:'Menyokong pokok dan mengalirkan air'},
+    {q:'Haiwan yang tinggal di dalam sarang di atas pokok ialah?',options:['Burung','Ikan','Cacing','Siput'],correct:'Burung'},
+    {q:'Manakah antara berikut tumbuhan berduri?',options:['Pokok kaktus','Pokok pisang','Rumput','Pokok mangga'],correct:'Pokok kaktus'},
+    {q:'Kucing tergolong dalam haiwan yang berjalan menggunakan?',options:['Empat kaki','Dua kaki','Sirip','Sayap'],correct:'Empat kaki'},
+    {q:'Manakah antara berikut hidup di dalam tanah?',options:['Cacing','Burung','Ikan','Kucing'],correct:'Cacing'},
+  ],
+  'd1-keperluan-asas': [
+    {q:'Apakah TIGA keperluan asas semua hidupan untuk terus hidup?',options:['Air, udara dan makanan','Wang, mainan dan pakaian','Buku, pensel dan beg','Televisyen, radio dan komputer'],correct:'Air, udara dan makanan'},
+    {q:'Tumbuhan memerlukan __ untuk membuat makanan sendiri.',options:['Cahaya matahari','Kegelapan','Muzik','Cat'],correct:'Cahaya matahari'},
+    {q:'Manusia bernafas menggunakan?',options:['Paru-paru','Perut','Kaki','Tangan'],correct:'Paru-paru'},
+    {q:'Ikan bernafas menggunakan?',options:['Paru-paru','Insang','Kulit','Hidung'],correct:'Insang'},
+    {q:'Apakah yang berlaku jika tumbuhan tidak mendapat air?',options:['Ia akan layu dan mati','Ia akan membesar lebih cepat','Tiada kesan','Ia akan berbunga lebih banyak'],correct:'Ia akan layu dan mati'},
+    {q:'Semua hidupan memerlukan __ untuk bernafas.',options:['Udara','Wang','Muzik','Cahaya bulan'],correct:'Udara'},
+    {q:'Jika manusia tidak makan dalam masa yang lama, badan akan?',options:['Menjadi lemah dan lapar','Menjadi lebih kuat','Tiada kesan','Membesar dengan cepat'],correct:'Menjadi lemah dan lapar'},
+    {q:'Air penting untuk hidupan kerana?',options:['Membantu proses hidup seperti pencernaan','Untuk hiasan sahaja','Untuk permainan sahaja','Tiada kegunaan'],correct:'Membantu proses hidup seperti pencernaan'},
+    {q:'Manakah BUKAN keperluan asas hidupan?',options:['Mainan video','Air','Udara','Makanan'],correct:'Mainan video'},
+    {q:'Tempat perlindungan (shelter) penting untuk haiwan supaya?',options:['Selamat daripada bahaya dan cuaca','Boleh bermain sahaja','Menjadi kaya','Boleh menyanyi'],correct:'Selamat daripada bahaya dan cuaca'},
+    {q:'Kenapa pokok bunga di dalam bilik gelap lama-kelamaan layu?',options:['Tiada cahaya matahari untuk buat makanan','Terlalu banyak air','Terlalu sejuk','Terlalu bising'],correct:'Tiada cahaya matahari untuk buat makanan'},
+    {q:'Manusia memerlukan makanan untuk?',options:['Mendapat tenaga dan membesar','Bermain sahaja','Tidur sahaja','Tiada sebab khusus'],correct:'Mendapat tenaga dan membesar'},
+    {q:'Manusia perlu bernafas menggunakan?',options:['Udara','Air sahaja','Makanan sahaja','Cahaya sahaja'],correct:'Udara'},
+    {q:'Manakah BUKAN keperluan asas manusia untuk hidup?',options:['Telefon pintar','Air','Udara','Makanan'],correct:'Telefon pintar'},
+    {q:'Ikan yang dikeluarkan dari air akan mati kerana?',options:['Tidak dapat bernafas menggunakan insang','Terlalu panas','Terlalu sejuk','Terlalu bising'],correct:'Tidak dapat bernafas menggunakan insang'},
+    {q:'Tumbuhan yang tidak mendapat cahaya matahari akan menjadi?',options:['Pucat dan lemah','Lebih hijau','Lebih tinggi dengan cepat','Tiada perubahan'],correct:'Pucat dan lemah'},
+    {q:'Manusia dan haiwan memerlukan makanan untuk?',options:['Mendapat tenaga untuk hidup','Bermain sahaja','Tidur sahaja','Menghias badan'],correct:'Mendapat tenaga untuk hidup'},
+    {q:'Jika seseorang tidak minum air dalam masa yang lama, badan akan?',options:['Mengalami dehidrasi (kehilangan air)','Menjadi lebih kuat','Tiada kesan','Membesar dengan cepat'],correct:'Mengalami dehidrasi (kehilangan air)'},
+    {q:'Rumah atau sarang penting untuk haiwan sebagai?',options:['Tempat perlindungan','Tempat bermain sahaja','Hiasan sahaja','Tiada kegunaan'],correct:'Tempat perlindungan'},
+    {q:'Air digunakan oleh tumbuhan untuk?',options:['Membantu proses membuat makanan','Warna daun sahaja','Bau bunga sahaja','Tiada kegunaan'],correct:'Membantu proses membuat makanan'},
+  ],
+  'd2-ciri-hidupan': [
+    {q:'Yang manakah BUKAN ciri hidupan?',options:['Bernafas','Membesar','Tidak bergerak balas','Membiak'],correct:'Tidak bergerak balas'},
+    {q:'Semua hidupan boleh?',options:['Bernafas dan membesar','Terbang','Bercakap','Berenang'],correct:'Bernafas dan membesar'},
+    {q:'Apakah maksud \'membiak\'?',options:['Menghasilkan generasi baharu','Bernafas','Bergerak','Makan'],correct:'Menghasilkan generasi baharu'},
+    {q:'Kucing menangkap tikus menunjukkan ciri hidupan iaitu?',options:['Bergerak balas','Bernafas sahaja','Tidak bergerak','Warna'],correct:'Bergerak balas'},
+    {q:'Pokok tumbuh semakin tinggi menunjukkan ciri hidupan iaitu?',options:['Membesar','Membiak','Bernafas sahaja','Warna'],correct:'Membesar'},
+    {q:'Ayam bertelur menunjukkan ciri hidupan iaitu?',options:['Membiak','Bernafas sahaja','Bergerak sahaja','Warna'],correct:'Membiak'},
+    {q:'Bunga layu apabila disentuh cepat-cepat menunjukkan?',options:['Bergerak balas','Membiak','Membesar sahaja','Bernafas sahaja'],correct:'Bergerak balas'},
+    {q:'Manusia perlu makan untuk?',options:['Mendapat tenaga dan membesar','Bermain','Tidur','Menyanyi'],correct:'Mendapat tenaga dan membesar'},
+    {q:'Ciri hidupan yang bermaksud \'bertindak balas terhadap rangsangan\' ialah?',options:['Bergerak balas','Membiak','Bernafas','Membesar'],correct:'Bergerak balas'},
+    {q:'Semua hidupan akhirnya akan?',options:['Mati','Hidup selamanya','Menjadi batu','Tidak berubah'],correct:'Mati'},
+    {q:'Bayi yang membesar menjadi dewasa menunjukkan ciri?',options:['Membesar','Membiak','Bergerak balas sahaja','Warna'],correct:'Membesar'},
+    {q:'Kucing bernafas menggunakan?',options:['Paru-paru','Insang','Kulit sahaja','Tiada organ khas'],correct:'Paru-paru'},
+    {q:'Manakah antara berikut menunjukkan ciri \'bernafas\'?',options:['Manusia menyedut dan menghembus udara','Kerusi tidak bergerak','Batu kekal diam','Buku terbuka'],correct:'Manusia menyedut dan menghembus udara'},
+    {q:'Kucing yang lari mengejar bola menunjukkan ciri hidupan iaitu?',options:['Bergerak','Membiak','Membesar sahaja','Warna'],correct:'Bergerak'},
+    {q:'Ciri hidupan yang bermaksud \'menghasilkan generasi baharu\' ialah?',options:['Membiak','Bernafas','Bergerak balas','Membesar'],correct:'Membiak'},
+    {q:'Yang manakah BUKAN contoh hidupan bernafas?',options:['Meja','Manusia','Ikan','Pokok'],correct:'Meja'},
+    {q:'Anak kucing yang membesar menjadi kucing dewasa menunjukkan ciri?',options:['Membesar','Membiak sahaja','Bernafas sahaja','Warna'],correct:'Membesar'},
+    {q:'Tumbuhan puteri malu yang mengucup daun apabila disentuh menunjukkan ciri?',options:['Bergerak balas','Membiak','Bernafas sahaja','Warna'],correct:'Bergerak balas'},
+    {q:'Semua hidupan memerlukan makanan untuk?',options:['Mendapat tenaga dan terus hidup','Bermain','Tidur','Berhias'],correct:'Mendapat tenaga dan terus hidup'},
+    {q:'Ciri hidupan yang membezakannya dengan robot ialah?',options:['Hidupan boleh membiak secara semula jadi','Kedua-duanya boleh membiak','Robot juga bernafas','Tiada perbezaan'],correct:'Hidupan boleh membiak secara semula jadi'},
+  ],
+  'd2-bahan': [
+    {q:'Air ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Tiada keadaan'],correct:'Cecair'},
+    {q:'Batu ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Pepejal'},
+    {q:'Udara yang kita sedut ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Pepejal dan cecair'],correct:'Gas'},
+    {q:'Yang manakah mempunyai bentuk tetap?',options:['Air','Udara','Batu','Minyak'],correct:'Batu'},
+    {q:'Yang manakah TIDAK mempunyai bentuk tetap dan mengambil bentuk bekas?',options:['Kayu','Besi','Air','Batu'],correct:'Air'},
+    {q:'Susu ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Cecair'},
+    {q:'Kayu ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Pepejal'},
+    {q:'Manakah antara berikut boleh dituang?',options:['Batu','Kayu','Air','Besi'],correct:'Air'},
+    {q:'Gas tidak mempunyai?',options:['Bentuk dan isi padu tetap','Berat','Warna sentiasa','Bau sentiasa'],correct:'Bentuk dan isi padu tetap'},
+    {q:'Balloon yang ditiup mengandungi bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Gas'},
+    {q:'Ais ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Pepejal'},
+    {q:'Manakah bahan yang boleh dipegang dan mempunyai bentuk tetap?',options:['Air','Buku','Udara','Wap air'],correct:'Buku'},
+    {q:'Minyak masak ialah contoh bahan dalam keadaan?',options:['Cecair','Pepejal','Gas','Wap'],correct:'Cecair'},
+    {q:'Plastik keras seperti pembaris ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Pepejal'},
+    {q:'Gas dalam belon boleh?',options:['Mengembang untuk memenuhi ruang bekas','Kekal dalam bentuk tetap','Dituang seperti air','Dipegang seperti batu'],correct:'Mengembang untuk memenuhi ruang bekas'},
+    {q:'Manakah antara berikut mengalir dan mengambil bentuk bekasnya?',options:['Air','Batu','Kayu','Besi'],correct:'Air'},
+    {q:'Jus buah-buahan ialah contoh bahan dalam keadaan?',options:['Cecair','Pepejal','Gas','Wap'],correct:'Cecair'},
+    {q:'Manakah bahan yang boleh dipatahkan kepada kepingan yang tetap bentuknya?',options:['Biskut','Air','Udara','Susu'],correct:'Biskut'},
+    {q:'Wap air yang keluar dari cerek yang mendidih ialah contoh bahan dalam keadaan?',options:['Gas','Pepejal','Cecair sahaja','Tiada keadaan'],correct:'Gas'},
+    {q:'Buku ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Pepejal'},
+  ],
+  'd2-cuaca-langit': [
+    {q:'Objek di langit yang memberikan cahaya dan haba pada waktu siang ialah?',options:['Bulan','Matahari','Bintang','Awan'],correct:'Matahari'},
+    {q:'Objek di langit yang kelihatan pada waktu malam dan memantulkan cahaya matahari ialah?',options:['Matahari','Bulan','Awan','Hujan'],correct:'Bulan'},
+    {q:'Apakah yang terbentuk apabila wap air di udara menyejuk?',options:['Awan','Matahari','Bintang','Angin'],correct:'Awan'},
+    {q:'Hujan berlaku apabila?',options:['Awan menjadi terlalu berat dengan titisan air','Matahari terbit','Angin bertiup kuat','Malam tiba'],correct:'Awan menjadi terlalu berat dengan titisan air'},
+    {q:'Cuaca panas dan cerah biasanya dikaitkan dengan?',options:['Matahari terang tanpa awan','Awan mendung dan hujan','Ribut petir','Salji'],correct:'Matahari terang tanpa awan'},
+    {q:'Bintang boleh dilihat pada waktu?',options:['Malam yang cerah','Siang yang cerah','Waktu hujan','Waktu petang sahaja'],correct:'Malam yang cerah'},
+    {q:'Petir biasanya berlaku semasa cuaca?',options:['Ribut','Cerah','Sejuk','Berangin sahaja'],correct:'Ribut'},
+    {q:'Payung berguna semasa cuaca?',options:['Hujan','Cerah sahaja','Malam sahaja','Sejuk sahaja'],correct:'Hujan'},
+    {q:'Angin ialah pergerakan?',options:['Udara','Air','Cahaya','Batu'],correct:'Udara'},
+    {q:'Musim tengkujuh di Malaysia biasanya membawa cuaca?',options:['Hujan lebat','Panas terik','Salji','Kering sepanjang tahun'],correct:'Hujan lebat'},
+    {q:'Kabus terbentuk berhampiran?',options:['Permukaan bumi pada waktu pagi','Bulan','Matahari','Angkasa lepas'],correct:'Permukaan bumi pada waktu pagi'},
+    {q:'Suhu pada waktu malam biasanya berbanding siang adalah?',options:['Lebih sejuk','Lebih panas','Sama sahaja','Tiada perubahan'],correct:'Lebih sejuk'},
+    {q:'Awan gelap dan tebal biasanya menandakan?',options:['Hujan akan turun','Cuaca akan panas','Malam akan tiba','Angin akan berhenti'],correct:'Hujan akan turun'},
+    {q:'Pada waktu petang, matahari kelihatan?',options:['Rendah di ufuk (terbenam)','Tinggi di tengah langit','Hilang sepenuhnya','Sama seperti tengah hari'],correct:'Rendah di ufuk (terbenam)'},
+    {q:'Manakah pakaian yang sesuai untuk cuaca panas?',options:['Baju nipis dan ringan','Baju sejuk tebal','Payung sahaja','Baju hujan'],correct:'Baju nipis dan ringan'},
+    {q:'Bulan sabit merupakan salah satu?',options:['Fasa bulan','Jenis awan','Jenis bintang','Jenis planet'],correct:'Fasa bulan'},
+    {q:'Ribut petir biasanya disertai dengan?',options:['Kilat dan guruh','Cuaca cerah sahaja','Salji','Kemarau'],correct:'Kilat dan guruh'},
+    {q:'Cuaca di Malaysia sepanjang tahun secara umumnya?',options:['Panas dan lembap','Sangat sejuk','Bersalji','Kering sepanjang tahun'],correct:'Panas dan lembap'},
+    {q:'Matahari terbit dari arah?',options:['Timur','Barat','Utara','Selatan'],correct:'Timur'},
+    {q:'Matahari terbenam ke arah?',options:['Barat','Timur','Utara','Selatan'],correct:'Barat'},
+  ],
+  'd3-kepelbagaian': [
+    {q:'Haiwan yang mempunyai tulang belakang dikenali sebagai?',options:['Vertebrata','Invertebrata','Mamalia sahaja','Reptilia sahaja'],correct:'Vertebrata'},
+    {q:'Haiwan yang TIDAK mempunyai tulang belakang dikenali sebagai?',options:['Vertebrata','Invertebrata','Ikan','Burung'],correct:'Invertebrata'},
+    {q:'Yang manakah contoh haiwan invertebrata?',options:['Kucing','Burung','Semut','Ikan'],correct:'Semut'},
+    {q:'Yang manakah contoh mamalia?',options:['Kucing','Katak','Ular','Ikan'],correct:'Kucing'},
+    {q:'Yang manakah contoh haiwan reptilia?',options:['Ular','Ayam','Kucing','Ikan'],correct:'Ular'},
+    {q:'Katak tergolong dalam kumpulan?',options:['Amfibia','Mamalia','Burung','Ikan'],correct:'Amfibia'},
+    {q:'Burung dikenali dengan ciri khas iaitu?',options:['Mempunyai bulu dan boleh bertelur','Mempunyai sisik','Hidup di air sahaja','Tiada tulang belakang'],correct:'Mempunyai bulu dan boleh bertelur'},
+    {q:'Ikan bernafas menggunakan?',options:['Insang','Paru-paru','Kulit','Trakea'],correct:'Insang'},
+    {q:'Tumbuhan boleh dikelaskan berdasarkan?',options:['Bentuk daun dan batang','Warna baju','Jenis makanan manusia','Harga di pasar'],correct:'Bentuk daun dan batang'},
+    {q:'Manakah contoh tumbuhan berbunga?',options:['Bunga raya','Paku pakis','Lumut','Cendawan'],correct:'Bunga raya'},
+    {q:'Manakah kumpulan haiwan yang kulitnya bersisik dan menyejukkan darah?',options:['Reptilia','Mamalia','Burung','Amfibia'],correct:'Reptilia'},
+    {q:'Labah-labah tergolong dalam kumpulan?',options:['Invertebrata','Vertebrata','Mamalia','Burung'],correct:'Invertebrata'},
+    {q:'Manakah antara berikut haiwan amfibia?',options:['Katak','Kucing','Burung helang','Ular'],correct:'Katak'},
+    {q:'Manakah kumpulan haiwan yang menyusukan anak?',options:['Mamalia','Reptilia','Burung','Ikan'],correct:'Mamalia'},
+    {q:'Buaya tergolong dalam kumpulan?',options:['Reptilia','Mamalia','Amfibia','Burung'],correct:'Reptilia'},
+    {q:'Cacing tanah tergolong dalam kumpulan?',options:['Invertebrata','Vertebrata','Mamalia','Reptilia'],correct:'Invertebrata'},
+    {q:'Tumbuhan paku pakis membiak melalui?',options:['Spora','Biji benih','Umbi sahaja','Keratan sahaja'],correct:'Spora'},
+    {q:'Manakah antara berikut BUKAN ciri burung?',options:['Bersisik seperti ikan','Mempunyai bulu','Bertelur','Mempunyai paruh'],correct:'Bersisik seperti ikan'},
+    {q:'Lipas dan rama-rama tergolong dalam kumpulan?',options:['Serangga (invertebrata)','Mamalia','Burung','Reptilia'],correct:'Serangga (invertebrata)'},
+    {q:'Manakah antara berikut tumbuhan tidak berbunga?',options:['Lumut','Bunga raya','Pokok mangga','Pokok kelapa'],correct:'Lumut'},
+  ],
+  'd3-rantai-makanan': [
+    {q:'Dalam rantai makanan, tumbuhan hijau dikenali sebagai?',options:['Pengeluar','Pengguna primer','Pengguna sekunder','Pengurai'],correct:'Pengeluar'},
+    {q:'Haiwan yang memakan tumbuhan sahaja dikenali sebagai?',options:['Karnivor','Herbivor','Omnivor','Pengurai'],correct:'Herbivor'},
+    {q:'Haiwan yang memakan haiwan lain sahaja dikenali sebagai?',options:['Herbivor','Karnivor','Omnivor','Pengeluar'],correct:'Karnivor'},
+    {q:'Haiwan yang memakan tumbuhan DAN haiwan dikenali sebagai?',options:['Herbivor','Karnivor','Omnivor','Pengeluar'],correct:'Omnivor'},
+    {q:'Dalam rantai makanan: rumput → arnab → helang. Apakah peranan arnab?',options:['Pengeluar','Pengguna primer','Pengguna sekunder','Pengurai'],correct:'Pengguna primer'},
+    {q:'Dalam rantai makanan: rumput → arnab → helang. Apakah peranan helang?',options:['Pengeluar','Pengguna primer','Pengguna sekunder','Pengurai'],correct:'Pengguna sekunder'},
+    {q:'Dalam rantai makanan: rumput → arnab → helang. Apakah peranan rumput?',options:['Pengeluar','Pengguna primer','Pengguna sekunder','Pengurai'],correct:'Pengeluar'},
+    {q:'Lembu tergolong dalam kumpulan?',options:['Herbivor','Karnivor','Omnivor','Pengurai'],correct:'Herbivor'},
+    {q:'Singa tergolong dalam kumpulan?',options:['Herbivor','Karnivor','Omnivor','Pengeluar'],correct:'Karnivor'},
+    {q:'Manusia biasanya tergolong dalam kumpulan?',options:['Herbivor sahaja','Karnivor sahaja','Omnivor','Pengeluar'],correct:'Omnivor'},
+    {q:'Apakah yang berlaku jika pengeluar (tumbuhan) dalam sesuatu kawasan pupus?',options:['Rantai makanan akan terjejas dan haiwan lain terancam','Tiada kesan','Haiwan akan membiak lebih banyak','Cuaca akan berubah serta-merta'],correct:'Rantai makanan akan terjejas dan haiwan lain terancam'},
+    {q:'Rantai makanan bermula dengan?',options:['Pengeluar (tumbuhan hijau)','Karnivor','Manusia','Pengurai'],correct:'Pengeluar (tumbuhan hijau)'},
+    {q:'Kambing dalam rantai makanan biasanya berperanan sebagai?',options:['Pengguna primer (herbivor)','Pengeluar','Pengguna sekunder','Pengurai'],correct:'Pengguna primer (herbivor)'},
+    {q:'Harimau dalam rantai makanan biasanya berperanan sebagai?',options:['Pengguna sekunder (karnivor)','Pengeluar','Pengguna primer','Pengurai'],correct:'Pengguna sekunder (karnivor)'},
+    {q:'Dalam rantai makanan: daun → ulat → burung → helang. Apakah peranan ulat?',options:['Pengguna primer','Pengeluar','Pengguna sekunder','Pengurai'],correct:'Pengguna primer'},
+    {q:'Dalam rantai makanan: daun → ulat → burung → helang. Apakah peranan burung?',options:['Pengguna sekunder','Pengeluar','Pengguna primer','Pengurai'],correct:'Pengguna sekunder'},
+    {q:'Beruang yang makan ikan dan buah beri tergolong dalam?',options:['Omnivor','Herbivor sahaja','Karnivor sahaja','Pengeluar'],correct:'Omnivor'},
+    {q:'Apakah yang berlaku kepada populasi arnab jika bilangan helang meningkat mendadak?',options:['Populasi arnab akan berkurangan','Populasi arnab akan meningkat','Tiada kesan','Arnab akan menjadi karnivor'],correct:'Populasi arnab akan berkurangan'},
+    {q:'Rumput dalam rantai makanan mendapat tenaga daripada?',options:['Cahaya matahari (fotosintesis)','Memakan haiwan lain','Air sahaja','Tanah sahaja'],correct:'Cahaya matahari (fotosintesis)'},
+    {q:'Manakah antara berikut contoh haiwan omnivor?',options:['Manusia','Singa','Lembu','Arnab'],correct:'Manusia'},
+  ],
+  'd3-daya-gerakan': [
+    {q:'Daya tolak dan tarik boleh menyebabkan objek?',options:['Bergerak, berhenti atau menukar arah','Hilang berat','Bertukar warna','Menjadi lebih besar'],correct:'Bergerak, berhenti atau menukar arah'},
+    {q:'Apabila kita menolak troli beli-belah, kita mengenakan daya?',options:['Tarikan','Tolakan','Graviti','Geseran'],correct:'Tolakan'},
+    {q:'Apabila kita menarik tali, kita mengenakan daya?',options:['Tarikan','Tolakan','Graviti','Magnet'],correct:'Tarikan'},
+    {q:'Buah yang jatuh dari pokok disebabkan oleh daya?',options:['Graviti','Magnet','Geseran','Tolakan'],correct:'Graviti'},
+    {q:'Daya yang menyebabkan objek sukar bergerak di atas permukaan kasar dikenali sebagai?',options:['Geseran','Graviti','Magnet','Tarikan'],correct:'Geseran'},
+    {q:'Manakah contoh daya tolakan dalam kehidupan seharian?',options:['Menolak pintu','Menarik laci','Memanjat tangga','Duduk di kerusi'],correct:'Menolak pintu'},
+    {q:'Magnet boleh menarik objek yang diperbuat daripada?',options:['Besi','Kayu','Plastik','Kertas'],correct:'Besi'},
+    {q:'Basikal lebih senang bergerak di jalan licin berbanding jalan berbatu kerana?',options:['Geseran lebih rendah di jalan licin','Geseran lebih tinggi di jalan licin','Tiada kaitan dengan geseran','Graviti berbeza'],correct:'Geseran lebih rendah di jalan licin'},
+    {q:'Apabila bola ditendang, ia bergerak disebabkan oleh daya?',options:['Tolakan','Graviti sahaja','Magnet','Tiada daya'],correct:'Tolakan'},
+    {q:'Objek yang lebih berat memerlukan daya yang __ untuk menggerakkannya berbanding objek ringan.',options:['Lebih besar','Lebih kecil','Sama sahaja','Tiada daya'],correct:'Lebih besar'},
+    {q:'Layang-layang boleh terbang disebabkan oleh?',options:['Daya angin (tolakan udara)','Graviti sahaja','Magnet','Geseran'],correct:'Daya angin (tolakan udara)'},
+    {q:'Roda kereta menggunakan konsep geseran untuk?',options:['Berhenti dengan selamat (brek)','Terbang','Menjadi lebih ringan','Menukar warna'],correct:'Berhenti dengan selamat (brek)'},
+    {q:'Apabila kita mengayuh basikal, kita mengenakan daya untuk?',options:['Menggerakkan roda basikal','Menghentikan basikal sahaja','Mengubah warna basikal','Menambah berat basikal'],correct:'Menggerakkan roda basikal'},
+    {q:'Brek basikal berfungsi menggunakan konsep?',options:['Geseran','Graviti sahaja','Magnet','Tolakan sahaja'],correct:'Geseran'},
+    {q:'Objek yang jatuh dari ketinggian akan bergerak ke bawah disebabkan oleh?',options:['Daya graviti','Daya magnet','Daya tolakan sahaja','Daya geseran sahaja'],correct:'Daya graviti'},
+    {q:'Meluncur di atas gelongsor licin lebih laju berbanding permukaan kasar kerana?',options:['Geseran lebih rendah pada permukaan licin','Geseran lebih tinggi pada permukaan licin','Tiada kaitan dengan geseran','Graviti berbeza'],correct:'Geseran lebih rendah pada permukaan licin'},
+    {q:'Manakah contoh penggunaan magnet dalam kehidupan seharian?',options:['Menampal not pada peti sejuk','Memasak nasi','Menyalakan lampu','Membasuh baju'],correct:'Menampal not pada peti sejuk'},
+    {q:'Apabila dua magnet kutub sama didekatkan, ia akan?',options:['Tolak-menolak','Tarik-menarik','Tiada kesan','Melekat serta-merta'],correct:'Tolak-menolak'},
+    {q:'Apabila dua magnet kutub berlainan didekatkan, ia akan?',options:['Tarik-menarik','Tolak-menolak','Tiada kesan','Berpisah jauh'],correct:'Tarik-menarik'},
+    {q:'Kita perlu mengenakan daya yang lebih besar untuk menggerakkan objek yang?',options:['Lebih berat','Lebih ringan','Lebih kecil','Berwarna cerah'],correct:'Lebih berat'},
+  ],
+  'd3-cahaya-bunyi': [
+    {q:'Sumber cahaya semula jadi yang utama pada waktu siang ialah?',options:['Mentol','Matahari','Lilin','Bulan'],correct:'Matahari'},
+    {q:'Bunyi dihasilkan apabila objek?',options:['Bergetar','Berhenti bergerak','Menjadi sejuk','Hilang warna'],correct:'Bergetar'},
+    {q:'Cahaya bergerak dalam garis?',options:['Lurus','Bengkok','Bulat','Zig-zag'],correct:'Lurus'},
+    {q:'Bunyi TIDAK dapat merambat melalui?',options:['Udara','Air','Kevakuman (angkasa lepas)','Kayu'],correct:'Kevakuman (angkasa lepas)'},
+    {q:'Bayang-bayang terbentuk apabila cahaya?',options:['Dihalang oleh objek legap','Melalui kaca lutsinar','Dipantulkan oleh cermin sahaja','Tidak wujud'],correct:'Dihalang oleh objek legap'},
+    {q:'Cermin berfungsi untuk?',options:['Memantulkan cahaya','Menyerap semua cahaya','Menghasilkan bunyi','Menghalang bunyi'],correct:'Memantulkan cahaya'},
+    {q:'Manakah contoh sumber cahaya buatan?',options:['Lampu suluh','Matahari','Bintang','Kilat'],correct:'Lampu suluh'},
+    {q:'Alat muzik seperti gitar menghasilkan bunyi melalui?',options:['Petikan tali yang bergetar','Cahaya','Bau','Warna'],correct:'Petikan tali yang bergetar'},
+    {q:'Objek lutsinar membenarkan cahaya?',options:['Menembusinya dengan jelas','Terhalang sepenuhnya','Terhalang sebahagian sahaja','Menghasilkan bunyi'],correct:'Menembusinya dengan jelas'},
+    {q:'Objek legap seperti papan kayu akan?',options:['Menghalang cahaya sepenuhnya','Membenarkan cahaya menembusi','Menghasilkan bayang-bayang berwarna','Memantulkan bunyi sahaja'],correct:'Menghalang cahaya sepenuhnya'},
+    {q:'Bunyi guruh selalunya didengar selepas kilat dilihat kerana?',options:['Cahaya bergerak lebih laju daripada bunyi','Bunyi bergerak lebih laju daripada cahaya','Kedua-duanya sama laju','Guruh tiada kaitan dengan kilat'],correct:'Cahaya bergerak lebih laju daripada bunyi'},
+    {q:'Telinga manusia mengesan bunyi melalui?',options:['Getaran yang sampai ke gegendang telinga','Cahaya yang masuk ke mata','Bau yang dihidu','Rasa di lidah'],correct:'Getaran yang sampai ke gegendang telinga'},
+    {q:'Bunyi loceng basikal dihasilkan melalui?',options:['Getaran logam','Cahaya','Bau','Warna'],correct:'Getaran logam'},
+    {q:'Bunyi yang kuat dihasilkan oleh getaran yang?',options:['Besar (amplitud tinggi)','Kecil sahaja','Perlahan sahaja','Tiada getaran'],correct:'Besar (amplitud tinggi)'},
+    {q:'Cermin memantulkan cahaya menghasilkan?',options:['Imej pantulan','Bunyi','Bau','Haba sahaja'],correct:'Imej pantulan'},
+    {q:'Objek yang menghalang cahaya sepenuhnya dan menghasilkan bayang-bayang gelap dikenali sebagai?',options:['Objek legap','Objek lutsinar','Objek separuh lutsinar','Objek bercahaya'],correct:'Objek legap'},
+    {q:'Kaca tingkap membenarkan cahaya menembusinya kerana ia bersifat?',options:['Lutsinar','Legap','Bercahaya sendiri','Menghasilkan bunyi'],correct:'Lutsinar'},
+    {q:'Kertas surat khabar yang nipis membenarkan sedikit cahaya menembusi. Ia dikenali sebagai objek?',options:['Separuh lutsinar','Lutsinar sepenuhnya','Legap sepenuhnya','Bercahaya sendiri'],correct:'Separuh lutsinar'},
+    {q:'Apabila kita bercakap dalam bilik kosong, bunyi kita kedengaran bergema kerana?',options:['Bunyi dipantulkan oleh dinding','Bunyi diserap sepenuhnya','Tiada bunyi dihasilkan','Cahaya dipantulkan'],correct:'Bunyi dipantulkan oleh dinding'},
+    {q:'Manakah antara berikut BUKAN sumber bunyi?',options:['Batu yang diam','Loceng yang dibunyikan','Radio yang dimainkan','Manusia bercakap'],correct:'Batu yang diam'},
+  ],
+  'd4-sistem-badan': [
+    {q:'Organ yang digunakan untuk bernafas ialah?',options:['Jantung','Paru-paru','Hati','Buah pinggang'],correct:'Paru-paru'},
+    {q:'Organ yang mengepam darah ke seluruh badan ialah?',options:['Paru-paru','Jantung','Otak','Perut'],correct:'Jantung'},
+    {q:'Organ yang mengawal semua aktiviti badan ialah?',options:['Otak','Hati','Perut','Kulit'],correct:'Otak'},
+    {q:'Rangka badan manusia berfungsi untuk?',options:['Menyokong dan melindungi organ dalaman','Menghasilkan bunyi','Merasa makanan','Menghidu bau'],correct:'Menyokong dan melindungi organ dalaman'},
+    {q:'Kulit manusia berfungsi sebagai organ deria untuk?',options:['Sentuhan','Penglihatan','Pendengaran','Rasa'],correct:'Sentuhan'},
+    {q:'Mata berfungsi sebagai organ untuk?',options:['Penglihatan','Pendengaran','Bau','Rasa'],correct:'Penglihatan'},
+    {q:'Organ yang membantu proses pencernaan makanan ialah?',options:['Perut','Paru-paru','Jantung','Mata'],correct:'Perut'},
+    {q:'Otot berfungsi untuk membantu badan?',options:['Bergerak','Bernafas sahaja','Berfikir sahaja','Melihat'],correct:'Bergerak'},
+    {q:'Tulang rusuk melindungi organ?',options:['Jantung dan paru-paru','Otak','Perut sahaja','Kulit'],correct:'Jantung dan paru-paru'},
+    {q:'Tengkorak melindungi organ?',options:['Otak','Jantung','Paru-paru','Perut'],correct:'Otak'},
+    {q:'Sistem rangka badan manusia terdiri daripada?',options:['Tulang-tulang yang bersambung','Otot sahaja','Kulit sahaja','Darah sahaja'],correct:'Tulang-tulang yang bersambung'},
+    {q:'Organ deria yang membantu kita mengecap rasa manis, masam, masin ialah?',options:['Lidah','Hidung','Telinga','Kulit'],correct:'Lidah'},
+    {q:'Paru-paru terletak di dalam?',options:['Rongga dada','Rongga perut','Kepala','Tangan'],correct:'Rongga dada'},
+    {q:'Organ yang membantu penghadaman lemak ialah?',options:['Hati','Otak','Mata','Kulit'],correct:'Hati'},
+    {q:'Fungsi buah pinggang ialah untuk?',options:['Menapis sisa dan menghasilkan air kencing','Mengepam darah','Bernafas','Berfikir'],correct:'Menapis sisa dan menghasilkan air kencing'},
+    {q:'Sistem otot dan rangka bekerjasama untuk membolehkan badan?',options:['Bergerak','Bernafas sahaja','Berfikir sahaja','Mencerna makanan sahaja'],correct:'Bergerak'},
+    {q:'Telinga berfungsi sebagai organ deria untuk?',options:['Pendengaran','Penglihatan','Rasa','Bau'],correct:'Pendengaran'},
+    {q:'Manakah organ yang paling utama mengawal sistem saraf?',options:['Otak','Jantung','Paru-paru','Perut'],correct:'Otak'},
+    {q:'Tulang belakang berfungsi untuk?',options:['Menyokong badan dan melindungi saraf tunjang','Mencerna makanan','Bernafas','Merasa makanan'],correct:'Menyokong badan dan melindungi saraf tunjang'},
+    {q:'Hidung berfungsi sebagai organ deria untuk?',options:['Bau','Rasa','Sentuhan','Pendengaran'],correct:'Bau'},
+  ],
+  'd4-sifat-bahan': [
+    {q:'Air, minyak dan susu ialah contoh bahan dalam keadaan?',options:['Pepejal','Cecair','Gas','Wap'],correct:'Cecair'},
+    {q:'Apabila ais dipanaskan, ia akan?',options:['Mencair menjadi air','Membeku','Menjadi lebih keras','Hilang berat sepenuhnya'],correct:'Mencair menjadi air'},
+    {q:'Apabila air disejukkan pada suhu sangat rendah, ia akan?',options:['Membeku menjadi ais','Mencair','Menjadi gas','Hilang berat'],correct:'Membeku menjadi ais'},
+    {q:'Gas mempunyai ciri iaitu?',options:['Tiada bentuk dan isi padu tetap','Bentuk tetap','Isi padu tetap sahaja','Boleh dipegang dengan mudah'],correct:'Tiada bentuk dan isi padu tetap'},
+    {q:'Manakah bahan yang tenggelam dalam air?',options:['Batu','Kayu','Span','Bola getah kosong'],correct:'Batu'},
+    {q:'Manakah bahan yang terapung di atas air?',options:['Kayu','Besi','Batu','Duit syiling'],correct:'Kayu'},
+    {q:'Bahan lutsinar membenarkan cahaya?',options:['Menembusinya dengan jelas','Terhalang sepenuhnya','Dipantulkan sahaja','Hilang terus'],correct:'Menembusinya dengan jelas'},
+    {q:'Kaca ialah contoh bahan yang bersifat?',options:['Lutsinar dan mudah pecah','Boleh ditekuk seperti getah','Menyerap air','Magnet'],correct:'Lutsinar dan mudah pecah'},
+    {q:'Getah mempunyai sifat?',options:['Boleh diregang dan kembali ke bentuk asal','Mudah pecah','Menyerap air dengan banyak','Legap sepenuhnya'],correct:'Boleh diregang dan kembali ke bentuk asal'},
+    {q:'Span mempunyai sifat?',options:['Menyerap air','Menolak air sepenuhnya','Keras seperti batu','Lutsinar'],correct:'Menyerap air'},
+    {q:'Besi ialah bahan yang bersifat?',options:['Keras dan tahan lama','Mudah pecah seperti kaca','Boleh diregang seperti getah','Terapung di air'],correct:'Keras dan tahan lama'},
+    {q:'Plastik banyak digunakan kerana sifatnya yang?',options:['Ringan dan tahan lasak','Berat dan mudah pecah','Menyerap air dengan banyak','Magnet'],correct:'Ringan dan tahan lasak'},
+    {q:'Manakah bahan yang bersifat kalis air (tidak menyerap air)?',options:['Plastik','Span','Kertas','Kain kapas'],correct:'Plastik'},
+    {q:'Kayu digunakan untuk membuat perabot kerana sifatnya yang?',options:['Kuat dan tahan lama','Boleh diregang seperti getah','Menyerap air dengan banyak','Lutsinar'],correct:'Kuat dan tahan lama'},
+    {q:'Manakah bahan yang bersifat legap (tidak membenarkan cahaya menembusi)?',options:['Kayu','Kaca lutsinar','Air jernih','Plastik lutsinar'],correct:'Kayu'},
+    {q:'Span digunakan untuk membersihkan pinggan kerana sifatnya yang?',options:['Menyerap air dengan baik','Tidak menyerap air','Keras seperti batu','Lutsinar'],correct:'Menyerap air dengan baik'},
+    {q:'Getah gelang digunakan untuk mengikat barang kerana sifatnya yang?',options:['Boleh diregang dan kembali ke bentuk asal','Mudah pecah','Keras seperti besi','Menyerap air'],correct:'Boleh diregang dan kembali ke bentuk asal'},
+    {q:'Manakah bahan yang sesuai untuk membuat cermin mata kerana sifat lutsinarnya?',options:['Kaca','Span','Getah','Kayu'],correct:'Kaca'},
+    {q:'Besi digunakan untuk membina jambatan kerana sifatnya yang?',options:['Kuat dan tahan lasak','Mudah pecah','Ringan seperti span','Boleh diregang seperti getah'],correct:'Kuat dan tahan lasak'},
+    {q:'Manakah antara berikut bahan yang boleh berkarat apabila terdedah kepada air dan udara?',options:['Besi','Plastik','Kaca','Getah'],correct:'Besi'},
+  ],
+  'd4-tenaga': [
+    {q:'Sumber tenaga yang boleh diperbaharui ialah?',options:['Arang batu','Gas asli','Tenaga suria','Petroleum'],correct:'Tenaga suria'},
+    {q:'Sumber tenaga yang TIDAK boleh diperbaharui ialah?',options:['Tenaga suria','Tenaga angin','Petroleum','Tenaga air'],correct:'Petroleum'},
+    {q:'Tenaga yang tersimpan dalam makanan dikenali sebagai?',options:['Tenaga kimia','Tenaga bunyi','Tenaga cahaya','Tenaga elektrik'],correct:'Tenaga kimia'},
+    {q:'Panel suria menukarkan tenaga cahaya kepada tenaga?',options:['Elektrik','Bunyi','Haba sahaja','Kimia'],correct:'Elektrik'},
+    {q:'Yang manakah contoh perubahan tenaga dalam kipas elektrik?',options:['Tenaga elektrik kepada tenaga kinetik','Tenaga cahaya kepada tenaga bunyi','Tenaga kimia kepada tenaga cahaya','Tenaga bunyi kepada tenaga elektrik'],correct:'Tenaga elektrik kepada tenaga kinetik'},
+    {q:'Tenaga yang dihasilkan oleh objek yang bergerak dikenali sebagai?',options:['Tenaga kinetik','Tenaga keupayaan','Tenaga kimia','Tenaga bunyi'],correct:'Tenaga kinetik'},
+    {q:'Manusia mendapat tenaga daripada?',options:['Makanan','Udara sahaja','Air sahaja','Cahaya matahari secara langsung'],correct:'Makanan'},
+    {q:'Enjin kereta menukarkan tenaga petrol (kimia) kepada tenaga?',options:['Kinetik (gerakan)','Bunyi sahaja','Cahaya sahaja','Elektrik sahaja'],correct:'Kinetik (gerakan)'},
+    {q:'Lampu suluh yang dinyalakan menukarkan tenaga kimia (bateri) kepada tenaga?',options:['Cahaya','Bunyi','Kinetik','Haba sahaja'],correct:'Cahaya'},
+    {q:'Tenaga angin digunakan di turbin angin untuk hasilkan tenaga?',options:['Elektrik','Kimia','Bunyi','Cahaya'],correct:'Elektrik'},
+    {q:'Manakah amalan menjimatkan tenaga di rumah?',options:['Tutup lampu bila tidak digunakan','Biarkan semua lampu menyala','Buka semua tingkap dengan penghawa dingin menyala','Guna elektrik tanpa had'],correct:'Tutup lampu bila tidak digunakan'},
+    {q:'Tenaga tidak boleh dicipta atau dimusnahkan, tetapi hanya boleh?',options:['Berubah bentuk','Hilang terus','Bertambah sendiri','Kekal statik'],correct:'Berubah bentuk'},
+    {q:'Tenaga suria diperoleh daripada?',options:['Matahari','Angin','Air','Petroleum'],correct:'Matahari'},
+    {q:'Tenaga yang tersimpan dalam bateri dikenali sebagai?',options:['Tenaga kimia','Tenaga bunyi','Tenaga cahaya','Tenaga kinetik'],correct:'Tenaga kimia'},
+    {q:'Radio menukarkan tenaga elektrik kepada tenaga?',options:['Bunyi','Cahaya sahaja','Kimia','Haba sahaja'],correct:'Bunyi'},
+    {q:'Manakah aktiviti yang membazirkan tenaga elektrik?',options:['Membiarkan lampu menyala sepanjang hari tanpa keperluan','Menutup lampu bila keluar bilik','Menggunakan lampu LED yang jimat tenaga','Mematikan televisyen selepas tonton'],correct:'Membiarkan lampu menyala sepanjang hari tanpa keperluan'},
+    {q:'Manakah sumber tenaga yang menghasilkan pencemaran udara apabila dibakar?',options:['Arang batu','Tenaga suria','Tenaga angin','Tenaga air'],correct:'Arang batu'},
+    {q:'Tenaga keupayaan graviti dimiliki oleh objek yang?',options:['Berada di tempat tinggi','Sedang bergerak laju','Berwarna cerah','Berbentuk bulat'],correct:'Berada di tempat tinggi'},
+    {q:'Dam hidroelektrik menukarkan tenaga air kepada tenaga?',options:['Elektrik','Kimia','Bunyi sahaja','Cahaya sahaja'],correct:'Elektrik'},
+    {q:'Manusia mendapat tenaga kimia daripada makanan yang kemudiannya digunakan untuk?',options:['Bergerak dan menjalankan aktiviti harian','Menjadi lebih berat sahaja','Tidur sepanjang hari','Tiada kegunaan'],correct:'Bergerak dan menjalankan aktiviti harian'},
+  ],
+  'd5-respirasi-peredaran': [
+    {q:'Semasa bernafas, manusia menyedut gas?',options:['Oksigen','Karbon dioksida','Nitrogen sahaja','Asap'],correct:'Oksigen'},
+    {q:'Semasa menghembus nafas, manusia mengeluarkan gas?',options:['Oksigen sahaja','Karbon dioksida','Hidrogen','Helium'],correct:'Karbon dioksida'},
+    {q:'Darah dipam oleh jantung mengalir melalui?',options:['Saluran darah','Paru-paru sahaja','Tulang','Otot sahaja'],correct:'Saluran darah'},
+    {q:'Fungsi utama sistem peredaran darah ialah?',options:['Mengangkut oksigen dan nutrien ke seluruh badan','Menghasilkan bunyi','Mencernakan makanan','Menyokong rangka badan'],correct:'Mengangkut oksigen dan nutrien ke seluruh badan'},
+    {q:'Udara masuk ke badan melalui?',options:['Hidung','Mata','Telinga','Kulit'],correct:'Hidung'},
+    {q:'Selepas melalui hidung, udara akan melalui?',options:['Trakea','Jantung','Perut','Otak'],correct:'Trakea'},
+    {q:'Paru-paru mempunyai kantung udara kecil dikenali sebagai?',options:['Alveolus','Bronkus','Trakea','Jantung'],correct:'Alveolus'},
+    {q:'Denyutan jantung dapat dirasai di?',options:['Pergelangan tangan','Rambut','Hujung jari kaki sahaja','Bahu sahaja'],correct:'Pergelangan tangan'},
+    {q:'Selepas bersenam, kadar pernafasan kita akan menjadi?',options:['Lebih cepat','Lebih perlahan','Berhenti','Tiada perubahan'],correct:'Lebih cepat'},
+    {q:'Darah yang kaya dengan oksigen berwarna?',options:['Merah cerah','Biru','Hijau','Kuning'],correct:'Merah cerah'},
+    {q:'Jantung manusia mempunyai berapa ruang (bilik)?',options:['4','2','3','6'],correct:'4'},
+    {q:'Mengapa penting untuk bersenam secara berkala?',options:['Menguatkan jantung dan sistem peredaran darah','Melemahkan paru-paru','Tiada kesan kepada badan','Menyebabkan bernafas lebih perlahan'],correct:'Menguatkan jantung dan sistem peredaran darah'},
+    {q:'Oksigen yang disedut digunakan oleh badan untuk?',options:['Menghasilkan tenaga','Mencerna makanan sahaja','Melihat','Mendengar'],correct:'Menghasilkan tenaga'},
+    {q:'Peparu manusia berpasangan iaitu berjumlah?',options:['2','1','3','4'],correct:'2'},
+    {q:'Saluran yang membawa udara dari trakea ke paru-paru dikenali sebagai?',options:['Bronkus','Alveolus','Jantung','Esofagus'],correct:'Bronkus'},
+    {q:'Darah yang kekurangan oksigen (selepas digunakan oleh badan) mengalir kembali ke?',options:['Jantung','Otak sahaja','Perut','Kulit'],correct:'Jantung'},
+    {q:'Bersenam secara berkala membantu?',options:['Menguatkan jantung dan paru-paru','Melemahkan sistem badan','Tiada kesan kepada kesihatan','Menyebabkan bernafas lebih perlahan sentiasa'],correct:'Menguatkan jantung dan paru-paru'},
+    {q:'Merokok boleh merosakkan organ?',options:['Paru-paru','Kaki sahaja','Kulit sahaja','Rambut sahaja'],correct:'Paru-paru'},
+    {q:'Sistem peredaran darah terdiri daripada jantung dan?',options:['Saluran darah','Paru-paru sahaja','Otot sahaja','Tulang sahaja'],correct:'Saluran darah'},
+    {q:'Denyutan nadi mengukur?',options:['Kadar degupan jantung','Kadar pernafasan sahaja','Suhu badan','Tekanan darah sahaja tanpa jantung'],correct:'Kadar degupan jantung'},
+  ],
+  'd5-jirim': [
+    {q:'Proses perubahan cecair kepada gas dikenali sebagai?',options:['Penyejatan','Pemejalwapan','Kondensasi','Pembekuan'],correct:'Penyejatan'},
+    {q:'Proses perubahan gas kepada cecair dikenali sebagai?',options:['Penyejatan','Kondensasi','Peleburan','Pemejalwapan'],correct:'Kondensasi'},
+    {q:'Proses perubahan pepejal terus kepada gas tanpa melalui keadaan cecair dikenali sebagai?',options:['Kondensasi','Pemejalwapan','Peleburan','Pembekuan'],correct:'Pemejalwapan'},
+    {q:'Kapur barus yang hilang secara beransur-ansur di dalam almari menunjukkan proses?',options:['Pemejalwapan','Kondensasi','Pembekuan','Peleburan'],correct:'Pemejalwapan'},
+    {q:'Proses perubahan pepejal kepada cecair dikenali sebagai?',options:['Peleburan','Penyejatan','Kondensasi','Pemejalwapan'],correct:'Peleburan'},
+    {q:'Proses perubahan cecair kepada pepejal dikenali sebagai?',options:['Pembekuan','Penyejatan','Kondensasi','Peleburan'],correct:'Pembekuan'},
+    {q:'Air yang dibiarkan di tempat terbuka lama-kelamaan akan berkurangan disebabkan proses?',options:['Penyejatan','Pembekuan','Peleburan','Kondensasi'],correct:'Penyejatan'},
+    {q:'Titisan air pada bahagian luar gelas berisi air ais terbentuk disebabkan proses?',options:['Kondensasi','Penyejatan','Peleburan','Pembekuan'],correct:'Kondensasi'},
+    {q:'Ais yang diletakkan di tempat panas akan mengalami proses?',options:['Peleburan','Kondensasi','Pemejalwapan','Pembekuan'],correct:'Peleburan'},
+    {q:'Wap air di udara berubah menjadi awan disebabkan proses?',options:['Kondensasi','Penyejatan','Peleburan','Pembekuan'],correct:'Kondensasi'},
+    {q:'Air yang dimasukkan ke dalam peti sejuk beku akan mengalami proses?',options:['Pembekuan','Peleburan','Penyejatan','Kondensasi'],correct:'Pembekuan'},
+    {q:'Manakah antara berikut BUKAN perubahan keadaan bahan?',options:['Pewarnaan','Peleburan','Penyejatan','Kondensasi'],correct:'Pewarnaan'},
+    {q:'Pakaian basah yang dijemur akan kering disebabkan proses?',options:['Penyejatan','Kondensasi','Pembekuan','Peleburan'],correct:'Penyejatan'},
+    {q:'Cermin kereta berkabus semasa hujan disebabkan proses?',options:['Kondensasi','Penyejatan','Peleburan','Pemejalwapan'],correct:'Kondensasi'},
+    {q:'Aiskrim yang dibiarkan di luar peti sejuk akan mengalami proses?',options:['Peleburan','Pembekuan','Kondensasi','Pemejalwapan'],correct:'Peleburan'},
+    {q:'Ais kering (dry ice) yang berasap semasa terdedah ke udara menunjukkan proses?',options:['Pemejalwapan','Kondensasi','Peleburan','Pembekuan'],correct:'Pemejalwapan'},
+    {q:'Manakah proses yang berlaku apabila air di dalam periuk mendidih dan menjadi wap?',options:['Penyejatan','Kondensasi','Pembekuan','Peleburan'],correct:'Penyejatan'},
+    {q:'Titisan air pada daun pada waktu pagi (embun) terbentuk melalui proses?',options:['Kondensasi','Penyejatan','Peleburan','Pemejalwapan'],correct:'Kondensasi'},
+    {q:'Coklat yang tertinggal dalam kereta panas akan mengalami proses?',options:['Peleburan','Pembekuan','Penyejatan','Kondensasi'],correct:'Peleburan'},
+    {q:'Apakah yang berlaku kepada isi padu air apabila ia membeku menjadi ais?',options:['Isi padu bertambah (mengembang)','Isi padu berkurangan','Isi padu kekal sama','Air hilang sepenuhnya'],correct:'Isi padu bertambah (mengembang)'},
+  ],
+  'd5-litar-elektrik': [
+    {q:'Litar elektrik ringkas memerlukan sekurang-kurangnya?',options:['Bateri, wayar dan mentol','Air dan udara sahaja','Kayu dan kertas','Batu dan pasir'],correct:'Bateri, wayar dan mentol'},
+    {q:'Bahan yang membenarkan elektrik mengalir melaluinya dikenali sebagai?',options:['Penebat','Pengalir','Penebat elektrik','Bahan lengai'],correct:'Pengalir'},
+    {q:'Bahan yang TIDAK membenarkan elektrik mengalir melaluinya dikenali sebagai?',options:['Pengalir','Penebat','Logam','Besi'],correct:'Penebat'},
+    {q:'Yang manakah contoh bahan pengalir elektrik yang baik?',options:['Kayu','Getah','Tembaga','Plastik'],correct:'Tembaga'},
+    {q:'Yang manakah contoh bahan penebat elektrik yang baik?',options:['Getah','Tembaga','Besi','Aluminium'],correct:'Getah'},
+    {q:'Litar terbuka menyebabkan mentol?',options:['Tidak menyala','Menyala terang','Menyala dan berkelip','Meletup'],correct:'Tidak menyala'},
+    {q:'Litar tertutup membolehkan?',options:['Arus elektrik mengalir dan mentol menyala','Arus tidak mengalir langsung','Bateri menjadi kosong serta-merta','Wayar putus'],correct:'Arus elektrik mengalir dan mentol menyala'},
+    {q:'Suis dalam litar berfungsi untuk?',options:['Membuka dan menutup litar','Menambah kecerahan mentol sahaja','Menukar warna mentol','Menyimpan tenaga'],correct:'Membuka dan menutup litar'},
+    {q:'Kabel elektrik biasanya disaluti dengan getah atau plastik kerana ia berfungsi sebagai?',options:['Penebat untuk keselamatan','Pengalir tambahan','Hiasan sahaja','Magnet'],correct:'Penebat untuk keselamatan'},
+    {q:'Mengapa penting untuk tidak menyentuh soket elektrik dengan tangan basah?',options:['Air ialah pengalir elektrik dan boleh menyebabkan kejutan elektrik','Air ialah penebat yang selamat','Tiada bahaya langsung','Air akan menambah kecerahan lampu'],correct:'Air ialah pengalir elektrik dan boleh menyebabkan kejutan elektrik'},
+    {q:'Bateri dalam litar elektrik berfungsi sebagai?',options:['Punca tenaga','Penebat','Suis','Pengalir sahaja'],correct:'Punca tenaga'},
+    {q:'Jika wayar dalam litar tertutup terputus, apa yang akan berlaku pada mentol?',options:['Mentol akan terpadam','Mentol akan lebih terang','Tiada perubahan','Mentol akan berkelip-kelip'],correct:'Mentol akan terpadam'},
+    {q:'Manakah antara berikut bahan pengalir elektrik yang baik?',options:['Aluminium','Kayu kering','Getah','Plastik'],correct:'Aluminium'},
+    {q:'Manakah antara berikut bahan penebat yang baik?',options:['Plastik','Tembaga','Besi','Aluminium'],correct:'Plastik'},
+    {q:'Fius dalam litar elektrik berfungsi untuk?',options:['Melindungi litar daripada arus berlebihan','Menambah kecerahan mentol','Menyimpan tenaga','Menukar warna wayar'],correct:'Melindungi litar daripada arus berlebihan'},
+    {q:'Litar selari membolehkan beberapa mentol menyala walaupun?',options:['Salah satu mentol rosak','Bateri dikeluarkan','Wayar terputus semua','Suis sentiasa terbuka'],correct:'Salah satu mentol rosak'},
+    {q:'Litar bersiri menyebabkan semua mentol akan terpadam jika?',options:['Salah satu mentol rosak atau wayar terputus','Bateri ditambah','Suis ditutup','Wayar disambung semula'],correct:'Salah satu mentol rosak atau wayar terputus'},
+    {q:'Punca utama tenaga dalam litar elektrik ringkas ialah?',options:['Bateri','Suis','Wayar','Mentol'],correct:'Bateri'},
+    {q:'Kenapa penting memasang penebat pada kabel elektrik di rumah?',options:['Untuk mengelakkan kejutan elektrik','Untuk menambah kecerahan','Untuk menjimatkan wayar','Tiada sebab khusus'],correct:'Untuk mengelakkan kejutan elektrik'},
+    {q:'Manakah alat yang menggunakan tenaga elektrik untuk berfungsi?',options:['Kipas elektrik','Payung','Buku','Bola'],correct:'Kipas elektrik'},
+  ],
+  'd5-bumi-sumber': [
+    {q:'Yang manakah contoh sumber asli bumi?',options:['Air, tanah dan hutan','Televisyen','Kereta','Komputer'],correct:'Air, tanah dan hutan'},
+    {q:'Mengapakah kita perlu menjimatkan penggunaan air?',options:['Air ialah sumber terhad walaupun boleh diperbaharui','Air tidak penting','Air sentiasa mencukupi','Air tidak boleh habis'],correct:'Air ialah sumber terhad walaupun boleh diperbaharui'},
+    {q:'Penebangan hutan secara berlebihan boleh menyebabkan?',options:['Hakisan tanah dan kepupusan hidupan','Peningkatan hidupan liar','Udara lebih bersih','Tiada kesan'],correct:'Hakisan tanah dan kepupusan hidupan'},
+    {q:'Sumber asli yang boleh diperbaharui termasuk?',options:['Air dan hutan','Petroleum','Arang batu','Gas asli'],correct:'Air dan hutan'},
+    {q:'Sumber asli yang TIDAK boleh diperbaharui termasuk?',options:['Petroleum dan arang batu','Air','Hutan','Cahaya matahari'],correct:'Petroleum dan arang batu'},
+    {q:'Tanah subur penting untuk?',options:['Pertanian dan pertumbuhan tumbuhan','Membina bangunan sahaja','Menyimpan air sahaja','Tiada kegunaan khusus'],correct:'Pertanian dan pertumbuhan tumbuhan'},
+    {q:'Aktiviti manusia yang boleh mencemarkan sungai termasuk?',options:['Membuang sampah ke dalam sungai','Menjaga kebersihan sungai','Menanam pokok di tebing sungai','Mengitar semula sisa'],correct:'Membuang sampah ke dalam sungai'},
+    {q:'Hutan hujan tropika penting kerana?',options:['Menjadi habitat pelbagai hidupan dan mengeluarkan oksigen','Menghasilkan bunyi sahaja','Tiada kepentingan khusus','Hanya untuk perhiasan'],correct:'Menjadi habitat pelbagai hidupan dan mengeluarkan oksigen'},
+    {q:'Cara menjimatkan air di rumah termasuk?',options:['Tutup paip semasa tidak digunakan','Biarkan paip terbuka sepanjang hari','Basuh kereta setiap jam','Buang air minuman yang berlebihan'],correct:'Tutup paip semasa tidak digunakan'},
+    {q:'Kitar semula membantu?',options:['Mengurangkan penggunaan sumber asli baharu','Menambah sisa buangan','Mencemarkan alam sekitar','Tiada faedah'],correct:'Mengurangkan penggunaan sumber asli baharu'},
+    {q:'Aktiviti perlombongan yang tidak terkawal boleh menyebabkan?',options:['Kerosakan alam sekitar dan hakisan tanah','Tanah menjadi lebih subur','Udara lebih bersih','Tiada kesan negatif'],correct:'Kerosakan alam sekitar dan hakisan tanah'},
+    {q:'Mengapa penting menjaga sumber asli untuk generasi akan datang?',options:['Supaya mereka juga dapat menggunakan sumber tersebut','Kerana sumber asli tidak penting','Kerana ia akan bertambah dengan sendirinya','Tiada sebab khusus'],correct:'Supaya mereka juga dapat menggunakan sumber tersebut'},
+    {q:'Manakah antara berikut sumber asli yang terdapat di bawah tanah?',options:['Petroleum','Hujan','Angin','Cahaya matahari'],correct:'Petroleum'},
+    {q:'Penggunaan baja kimia berlebihan boleh menyebabkan?',options:['Pencemaran tanah dan air','Tanah menjadi lebih subur secara kekal','Tiada kesan negatif','Peningkatan hidupan liar'],correct:'Pencemaran tanah dan air'},
+    {q:'Kawasan tadahan air penting untuk?',options:['Membekalkan air bersih untuk kegunaan harian','Membina bangunan sahaja','Tempat letak kereta','Tiada kepentingan khusus'],correct:'Membekalkan air bersih untuk kegunaan harian'},
+    {q:'Aktiviti penanaman semula pokok selepas pembalakan dikenali sebagai?',options:['Penghutanan semula','Pencemaran','Pembalakan haram','Perlombongan'],correct:'Penghutanan semula'},
+    {q:'Manakah amalan yang membantu mengekalkan sumber asli untuk generasi akan datang?',options:['Penggunaan sumber secara mampan','Penggunaan sumber tanpa had','Pembakaran hutan','Pembuangan sisa ke sungai'],correct:'Penggunaan sumber secara mampan'},
+    {q:'Tanah gambut penting sebagai habitat semula jadi bagi?',options:['Pelbagai hidupan unik','Bangunan pencakar langit','Kilang berat sahaja','Lebuh raya'],correct:'Pelbagai hidupan unik'},
+    {q:'Sumber asli air boleh tercemar akibat?',options:['Pembuangan sisa kilang tanpa rawatan','Penjagaan tebing sungai','Penanaman pokok di kawasan tadahan','Kitar semula sisa pepejal'],correct:'Pembuangan sisa kilang tanpa rawatan'},
+    {q:'Mengapa hutan dianggap sebagai \'paru-paru dunia\'?',options:['Ia menghasilkan oksigen dalam kuantiti besar','Ia menghasilkan karbon dioksida sahaja','Ia tidak mempunyai kepentingan ekologi','Ia hanya tempat pelancongan'],correct:'Ia menghasilkan oksigen dalam kuantiti besar'},
+  ],
+  'd6-sistem-saraf': [
+    {q:'Sistem yang mengawal dan menghantar isyarat ke seluruh badan ialah?',options:['Sistem saraf','Sistem respirasi','Sistem peredaran darah','Sistem pencernaan'],correct:'Sistem saraf'},
+    {q:'Organ utama dalam sistem saraf ialah?',options:['Otak','Jantung','Paru-paru','Hati'],correct:'Otak'},
+    {q:'Saraf tunjang berfungsi untuk?',options:['Menghantar isyarat antara otak dan badan','Mengepam darah','Mencerna makanan','Bernafas'],correct:'Menghantar isyarat antara otak dan badan'},
+    {q:'Tindak balas pantas tanpa disedari seperti menarik tangan daripada api dikenali sebagai?',options:['Tindakan refleks','Tindakan sedar','Tindakan terancang','Tindakan pembelajaran'],correct:'Tindakan refleks'},
+    {q:'Otak dilindungi oleh?',options:['Tengkorak','Tulang rusuk','Tulang belakang sahaja','Kulit sahaja'],correct:'Tengkorak'},
+    {q:'Saraf tunjang dilindungi oleh?',options:['Tulang belakang','Tengkorak','Tulang rusuk','Kulit sahaja'],correct:'Tulang belakang'},
+    {q:'Manakah contoh tindakan refleks?',options:['Berkelip mata apabila debu masuk','Membaca buku','Menulis surat','Bermain bola'],correct:'Berkelip mata apabila debu masuk'},
+    {q:'Otak berfungsi untuk?',options:['Mengawal semua aktiviti dan pemikiran badan','Mengepam darah sahaja','Mencerna makanan sahaja','Bernafas sahaja'],correct:'Mengawal semua aktiviti dan pemikiran badan'},
+    {q:'Kenapa tindakan refleks penting untuk manusia?',options:['Melindungi badan daripada bahaya dengan pantas','Membuat kita berfikir lebih lama','Tiada kepentingan khusus','Menyebabkan kita lupa'],correct:'Melindungi badan daripada bahaya dengan pantas'},
+    {q:'Saraf menghantar isyarat dalam bentuk?',options:['Isyarat elektrik','Isyarat bunyi','Isyarat cahaya','Isyarat bau'],correct:'Isyarat elektrik'},
+    {q:'Manakah BUKAN fungsi sistem saraf?',options:['Mengepam darah ke seluruh badan','Mengawal pergerakan otot','Menerima maklumat daripada deria','Mengawal pemikiran'],correct:'Mengepam darah ke seluruh badan'},
+    {q:'Apabila tangan tersentuh air panas, tangan akan ditarik serta-merta. Ini kerana?',options:['Tindakan refleks melindungi badan tanpa perlu berfikir dahulu','Kita perlu berfikir dahulu sebelum bertindak','Tiada isyarat dihantar ke otak','Ini bukan berkaitan sistem saraf'],correct:'Tindakan refleks melindungi badan tanpa perlu berfikir dahulu'},
+    {q:'Manakah antara berikut contoh tindakan refleks?',options:['Berkedip apabila sesuatu mendekati mata','Menyelesaikan soalan matematik','Membaca buku cerita','Bermain permainan video'],correct:'Berkedip apabila sesuatu mendekati mata'},
+    {q:'Sistem saraf pusat terdiri daripada otak dan?',options:['Saraf tunjang','Jantung','Paru-paru','Perut'],correct:'Saraf tunjang'},
+    {q:'Saraf yang bercabang ke seluruh badan daripada saraf tunjang dikenali sebagai?',options:['Saraf periferi','Saraf pusat','Saraf tunjang sahaja','Otak sahaja'],correct:'Saraf periferi'},
+    {q:'Apabila lutut diketuk dan kaki bergerak secara automatik, ini menunjukkan?',options:['Tindakan refleks','Tindakan sedar','Tindakan terancang','Tiada kaitan sistem saraf'],correct:'Tindakan refleks'},
+    {q:'Otak manusia terbahagi kepada beberapa bahagian yang mengawal fungsi berbeza seperti?',options:['Pergerakan, pemikiran dan pertuturan','Hanya pergerakan sahaja','Hanya pertuturan sahaja','Tiada bahagian khusus'],correct:'Pergerakan, pemikiran dan pertuturan'},
+    {q:'Kecederaan pada saraf tunjang boleh menyebabkan?',options:['Kelumpuhan','Peningkatan kekuatan otot','Tiada kesan','Penglihatan lebih tajam'],correct:'Kelumpuhan'},
+    {q:'Mengapa penting memakai topi keledar semasa menunggang motosikal?',options:['Melindungi otak daripada kecederaan','Menjadikan penunggang lebih laju','Untuk fesyen sahaja','Tiada sebab khusus'],correct:'Melindungi otak daripada kecederaan'},
+    {q:'Bersin apabila hidung terkena debu ialah contoh?',options:['Tindakan refleks','Tindakan sedar','Tindakan terancang','Tindakan pembelajaran'],correct:'Tindakan refleks'},
+  ],
+  'd6-bumi-alam-semesta': [
+    {q:'Bulan mengelilingi?',options:['Bumi','Matahari','Marikh','Bintang'],correct:'Bumi'},
+    {q:'Bumi mengambil masa lebih kurang berapa hari untuk mengelilingi matahari sekali?',options:['1 hari','30 hari','365 hari','7 hari'],correct:'365 hari'},
+    {q:'Putaran bumi pada paksinya menyebabkan berlakunya?',options:['Siang dan malam','Empat musim','Hujan','Gerhana'],correct:'Siang dan malam'},
+    {q:'Fasa bulan berubah kerana?',options:['Kedudukan bulan berbanding matahari dan bumi berubah','Bulan bertukar warna','Bulan hilang setiap bulan','Bumi berhenti berputar'],correct:'Kedudukan bulan berbanding matahari dan bumi berubah'},
+    {q:'Planet yang paling hampir dengan matahari ialah?',options:['Marikh','Zuhrah','Utarid','Bumi'],correct:'Utarid'},
+    {q:'Bumi ialah planet yang keberapa dari matahari?',options:['Ketiga','Pertama','Kelima','Ketujuh'],correct:'Ketiga'},
+    {q:'Gerhana matahari berlaku apabila?',options:['Bulan berada di antara bumi dan matahari','Bumi berada di antara bulan dan matahari','Matahari berada di antara bumi dan bulan','Bintang menghalang cahaya matahari'],correct:'Bulan berada di antara bumi dan matahari'},
+    {q:'Gerhana bulan berlaku apabila?',options:['Bumi berada di antara bulan dan matahari','Bulan berada di antara bumi dan matahari','Matahari berada di antara bumi dan bulan','Tiada kaitan dengan kedudukan'],correct:'Bumi berada di antara bulan dan matahari'},
+    {q:'Bintang yang paling hampir dengan bumi ialah?',options:['Matahari','Bulan','Marikh','Zuhrah'],correct:'Matahari'},
+    {q:'Sistem suria terdiri daripada matahari dan?',options:['Planet-planet yang mengelilinginya','Bulan sahaja','Awan sahaja','Bintang sahaja'],correct:'Planet-planet yang mengelilinginya'},
+    {q:'Bumi mempunyai satu?',options:['Bulan (satelit semula jadi)','Dua bulan','Tiga bulan','Tiada bulan'],correct:'Bulan (satelit semula jadi)'},
+    {q:'Kenapa kita tidak boleh melihat semua bahagian bulan bersinar setiap malam?',options:['Kerana fasa bulan berubah mengikut kedudukannya','Kerana bulan hilang setiap malam','Kerana bumi berhenti berputar','Kerana matahari terbenam'],correct:'Kerana fasa bulan berubah mengikut kedudukannya'},
+    {q:'Marikh dikenali sebagai planet?',options:['Merah','Biru','Hijau','Kuning'],correct:'Merah'},
+    {q:'Zuhrah ialah planet yang keberapa dari matahari?',options:['Kedua','Pertama','Ketiga','Keempat'],correct:'Kedua'},
+    {q:'Bintang menghasilkan cahayanya sendiri, manakala planet?',options:['Memantulkan cahaya daripada bintang','Juga menghasilkan cahaya sendiri','Tidak memerlukan cahaya','Sentiasa gelap'],correct:'Memantulkan cahaya daripada bintang'},
+    {q:'Bulan purnama merujuk kepada fasa bulan yang?',options:['Kelihatan bulat penuh','Kelihatan seperti sabit','Tidak kelihatan langsung','Separuh sahaja kelihatan'],correct:'Kelihatan bulat penuh'},
+    {q:'Bulan baharu (new moon) merujuk kepada fasa bulan yang?',options:['Hampir tidak kelihatan dari bumi','Kelihatan bulat penuh','Kelihatan separuh sahaja','Kelihatan sangat terang'],correct:'Hampir tidak kelihatan dari bumi'},
+    {q:'Satu tahun di bumi ditentukan oleh?',options:['Masa bumi mengelilingi matahari sekali','Masa bulan mengelilingi bumi sekali','Masa bumi berputar pada paksinya sekali','Masa matahari terbit dan terbenam'],correct:'Masa bumi mengelilingi matahari sekali'},
+    {q:'Satu hari di bumi (24 jam) ditentukan oleh?',options:['Masa bumi berputar pada paksinya sekali','Masa bumi mengelilingi matahari sekali','Masa bulan mengelilingi bumi sekali','Masa cahaya sampai ke bumi'],correct:'Masa bumi berputar pada paksinya sekali'},
+    {q:'Angkasawan memerlukan sut angkasa semasa berada di angkasa lepas kerana?',options:['Tiada udara untuk bernafas di angkasa lepas','Angkasa lepas terlalu panas sahaja','Untuk fesyen sahaja','Tiada sebab khusus'],correct:'Tiada udara untuk bernafas di angkasa lepas'},
+  ],
+  'd6-teknologi-hijau': [
+    {q:'Teknologi hijau bermaksud?',options:['Teknologi yang mesra alam dan mampan','Teknologi berwarna hijau','Teknologi lama','Teknologi termahal'],correct:'Teknologi yang mesra alam dan mampan'},
+    {q:'Yang manakah amalan gaya hidup lestari?',options:['Mengitar semula dan menjimatkan tenaga','Membazir air','Membakar sampah sesuka hati','Menebang hutan tanpa kawalan'],correct:'Mengitar semula dan menjimatkan tenaga'},
+    {q:'Prinsip 3R dalam pengurusan sisa bermaksud?',options:['Reduce, Reuse, Recycle (Kurangkan, Guna Semula, Kitar Semula)','Run, Rest, Repeat','Read, Write, React','Reduce, Remove, Repair'],correct:'Reduce, Reuse, Recycle (Kurangkan, Guna Semula, Kitar Semula)'},
+    {q:'Penggunaan panel suria di rumah membantu mengurangkan pergantungan kepada?',options:['Bahan api fosil','Air hujan','Cahaya bulan','Angin'],correct:'Bahan api fosil'},
+    {q:'Kereta elektrik dianggap lebih mesra alam berbanding kereta petrol kerana?',options:['Ia tidak mengeluarkan asap ekzos yang mencemarkan udara','Ia lebih murah','Ia lebih laju','Ia lebih besar'],correct:'Ia tidak mengeluarkan asap ekzos yang mencemarkan udara'},
+    {q:'Manakah contoh \'Reduce\' (kurangkan) dalam prinsip 3R?',options:['Membawa beg sendiri ke pasar supaya kurang guna beg plastik','Membuang semua sampah ke dalam satu tong','Membeli barang baharu setiap hari','Membakar sisa plastik'],correct:'Membawa beg sendiri ke pasar supaya kurang guna beg plastik'},
+    {q:'Manakah contoh \'Reuse\' (guna semula) dalam prinsip 3R?',options:['Menggunakan botol air yang sama berulang kali','Membeli botol baharu setiap hari','Membuang botol selepas sekali guna','Membakar botol plastik'],correct:'Menggunakan botol air yang sama berulang kali'},
+    {q:'Manakah contoh \'Recycle\' (kitar semula) dalam prinsip 3R?',options:['Menghantar kertas terpakai ke pusat kitar semula','Membuang kertas ke dalam sungai','Membakar kertas terpakai','Menyimpan kertas selama-lamanya tanpa digunakan'],correct:'Menghantar kertas terpakai ke pusat kitar semula'},
+    {q:'Lampu LED dianggap lebih mesra alam berbanding lampu mentol biasa kerana?',options:['Menggunakan kurang tenaga elektrik','Menggunakan lebih banyak tenaga','Lebih mahal','Tidak boleh menyala lama'],correct:'Menggunakan kurang tenaga elektrik'},
+    {q:'Amalan membawa beg guna semula ke pasar membantu mengurangkan?',options:['Sisa plastik','Penggunaan air','Penggunaan elektrik','Bunyi bising'],correct:'Sisa plastik'},
+    {q:'Bangunan hijau (green building) direka untuk?',options:['Menjimatkan tenaga dan mesra alam sekitar','Menjadi lebih tinggi daripada bangunan lain','Menggunakan lebih banyak plastik','Mengeluarkan lebih banyak asap'],correct:'Menjimatkan tenaga dan mesra alam sekitar'},
+    {q:'Mengapa penting mengamalkan gaya hidup lestari sejak dari sekolah?',options:['Supaya tabiat menjaga alam sekitar dapat dipupuk sejak kecil','Kerana tiada kesan pada masa depan','Kerana ia tidak penting untuk kanak-kanak','Kerana hanya orang dewasa perlu menjaga alam sekitar'],correct:'Supaya tabiat menjaga alam sekitar dapat dipupuk sejak kecil'},
+    {q:'Baldi tadahan air hujan di rumah adalah contoh amalan?',options:['Menjimatkan penggunaan air paip','Membazir air','Mencemarkan air','Tiada faedah'],correct:'Menjimatkan penggunaan air paip'},
+    {q:'Basikal dianggap sebagai pengangkutan mesra alam kerana?',options:['Tidak mengeluarkan asap ekzos','Lebih laju daripada kereta','Lebih mahal daripada kereta','Memerlukan petrol'],correct:'Tidak mengeluarkan asap ekzos'},
+    {q:'Kompos daripada sisa dapur membantu?',options:['Menyuburkan tanah secara semula jadi','Mencemarkan tanah','Menambah sisa plastik','Tiada kegunaan'],correct:'Menyuburkan tanah secara semula jadi'},
+    {q:'Manakah aktiviti yang TIDAK mesra alam?',options:['Membakar sampah secara terbuka','Mengitar semula botol plastik','Menanam pokok','Menjimatkan penggunaan air'],correct:'Membakar sampah secara terbuka'},
+    {q:'Bangunan yang menggunakan tenaga suria dan sistem kitar semula air dikenali sebagai?',options:['Bangunan hijau','Bangunan biasa','Bangunan tinggi','Bangunan lama'],correct:'Bangunan hijau'},
+    {q:'Mengapa kereta elektrik semakin popular pada masa kini?',options:['Ia lebih mesra alam dan mengurangkan pencemaran udara','Ia lebih murah untuk dibina','Ia tidak memerlukan penyelenggaraan','Ia lebih besar daripada kereta biasa'],correct:'Ia lebih mesra alam dan mengurangkan pencemaran udara'},
+    {q:'Penggunaan beg kertas berbanding beg plastik membantu mengurangkan?',options:['Pencemaran plastik yang sukar terurai','Penggunaan kertas','Kos beli-belah','Bilangan pembeli'],correct:'Pencemaran plastik yang sukar terurai'},
+    {q:'Mematikan suis peranti elektronik yang tidak digunakan (bukan sekadar mod tidur) membantu?',options:['Menjimatkan tenaga elektrik','Merosakkan peranti','Membazir tenaga','Tiada kesan langsung'],correct:'Menjimatkan tenaga elektrik'},
+  ],
+  'd6-ulangkaji': [
+    {q:'Pemboleh ubah yang DIUBAH oleh pengkaji dalam satu kajian dikenali sebagai?',options:['Pemboleh ubah dimanipulasikan','Pemboleh ubah bergerak balas','Pemboleh ubah dimalarkan','Tiada nama khas'],correct:'Pemboleh ubah dimanipulasikan'},
+    {q:'Proses tumbuhan membuat makanan menggunakan cahaya matahari dikenali sebagai?',options:['Fotosintesis','Respirasi','Peredaran darah','Perkumuhan'],correct:'Fotosintesis'},
+    {q:'Organ yang mengepam darah ke seluruh badan ialah?',options:['Jantung','Paru-paru','Otak','Hati'],correct:'Jantung'},
+    {q:'Bahan pengalir elektrik yang baik ialah?',options:['Tembaga','Kayu','Getah','Plastik'],correct:'Tembaga'},
+    {q:'Proses perubahan cecair kepada gas dikenali sebagai?',options:['Penyejatan','Kondensasi','Pembekuan','Peleburan'],correct:'Penyejatan'},
+    {q:'Dalam rantai makanan, tumbuhan hijau dikenali sebagai?',options:['Pengeluar','Pengguna primer','Pengguna sekunder','Pengurai'],correct:'Pengeluar'},
+    {q:'Sistem yang mengawal dan menghantar isyarat ke seluruh badan ialah?',options:['Sistem saraf','Sistem respirasi','Sistem peredaran darah','Sistem pencernaan'],correct:'Sistem saraf'},
+    {q:'Gerhana matahari berlaku apabila?',options:['Bulan berada di antara bumi dan matahari','Bumi berada di antara bulan dan matahari','Matahari berhenti bersinar','Bintang menghalang cahaya'],correct:'Bulan berada di antara bumi dan matahari'},
+    {q:'Prinsip 3R dalam pengurusan sisa merangkumi?',options:['Reduce, Reuse, Recycle','Run, Rest, Repeat','Read, Write, React','Reduce, Remove, Repair'],correct:'Reduce, Reuse, Recycle'},
+    {q:'Sumber tenaga yang boleh diperbaharui ialah?',options:['Tenaga suria','Petroleum','Arang batu','Gas asli'],correct:'Tenaga suria'},
+    {q:'Tindakan refleks bermaksud?',options:['Tindak balas pantas tanpa perlu berfikir dahulu','Tindakan yang dirancang lama','Tindakan semasa tidur sahaja','Tindakan yang tidak melibatkan otak langsung'],correct:'Tindak balas pantas tanpa perlu berfikir dahulu'},
+    {q:'Manakah contoh haiwan vertebrata?',options:['Kucing','Semut','Labah-labah','Cacing'],correct:'Kucing'},
+    {q:'Manakah antara berikut ialah pengalir elektrik yang baik?',options:['Tembaga','Getah','Kayu','Plastik'],correct:'Tembaga'},
+    {q:'Manakah proses perubahan pepejal kepada cecair?',options:['Peleburan','Penyejatan','Kondensasi','Pemejalwapan'],correct:'Peleburan'},
+    {q:'Haiwan yang memakan tumbuhan sahaja dikenali sebagai?',options:['Herbivor','Karnivor','Omnivor','Pengurai'],correct:'Herbivor'},
+    {q:'Otak dilindungi oleh?',options:['Tengkorak','Tulang rusuk','Tulang belakang sahaja','Kulit sahaja'],correct:'Tengkorak'},
+    {q:'Manakah sumber tenaga yang boleh diperbaharui?',options:['Tenaga angin','Petroleum','Arang batu','Gas asli'],correct:'Tenaga angin'},
+    {q:'Fasa bulan berubah kerana?',options:['Kedudukan bulan berbanding matahari dan bumi berubah','Bulan bertukar warna','Bulan hilang setiap bulan','Bumi berhenti berputar'],correct:'Kedudukan bulan berbanding matahari dan bumi berubah'},
+    {q:'Prinsip 3R merangkumi Reduce, Reuse dan?',options:['Recycle','Repeat','Repair','Remove'],correct:'Recycle'},
+    {q:'Organ yang digunakan untuk bernafas ialah?',options:['Paru-paru','Jantung','Hati','Buah pinggang'],correct:'Paru-paru'},
+  ],
+};
+var TOPIC_META = {
+  'd1-diri-saya': {title:'Diri Saya (Deria)', darjah:'Darjah 1', emoji:'👁️'},
+  'd1-hidupan': {title:'Hidupan vs Bukan Hidupan', darjah:'Darjah 1', emoji:'🌱'},
+  'd1-haiwan-tumbuhan': {title:'Haiwan & Tumbuhan', darjah:'Darjah 1', emoji:'🐱'},
+  'd1-keperluan-asas': {title:'Keperluan Asas Hidupan', darjah:'Darjah 1', emoji:'💧'},
+  'd2-ciri-hidupan': {title:'Ciri Hidupan', darjah:'Darjah 2', emoji:'❤️'},
+  'd2-bahan': {title:'Bahan & Sifatnya', darjah:'Darjah 2', emoji:'🧪'},
+  'd2-cuaca-langit': {title:'Cuaca & Langit', darjah:'Darjah 2', emoji:'☀️'},
+  'd3-kepelbagaian': {title:'Kepelbagaian Hidupan', darjah:'Darjah 3', emoji:'🐞'},
+  'd3-rantai-makanan': {title:'Rantai Makanan', darjah:'Darjah 3', emoji:'🦊'},
+  'd3-daya-gerakan': {title:'Daya & Gerakan', darjah:'Darjah 3', emoji:'⚽'},
+  'd3-cahaya-bunyi': {title:'Cahaya & Bunyi', darjah:'Darjah 3', emoji:'🔊'},
+  'd4-sistem-badan': {title:'Sistem Badan Manusia', darjah:'Darjah 4', emoji:'🫀'},
+  'd4-sifat-bahan': {title:'Sifat Bahan', darjah:'Darjah 4', emoji:'🧊'},
+  'd4-tenaga': {title:'Tenaga', darjah:'Darjah 4', emoji:'⚡'},
+  'd5-respirasi-peredaran': {title:'Sistem Respirasi & Peredaran Darah', darjah:'Darjah 5', emoji:'🫁'},
+  'd5-jirim': {title:'Jirim & Perubahan Keadaan', darjah:'Darjah 5', emoji:'💨'},
+  'd5-litar-elektrik': {title:'Litar Elektrik', darjah:'Darjah 5', emoji:'🔋'},
+  'd5-bumi-sumber': {title:'Bumi & Sumber Asli', darjah:'Darjah 5', emoji:'🌍'},
+  'd6-sistem-saraf': {title:'Sistem Saraf', darjah:'Darjah 6', emoji:'🧠'},
+  'd6-bumi-alam-semesta': {title:'Bumi & Alam Semesta', darjah:'Darjah 6', emoji:'🌕'},
+  'd6-teknologi-hijau': {title:'Teknologi Hijau', darjah:'Darjah 6', emoji:'♻️'},
+  'd6-ulangkaji': {title:'Ulangkaji Bersepadu', darjah:'Darjah 6', emoji:'📚'},
+};
+
+/* ===================== SOUND ENGINE ===================== */
+let soundOn = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function ensureCtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+function beep({freq=440, dur=0.15, type='sine', gain=0.2, delay=0}){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+function sfxCorrect(){
+  beep({freq:523.25, dur:0.12, type:'triangle', gain:0.22});
+  beep({freq:659.25, dur:0.12, type:'triangle', gain:0.22, delay:0.1});
+  beep({freq:783.99, dur:0.18, type:'triangle', gain:0.24, delay:0.2});
+}
+function sfxWrong(){
+  beep({freq:220, dur:0.18, type:'sawtooth', gain:0.18});
+  beep({freq:164.81, dur:0.25, type:'sawtooth', gain:0.18, delay:0.14});
+}
+function sfxClick(){ beep({freq:600, dur:0.05, type:'square', gain:0.08}); }
+function sfxTick(){ beep({freq:880, dur:0.045, type:'square', gain:0.06}); }
+function sfxTimeUp(){
+  beep({freq:180, dur:0.3, type:'sawtooth', gain:0.2});
+  beep({freq:140, dur:0.4, type:'sawtooth', gain:0.2, delay:0.2});
+}
+function sfxFanfare(){
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep({freq:f,dur:0.22,type:'triangle',gain:0.22,delay:i*0.13}));
+}
+
+/* ===================== LOAD TOPIC ===================== */
+const params = new URLSearchParams(window.location.search);
+const topicId = params.get('topic') || Object.keys(TOPIC_BANKS)[0];
+const meta = TOPIC_META[topicId] || {title:'Latihan Sains', darjah:'', emoji:'🔬'};
+let QUESTIONS = (TOPIC_BANKS[topicId] || []).slice();
+
+document.getElementById('coverTitle').textContent = meta.emoji + ' ' + meta.title;
+document.getElementById('coverEyebrow').textContent = 'Buku Latihan · ' + meta.darjah;
+document.getElementById('coverSub').textContent = QUESTIONS.length + ' soalan · 30 saat/soalan';
+document.getElementById('coverStamp').innerHTML = meta.darjah.replace('Darjah ','D') + '<br>SAINS';
+document.getElementById('footerText').textContent = meta.title + ' · Sains · Study Buddy';
+document.title = meta.title + ' — Latihan Sains';
+
+const LETTERS = ['A','B','C','D'];
+
+/* ===================== STATE ===================== */
+let currentIndex = 0;
+let score = 0;
+let selectedAnswers = [];
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+const TIME_LIMIT = 30;
+
+const startCard = document.getElementById('startCard');
+const startBtn = document.getElementById('startBtn');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+
+const expTag = document.getElementById('expTag');
+const qNum = document.getElementById('qNum');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const scoreVal = document.getElementById('scoreVal');
+const qCounter = document.getElementById('qCounter');
+const progressBar = document.getElementById('progressBar');
+const soundToggle = document.getElementById('soundToggle');
+const timerBox = document.getElementById('timerBox');
+const timerBar = document.getElementById('timerBar');
+const timeVal = document.getElementById('timeVal');
+
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ ensureCtx(); sfxClick(); }
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureCtx();
+  sfxClick();
+  startCard.style.display = 'none';
+  quizArea.style.display = 'block';
+  QUESTIONS = shuffle(QUESTIONS);
+  currentIndex = 0; score = 0; selectedAnswers = [];
+  scoreVal.textContent = 0;
+  loadQuestion();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  timerBox.classList.remove('low');
+  updateTimerUI();
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft <= 5 && timeLeft > 0){ sfxTick(); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      sfxTimeUp();
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimerUI(){
+  timeVal.textContent = timeLeft;
+  const pct = Math.max(0,(timeLeft/TIME_LIMIT)*100);
+  timerBar.style.width = pct + '%';
+  timerBox.classList.toggle('low', timeLeft <= 5);
+}
+
+function loadQuestion(){
+  answered = false;
+  feedback.classList.remove('show','good','bad');
+  nextBtn.classList.remove('show');
+  const q = QUESTIONS[currentIndex];
+
+  expTag.textContent = meta.title;
+  qNum.textContent = 'Soalan ' + (currentIndex+1);
+  qText.textContent = q.q;
+  qCounter.textContent = `${currentIndex+1}/${QUESTIONS.length}`;
+  progressBar.style.width = ((currentIndex)/QUESTIONS.length*100) + '%';
+
+  optionsWrap.innerHTML = '';
+  const order = shuffle(q.options);
+  q._order = order;
+
+  order.forEach((optText, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx] || (idx+1)}</span><span>${optText}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(btn, optText));
+    optionsWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function selectAnswer(btn, chosenText){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+  const q = QUESTIONS[currentIndex];
+  const isCorrect = chosenText === q.correct;
+
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+    else if(el === btn){ el.classList.add('wrong'); }
+  });
+
+  if(isCorrect){
+    score++;
+    scoreVal.textContent = score;
+    sfxCorrect();
+    feedback.classList.add('show','good');
+    feedback.innerHTML = `<b>Betul! 🎉</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  } else {
+    sfxWrong();
+    feedback.classList.add('show','bad');
+    feedback.innerHTML = `<b>Bukan tu.</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  }
+
+  selectedAnswers.push({ q, correct: isCorrect, chosen: chosenText });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  nextBtn.focus();
+}
+
+function handleTimeout(){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+  });
+  feedback.classList.add('show','bad');
+  feedback.innerHTML = `<b>Masa tamat! ⏰</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  selectedAnswers.push({ q, correct:false, chosen: null });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex++;
+  if(currentIndex >= QUESTIONS.length){
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult(){
+  clearInterval(timer);
+  progressBar.style.width = '100%';
+  quizArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  const resultEmoji = document.getElementById('resultEmoji');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMsg = document.getElementById('resultMsg');
+  document.getElementById('resultScore').textContent = score + ' / ' + QUESTIONS.length;
+
+  if(pct >= 80){
+    resultEmoji.textContent = '🏆';
+    resultTitle.textContent = 'Syabas, Faham Betul!';
+    resultMsg.textContent = 'Konsep ' + meta.title + ' demo dah mantap!';
+    sfxFanfare();
+  } else if(pct >= 50){
+    resultEmoji.textContent = '👍';
+    resultTitle.textContent = 'Dah Faham Sikit!';
+    resultMsg.textContent = 'Baca balik jawapan yang salah tadi, lepas tu try lagi sekali.';
+  } else {
+    resultEmoji.textContent = '💪';
+    resultTitle.textContent = 'Jangan Give Up!';
+    resultMsg.textContent = 'Baca balik penjelasan yang salah tadi, lepas tu try lagi sekali.';
+  }
+
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;color:#5a5346;">RINGKASAN JAWAPAN</div>';
+  selectedAnswers.forEach((a,i)=>{
+    const div = document.createElement('div');
+    div.className = 'breakdown-item';
+    const mark = a.correct ? '✅' : '❌';
+    let html = `<div class="row"><span class="mark">${mark}</span><span>${i+1}. ${a.q.q}</span></div>`;
+    if(!a.correct){
+      const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
+      html += `<div class="answer-detail">
+        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="rightans">Jawapan betul:</span> ${a.q.correct}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+    breakdown.appendChild(div);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  sfxClick();
+  resultArea.style.display = 'none';
+  startCard.style.display = 'block';
+});
+document.getElementById('homeBtn').addEventListener('click', ()=>{
+  window.location.href = 'sains-latihan-hub.html';
+});
+</script>
+</body>
+</html>

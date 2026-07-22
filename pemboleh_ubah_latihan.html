@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Pemboleh Ubah — Buku Latihan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sriracha&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#f2ece0;
+    --paper-line:#d0c3a5;
+    --ink:#2a2620;
+    --plum:#5c3d5c;
+    --plum-mid:#8a6a8a;
+    --plum-light:#d3c0d3;
+    --teal:#3a7d6e;
+    --teal-dark:#2a5c50;
+    --amber:#d9932b;
+    --card:#fffdf7;
+    --shadow:rgba(42,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 34px, var(--paper-line) 35px),
+      var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+    padding:26px 14px 60px;
+  }
+  .book{ width:100%; max-width:660px; }
+
+  .cover{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:6px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px 24px 18px;
+    position:relative;
+    margin-bottom:18px;
+  }
+  .cover::before{
+    content:"";
+    position:absolute; left:16px; top:0; bottom:0; width:2px;
+    background:repeating-linear-gradient(0deg,var(--amber) 0 8px, transparent 8px 16px);
+    opacity:0.5;
+  }
+  .stamp{
+    position:absolute; top:14px; right:18px;
+    width:66px; height:66px;
+    border:3px solid var(--plum);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-12deg);
+    color:var(--plum);
+    font-family:'Sriracha',cursive;
+    font-size:11.5px; text-align:center; line-height:1.15;
+    opacity:0.85;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase;
+    font-size:11px; color:var(--teal-dark);
+    margin-left:22px;
+  }
+  h1{
+    font-family:'Sriracha',cursive; font-weight:400;
+    font-size:28px; margin:4px 0 2px 22px; color:var(--plum);
+  }
+  .sub{ margin:0 0 4px 22px; font-size:13.5px; color:#5a5346; }
+
+  /* ===== teaching intro card ===== */
+  .teach{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px;
+    margin-bottom:18px;
+  }
+  .teach h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:16px; margin:0 0 12px; color:var(--plum);
+  }
+  .teach-row{
+    display:flex; gap:12px; align-items:flex-start;
+    padding:10px 0; border-bottom:1px dotted #e2dac2;
+  }
+  .teach-row:last-of-type{ border-bottom:none; }
+  .teach-tag{
+    flex:0 0 auto;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:12px;
+    color:#fff; padding:4px 9px; border-radius:20px;
+    white-space:nowrap;
+  }
+  .tag-manip{ background:var(--teal-dark); }
+  .tag-resp{ background:var(--plum); }
+  .tag-const{ background:var(--amber); }
+  .tag-infer{ background:#4a7a9c; }
+  .teach-txt{ font-size:14px; line-height:1.5; }
+  .teach-txt b{ display:block; font-size:13px; margin-bottom:2px; }
+  .example-box{
+    margin-top:14px;
+    background:#f6f1e4;
+    border:1.5px dashed var(--paper-line);
+    border-radius:7px;
+    padding:12px 14px;
+    font-size:13.5px;
+    line-height:1.6;
+  }
+  .example-box b{ color:var(--plum); }
+  .startBtn{
+    margin-top:16px; width:100%; padding:14px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .startBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  /* ===== quiz area ===== */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin:0 0 14px;
+  }
+  .hud-box{
+    background:var(--card); border:2px solid var(--ink); border-radius:6px;
+    box-shadow:3px 3px 0 var(--shadow); padding:8px 14px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hud-box .val{ font-size:18px; }
+  #timerBox{
+    position:relative; overflow:hidden;
+    min-width:88px; justify-content:center;
+  }
+  #timerBar{
+    position:absolute; left:0; bottom:0; top:0; width:100%;
+    background:var(--plum-light); z-index:0;
+    transition:width 1s linear, background 0.3s ease;
+  }
+  #timerBox span{ position:relative; z-index:1; }
+  #timerBox.low #timerBar{ background:#e79a8a; }
+  .soundToggle{
+    background:var(--card); border:2px solid var(--ink); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); font-size:16px; user-select:none;
+  }
+  .soundToggle:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .progressWrap{
+    height:8px; background:#e6ddc4; border-radius:20px; overflow:hidden;
+    margin-bottom:16px; border:1.5px solid var(--ink);
+  }
+  .progressBar{
+    height:100%; background:linear-gradient(90deg, var(--plum-mid), var(--plum));
+    width:0%; transition:width 0.4s ease;
+  }
+
+  .card{
+    background:var(--card); border:2px solid var(--ink); border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow); padding:22px 22px 20px; position:relative;
+  }
+  .expTag{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.05em; background:var(--teal-dark); color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .scenario{
+    font-size:14.5px; line-height:1.6; color:#4a4638;
+    background:#f6f1e4; border-left:3px solid var(--amber);
+    padding:10px 13px; border-radius:5px; margin-bottom:14px;
+  }
+  .qnum{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--plum); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .qtext{
+    font-size:17px; line-height:1.5; font-weight:600; margin:0 0 16px; color:var(--ink);
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:#fff; border:2px solid #ddd3ba; border-radius:7px;
+    padding:12px 14px; font-size:15px; font-family:'Inter',sans-serif; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:background 0.15s, border-color 0.15s, transform 0.08s;
+  }
+  .opt:hover{ border-color:var(--plum-mid); background:#faf6ec; }
+  .opt:active{ transform:scale(0.99); }
+  .opt .letter{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  }
+  .opt.correct{ background:#e0efe9; border-color:var(--teal-dark); }
+  .opt.correct .letter{ background:var(--teal-dark); color:#fff; }
+  .opt.wrong{ background:#f4e2ea; border-color:var(--plum); }
+  .opt.wrong .letter{ background:var(--plum); color:#fff; }
+  .opt.disabled{ pointer-events:none; opacity:0.75; }
+  .opt.disabled.correct, .opt.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:14px; padding:12px 14px; border-radius:7px;
+    font-size:14px; line-height:1.55; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:#e0efe9; border:1.5px dashed var(--teal-dark); color:var(--teal-dark); }
+  .feedback.bad{ background:#f4e2ea; border:1.5px dashed var(--plum); color:var(--plum); }
+  .feedback b{ display:block; margin-bottom:3px; font-family:'Space Grotesk',sans-serif; }
+
+  .nextBtn{
+    margin-top:16px; width:100%; padding:13px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.03em; cursor:pointer; display:none; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .nextBtn.show{ display:block; }
+  .nextBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .result{ text-align:center; padding:10px 6px; }
+  .result .emoji{ font-size:52px; }
+  .result h2{
+    font-family:'Sriracha',cursive; font-weight:400; color:var(--plum);
+    font-size:26px; margin:6px 0 2px;
+  }
+  .result .scoreLine{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin:8px 0 4px; }
+  .result p{ color:#5a5346; font-size:14px; margin:6px 0 18px; }
+  .restartBtn{
+    padding:13px 22px; background:var(--amber); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .restartBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .breakdown{ text-align:left; margin-top:18px; border-top:1.5px dashed var(--paper-line); padding-top:14px; }
+  .breakdown-item{
+    display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:6px 0;
+    border-bottom:1px dotted #e6ddc4;
+  }
+  .breakdown-item .mark{ flex:0 0 auto; font-size:16px; }
+  .breakdown-item{ flex-direction:column; }
+  .breakdown-item .row{ display:flex; gap:8px; align-items:flex-start; width:100%; }
+  .breakdown-item .answer-detail{
+    margin:6px 0 2px 24px; font-size:12.5px; line-height:1.5;
+    background:#FBEAEA; border-left:3px solid #D9534F; border-radius:4px;
+    padding:6px 10px;
+  }
+  .breakdown-item .answer-detail .yourans{ color:#B93A2E; }
+  .breakdown-item .answer-detail .rightans{ color:#2F7A4F; font-weight:600; }
+
+  footer{ text-align:center; font-size:11.5px; color:#8a8371; margin-top:20px; }
+
+  @media (max-width:420px){
+    h1{ font-size:22px; }
+    .qtext{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <div class="cover">
+    <div class="stamp">FOKUS<br>PEMBOLEH<br>UBAH</div>
+    <div class="eyebrow">Buku Latihan · Tahun 4</div>
+    <h1>Latihan Pemboleh Ubah 🧫</h1>
+    <p class="sub">10 eksperimen · 4 jenis soalan (termasuk inferens) · 30 saat/soalan</p>
+  </div>
+
+  <!-- ===== TEACHING INTRO ===== -->
+  <div class="teach" id="teachCard">
+    <h2>Sebelum mula, ingat 4 benda ni je:</h2>
+
+    <div class="teach-row">
+      <span class="teach-tag tag-manip">DIMANIPULASIKAN</span>
+      <div class="teach-txt"><b>= Benda yang KITA UBAH</b>Faktor yang penyiasat sengaja tukar untuk uji kesan dio.</div>
+    </div>
+    <div class="teach-row">
+      <span class="teach-tag tag-resp">BERGERAK BALAS</span>
+      <div class="teach-txt"><b>= Benda yang BERUBAH SEBAGAI HASIL</b>Apa yang kito perhati / ukur selepas kito ubah benda tadi.</div>
+    </div>
+    <div class="teach-row">
+      <span class="teach-tag tag-const">DIMALARKAN</span>
+      <div class="teach-txt"><b>= Benda yang KEKAL SAMA</b>Supaya eksperimen adil, semua faktor lain kena tetap sama.</div>
+    </div>
+    <div class="teach-row">
+      <span class="teach-tag tag-infer">INFERENS</span>
+      <div class="teach-txt"><b>= PENJELASAN LOGIK untuk keputusan</b>Guna pengetahuan sains untuk terangkan KENAPA keputusan tu berlaku macam tu.</div>
+    </div>
+
+    <div class="example-box">
+      <b>Contoh senang — Baja & Pokok:</b><br>
+      Aiman nak tau sama ada lebih banyak baja buat pokok tumbuh lagi tinggi. Dio letak jumlah baja lain-lain (10g, 20g, 30g) pada 3 pasu berbeza, tapi jenis pokok, jumlah air dan cahaya matahari semua sama. Keputusan: pasu dengan baja paling banyak (30g) menghasilkan pokok paling tinggi.<br><br>
+      • <b>Dimanipulasikan:</b> Jumlah baja (yang dio ubah)<br>
+      • <b>Bergerak balas:</b> Ketinggian pokok (hasil yang diukur)<br>
+      • <b>Dimalarkan:</b> Jenis pokok, jumlah air, cahaya matahari (kekal sama)<br>
+      • <b>Inferens:</b> Baja membekalkan nutrien tambahan yang membantu pokok membesar lebih tinggi
+    </div>
+
+    <button class="startBtn" id="startBtn">Mula Latihan →</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quizArea" style="display:none;">
+    <div class="hud">
+      <div class="hud-box">⭐ <span class="val" id="scoreVal">0</span></div>
+      <div class="hud-box" id="timerBox"><div id="timerBar"></div><span>⏱ <span id="timeVal">30</span>s</span></div>
+      <div class="hud-box">📋 <span class="val" id="qCounter">1/30</span></div>
+      <div class="soundToggle" id="soundToggle" title="Bunyi hidup/mati">🔊</div>
+    </div>
+
+    <div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+
+    <div class="card" id="quizCard">
+      <span class="expTag" id="expTag">Eksperimen 1</span>
+      <div class="scenario" id="scenario">...</div>
+      <div class="qnum" id="qNum">Soalan A</div>
+      <p class="qtext" id="qText">...</p>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nextBtn" id="nextBtn">Seterusnya →</button>
+    </div>
+  </div>
+
+  <div class="card result" id="resultArea" style="display:none;">
+    <div class="emoji" id="resultEmoji">🎉</div>
+    <h2 id="resultTitle">Syabas!</h2>
+    <div class="scoreLine" id="resultScore">0 / 30</div>
+    <p id="resultMsg">Cuba lagi untuk skor lebih tinggi!</p>
+    <button class="restartBtn" id="restartBtn">Ulang Latihan</button>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <footer>Latihan Pemboleh Ubah · Sains Tahun 4</footer>
+</div>
+
+<script>
+/* ===================== SOUND ENGINE ===================== */
+let soundOn = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function ensureCtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+function beep({freq=440, dur=0.15, type='sine', gain=0.2, delay=0}){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+function sfxCorrect(){
+  beep({freq:523.25, dur:0.12, type:'triangle', gain:0.22});
+  beep({freq:659.25, dur:0.12, type:'triangle', gain:0.22, delay:0.1});
+  beep({freq:783.99, dur:0.18, type:'triangle', gain:0.24, delay:0.2});
+}
+function sfxWrong(){
+  beep({freq:220, dur:0.18, type:'sawtooth', gain:0.18});
+  beep({freq:164.81, dur:0.25, type:'sawtooth', gain:0.18, delay:0.14});
+}
+function sfxClick(){ beep({freq:600, dur:0.05, type:'square', gain:0.08}); }
+function sfxTick(){ beep({freq:880, dur:0.045, type:'square', gain:0.06}); }
+function sfxTimeUp(){
+  beep({freq:180, dur:0.3, type:'sawtooth', gain:0.2});
+  beep({freq:140, dur:0.4, type:'sawtooth', gain:0.2, delay:0.2});
+}
+function sfxFanfare(){
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep({freq:f,dur:0.22,type:'triangle',gain:0.22,delay:i*0.13}));
+}
+
+/* ===================== EXPERIMENT BANK (10 experiments x 3 questions) ===================== */
+const LETTERS = ['A','B','C','D'];
+const EXPERIMENTS = [
+  {
+    title: "Eksperimen 1",
+    scenario: "Puan Aina nak tau sama ada suhu air memberi kesan kepada masa ais cair. Dia letak ketulan ais yang sama saiz ke dalam air bersuhu 20°C, 40°C dan 60°C, dan catat masa ais itu cair sepenuhnya.",
+    manip: { correct:"Suhu air", options:["Suhu air","Masa ais cair","Saiz bekas","Bilangan ketulan ais"] },
+    resp: { correct:"Masa yang diambil untuk ais cair", options:["Masa yang diambil untuk ais cair","Suhu air","Saiz ketulan ais","Jenis bekas"] },
+    const_: { correct:"Saiz ketulan ais", options:["Saiz ketulan ais","Suhu air","Masa ais cair","Warna air"] },
+    infer: { correct:"Air yang lebih panas mempunyai lebih banyak tenaga haba untuk melebur ais dengan lebih cepat", options:["Air yang lebih panas mempunyai lebih banyak tenaga haba untuk melebur ais dengan lebih cepat","Ais akan cair pada kadar yang sama tidak kira suhu air","Air sejuk melebur ais lebih cepat daripada air panas","Saiz bekas menentukan kelajuan ais cair, bukan suhu"] }
+  },
+  {
+    title: "Eksperimen 2",
+    scenario: "Hafiz menjalankan kajian tentang degupan jantung. Dia meminta 3 orang rakan melakukan senaman lompat selama 1 minit, 3 minit dan 5 minit, kemudian mengukur degupan jantung setiap orang selepas senaman.",
+    manip: { correct:"Tempoh masa senaman", options:["Tempoh masa senaman","Degupan jantung","Jenis senaman","Umur rakan"] },
+    resp: { correct:"Kadar degupan jantung", options:["Kadar degupan jantung","Tempoh masa senaman","Jenis pakaian","Suhu bilik"] },
+    const_: { correct:"Jenis senaman (lompat) dan orang yang sama", options:["Jenis senaman (lompat) dan orang yang sama","Tempoh masa senaman","Kadar degupan jantung","Cuaca hari itu"] },
+    infer: { correct:"Otot memerlukan lebih banyak oksigen semasa senaman lama, jadi jantung mengepam lebih laju", options:["Otot memerlukan lebih banyak oksigen semasa senaman lama, jadi jantung mengepam lebih laju","Degupan jantung tidak berkaitan dengan tempoh senaman","Badan berehat semasa senaman panjang","Jantung berhenti mengepam semasa bersenam"] }
+  },
+  {
+    title: "Eksperimen 3",
+    scenario: "Siti menanam biji benih kacang dalam 3 jenis tanah berbeza — tanah liat, tanah berpasir dan tanah baja kompos. Semua pasu mendapat jumlah air dan cahaya yang sama. Selepas 2 minggu, dia mengukur ketinggian setiap anak pokok.",
+    manip: { correct:"Jenis tanah", options:["Jenis tanah","Ketinggian anak pokok","Jumlah air","Jumlah cahaya"] },
+    resp: { correct:"Ketinggian anak pokok", options:["Ketinggian anak pokok","Jenis tanah","Jenis biji benih","Saiz pasu"] },
+    const_: { correct:"Jumlah air dan cahaya matahari", options:["Jumlah air dan cahaya matahari","Jenis tanah","Ketinggian pokok","Warna daun"] },
+    infer: { correct:"Tanah baja kompos kemungkinan mempunyai lebih banyak nutrien untuk membantu pokok membesar dengan lebih baik", options:["Tanah baja kompos kemungkinan mempunyai lebih banyak nutrien untuk membantu pokok membesar dengan lebih baik","Jenis tanah tidak memberi kesan kepada pertumbuhan pokok","Semua jenis tanah menghasilkan pokok yang sama tinggi","Tanah berpasir sentiasa terbaik untuk semua tumbuhan"] }
+  },
+  {
+    title: "Eksperimen 4",
+    scenario: "Dalam kelas Sains, murid menyuluh lampu suluh ke arah sebiji bola pada jarak 10cm, 30cm dan 50cm dari dinding, lalu mengukur saiz bayang-bayang yang terhasil pada dinding.",
+    manip: { correct:"Jarak sumber cahaya dari bola", options:["Jarak sumber cahaya dari bola","Saiz bayang-bayang","Jenis bola","Kecerahan lampu suluh"] },
+    resp: { correct:"Saiz bayang-bayang pada dinding", options:["Saiz bayang-bayang pada dinding","Jarak sumber cahaya","Warna bola","Jenis dinding"] },
+    const_: { correct:"Jenis bola dan kecerahan lampu suluh", options:["Jenis bola dan kecerahan lampu suluh","Jarak sumber cahaya","Saiz bayang-bayang","Masa uji kaji dijalankan"] },
+    infer: { correct:"Apabila sumber cahaya lebih dekat, cahaya merebak lebih luas dan menghasilkan bayang-bayang yang lebih besar", options:["Apabila sumber cahaya lebih dekat, cahaya merebak lebih luas dan menghasilkan bayang-bayang yang lebih besar","Jarak sumber cahaya tidak menjejaskan saiz bayang-bayang","Bayang-bayang sentiasa sama saiz tidak kira jarak","Bola akan hilang bayang-bayang jika terlalu dekat"] }
+  },
+  {
+    title: "Eksperimen 5",
+    scenario: "Amir menggelongsorkan sebuah kotak yang sama di atas 3 jenis permukaan — kayu licin, karpet dan simen kasar — dari kedudukan yang sama, lalu mengukur jarak kotak itu bergerak sebelum berhenti.",
+    manip: { correct:"Jenis permukaan", options:["Jenis permukaan","Jarak kotak bergerak","Berat kotak","Kelajuan tolakan"] },
+    resp: { correct:"Jarak kotak bergerak sebelum berhenti", options:["Jarak kotak bergerak sebelum berhenti","Jenis permukaan","Warna kotak","Saiz kotak"] },
+    const_: { correct:"Berat kotak dan kekuatan tolakan", options:["Berat kotak dan kekuatan tolakan","Jenis permukaan","Jarak kotak bergerak","Bentuk kotak"] },
+    infer: { correct:"Permukaan kasar menghasilkan lebih banyak geseran yang menyebabkan kotak berhenti lebih cepat", options:["Permukaan kasar menghasilkan lebih banyak geseran yang menyebabkan kotak berhenti lebih cepat","Permukaan kasar membenarkan kotak bergerak lebih jauh","Jenis permukaan tidak memberi kesan kepada geseran","Kotak akan bergerak sama jarak pada semua permukaan"] }
+  },
+  {
+    title: "Eksperimen 6 — Cari Kesilapan",
+    scenario: "Farid nak uji kesan jumlah garam terhadap ketumpatan air (sama ada telur akan terapung). Dia campurkan garam sebanyak 5g, 10g dan 15g ke dalam 3 gelas air yang BERLAINAN ISI PADU (100ml, 150ml, 200ml), kemudian masukkan telur dan lihat sama ada ia terapung.",
+    manip: { correct:"Jumlah garam", options:["Jumlah garam","Sama ada telur terapung","Isi padu air","Jenis telur"] },
+    resp: { correct:"Sama ada telur terapung atau tenggelam", options:["Sama ada telur terapung atau tenggelam","Jumlah garam","Isi padu air","Suhu air"] },
+    const_: { correct:"TIADA — isi padu air sepatutnya sama tapi Farid tersalah ubah dua faktor sekali!", options:["TIADA — isi padu air sepatutnya sama tapi Farid tersalah ubah dua faktor sekali!","Jumlah garam","Sama ada telur terapung","Jenis gelas"] },
+    infer: { correct:"Farid tidak boleh membuat kesimpulan yang sah kerana dia tidak tahu sama ada garam ATAU isi padu air yang menyebabkan telur terapung", options:["Farid tidak boleh membuat kesimpulan yang sah kerana dia tidak tahu sama ada garam ATAU isi padu air yang menyebabkan telur terapung","Farid boleh membuat kesimpulan bahawa garam sahaja punca telur terapung","Kajian Farid sudah tepat dan tiada masalah","Isi padu air tidak penting dalam kajian ini"] }
+  },
+  {
+    title: "Eksperimen 7",
+    scenario: "Nurul meletakkan setitik pewarna makanan pada 3 jenis kertas turas — kertas turas nipis, sederhana dan tebal — pada masa yang sama, lalu mengukur berapa jauh pewarna itu merebak selepas 5 minit.",
+    manip: { correct:"Jenis/ketebalan kertas turas", options:["Jenis/ketebalan kertas turas","Jarak resapan pewarna","Warna pewarna","Bilangan titisan"] },
+    resp: { correct:"Jarak pewarna merebak pada kertas", options:["Jarak pewarna merebak pada kertas","Jenis kertas turas","Warna pewarna yang digunakan","Masa uji kaji bermula"] },
+    const_: { correct:"Bilangan titisan pewarna dan tempoh masa pemerhatian", options:["Bilangan titisan pewarna dan tempoh masa pemerhatian","Jenis kertas turas","Jarak resapan pewarna","Suhu bilik"] },
+    infer: { correct:"Kertas yang lebih nipis membenarkan cecair meresap dengan lebih pantas dan lebih jauh", options:["Kertas yang lebih nipis membenarkan cecair meresap dengan lebih pantas dan lebih jauh","Ketebalan kertas tidak menjejaskan resapan pewarna","Kertas tebal sentiasa meresap lebih jauh berbanding kertas nipis","Pewarna tidak akan meresap pada mana-mana jenis kertas"] }
+  },
+  {
+    title: "Eksperimen 8",
+    scenario: "Dalam litar elektrik, Zul menyambungkan 1, 2 dan 3 biji bateri secara bergilir-gilir kepada satu mentol yang sama, lalu memerhati tahap kecerahan mentol itu.",
+    manip: { correct:"Bilangan bateri", options:["Bilangan bateri","Tahap kecerahan mentol","Jenis mentol","Jenis wayar"] },
+    resp: { correct:"Tahap kecerahan mentol", options:["Tahap kecerahan mentol","Bilangan bateri","Jenis bateri","Panjang wayar"] },
+    const_: { correct:"Jenis mentol dan jenis wayar yang digunakan", options:["Jenis mentol dan jenis wayar yang digunakan","Bilangan bateri","Tahap kecerahan mentol","Warna wayar"] },
+    infer: { correct:"Lebih banyak bateri membekalkan lebih banyak tenaga elektrik, menyebabkan mentol menyala lebih terang", options:["Lebih banyak bateri membekalkan lebih banyak tenaga elektrik, menyebabkan mentol menyala lebih terang","Bilangan bateri tidak memberi kesan kepada kecerahan mentol","Mentol akan terpadam jika terlalu banyak bateri disambung","Kecerahan mentol hanya bergantung kepada jenis wayar"] }
+  },
+  {
+    title: "Eksperimen 9 — Reka Situasi",
+    scenario: "Sebuah kumpulan murid nak uji: 'Adakah jenis makanan mempengaruhi bilangan semut yang datang?' Mereka letak gula, roti dan sedikit garam di tiga tempat berasingan pada jarak yang sama dari sarang semut, dan kira bilangan semut yang datang ke setiap tempat selepas 10 minit.",
+    manip: { correct:"Jenis makanan (gula, roti, garam)", options:["Jenis makanan (gula, roti, garam)","Bilangan semut yang datang","Jarak dari sarang semut","Masa pemerhatian"] },
+    resp: { correct:"Bilangan semut yang datang ke setiap tempat", options:["Bilangan semut yang datang ke setiap tempat","Jenis makanan","Jarak dari sarang","Saiz tempat makanan diletakkan"] },
+    const_: { correct:"Jarak dari sarang semut dan tempoh masa pemerhatian", options:["Jarak dari sarang semut dan tempoh masa pemerhatian","Jenis makanan","Bilangan semut yang datang","Cuaca hari itu"] },
+    infer: { correct:"Semut lebih tertarik kepada makanan manis (gula) sebagai sumber tenaga berbanding makanan masin", options:["Semut lebih tertarik kepada makanan manis (gula) sebagai sumber tenaga berbanding makanan masin","Semut tidak dapat membezakan jenis makanan","Semua jenis makanan menarik bilangan semut yang sama","Semut hanya tertarik kepada garam"] }
+  },
+  {
+    title: "Eksperimen 10 — Cabaran",
+    scenario: "Dua ekor lipas (sama jenis dan saiz) diletakkan dalam dua bikar berisi air yang sama isi padu (250ml) — seekor kepala di atas air, seekor lagi kepala di bawah air. Selepas 15 minit, keadaan setiap lipas diperhatikan dan dicatat.",
+    manip: { correct:"Kedudukan/orientasi lipas (kepala atas atau bawah air)", options:["Kedudukan/orientasi lipas (kepala atas atau bawah air)","Keadaan lipas (hidup/mati)","Jenis lipas","Isi padu air"] },
+    resp: { correct:"Keadaan lipas (hidup atau mati)", options:["Keadaan lipas (hidup atau mati)","Kedudukan lipas","Isi padu air","Saiz bikar"] },
+    const_: { correct:"Jenis, saiz lipas, isi padu air dan saiz bikar", options:["Jenis, saiz lipas, isi padu air dan saiz bikar","Kedudukan lipas","Keadaan lipas","Masa eksperimen bermula"] },
+    infer: { correct:"Lipas bernafas melalui lubang di bahagian kepala/toraks, jadi lipas yang kepalanya terendam tidak dapat bernafas dan mati", options:["Lipas bernafas melalui lubang di bahagian kepala/toraks, jadi lipas yang kepalanya terendam tidak dapat bernafas dan mati","Lipas boleh bernafas di dalam air seperti ikan","Kedudukan kepala lipas tidak berkaitan dengan pernafasan","Kedua-dua lipas akan mati tidak kira kedudukan"] }
+  }
+];
+
+/* Build flat question list: for each experiment, 3 questions in order (dimanipulasikan, bergerak balas, dimalarkan) */
+const QLABELS = [
+  { key:'manip', label:'Pemboleh Ubah Dimanipulasikan', ask:'Apakah pemboleh ubah DIMANIPULASIKAN (yang sengaja diubah)?' },
+  { key:'resp',  label:'Pemboleh Ubah Bergerak Balas',  ask:'Apakah pemboleh ubah BERGERAK BALAS (hasil yang diukur/diperhati)?' },
+  { key:'const_',label:'Pemboleh Ubah Dimalarkan',      ask:'Apakah pemboleh ubah DIMALARKAN (dikekalkan sama)?' },
+  { key:'infer', label:'Membuat Inferens',              ask:'Berdasarkan keputusan uji kaji ini, apakah INFERENS (penjelasan logik) yang paling sesuai?' }
+];
+
+let QUESTIONS = [];
+EXPERIMENTS.forEach(exp=>{
+  QLABELS.forEach(ql=>{
+    const part = exp[ql.key];
+    QUESTIONS.push({
+      expTitle: exp.title,
+      scenario: exp.scenario,
+      qLabel: ql.label,
+      qText: ql.ask,
+      options: part.options,
+      correctText: part.correct
+    });
+  });
+});
+
+/* ===================== STATE ===================== */
+let currentIndex = 0;
+let score = 0;
+let selectedAnswers = [];
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+const TIME_LIMIT = 30;
+
+const teachCard = document.getElementById('teachCard');
+const startBtn = document.getElementById('startBtn');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+
+const expTag = document.getElementById('expTag');
+const scenarioEl = document.getElementById('scenario');
+const qNum = document.getElementById('qNum');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const scoreVal = document.getElementById('scoreVal');
+const qCounter = document.getElementById('qCounter');
+const progressBar = document.getElementById('progressBar');
+const soundToggle = document.getElementById('soundToggle');
+const timerBox = document.getElementById('timerBox');
+const timerBar = document.getElementById('timerBar');
+const timeVal = document.getElementById('timeVal');
+
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ ensureCtx(); sfxClick(); }
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureCtx();
+  sfxClick();
+  teachCard.style.display = 'none';
+  quizArea.style.display = 'block';
+  loadQuestion();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  timerBox.classList.remove('low');
+  updateTimerUI();
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft <= 5 && timeLeft > 0){ sfxTick(); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      sfxTimeUp();
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimerUI(){
+  timeVal.textContent = timeLeft;
+  const pct = Math.max(0,(timeLeft/TIME_LIMIT)*100);
+  timerBar.style.width = pct + '%';
+  timerBox.classList.toggle('low', timeLeft <= 5);
+}
+
+function loadQuestion(){
+  answered = false;
+  feedback.classList.remove('show','good','bad');
+  nextBtn.classList.remove('show');
+  const q = QUESTIONS[currentIndex];
+
+  expTag.textContent = q.expTitle;
+  scenarioEl.textContent = q.scenario;
+  qNum.textContent = q.qLabel;
+  qText.textContent = q.qText;
+  qCounter.textContent = `${currentIndex+1}/${QUESTIONS.length}`;
+  progressBar.style.width = ((currentIndex)/QUESTIONS.length*100) + '%';
+
+  optionsWrap.innerHTML = '';
+  const order = shuffle(q.options);
+  q._order = order;
+
+  order.forEach((optText, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx] || (idx+1)}</span><span>${optText}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(btn, optText));
+    optionsWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function selectAnswer(btn, chosenText){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+  const q = QUESTIONS[currentIndex];
+  const isCorrect = chosenText === q.correctText;
+
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correctText){ el.classList.add('correct'); }
+    else if(el === btn){ el.classList.add('wrong'); }
+  });
+
+  if(isCorrect){
+    score++;
+    scoreVal.textContent = score;
+    sfxCorrect();
+    feedback.classList.add('show','good');
+    feedback.innerHTML = `<b>Betul! 🎉</b>${q.qLabel} untuk eksperimen ni ialah: <b style="display:inline">${q.correctText}</b>.`;
+  } else {
+    sfxWrong();
+    feedback.classList.add('show','bad');
+    feedback.innerHTML = `<b>Bukan tu.</b>${q.qLabel} yang betui ialah: <b style="display:inline">${q.correctText}</b>. Baca balik senario tu — mana faktor yang diubah, mana yang jadi hasil, mana yang kekal sama.`;
+  }
+
+  selectedAnswers.push({ q, correct: isCorrect, chosen: chosenText });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  nextBtn.focus();
+}
+
+function handleTimeout(){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correctText){ el.classList.add('correct'); }
+  });
+  feedback.classList.add('show','bad');
+  feedback.innerHTML = `<b>Masa tamat! ⏰</b>${q.qLabel} yang betui ialah: <b style="display:inline">${q.correctText}</b>. Baca balik senario, lain kali cuba lagi laju sikit.`;
+  selectedAnswers.push({ q, correct:false, chosen: null });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex++;
+  if(currentIndex >= QUESTIONS.length){
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult(){
+  clearInterval(timer);
+  progressBar.style.width = '100%';
+  quizArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  const resultEmoji = document.getElementById('resultEmoji');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMsg = document.getElementById('resultMsg');
+
+  if(pct >= 80){
+    resultEmoji.textContent = '🏆';
+    resultTitle.textContent = 'Syabas, Faham Betul!';
+    resultMsg.textContent = 'Konsep pemboleh ubah demo dah mantap!';
+    sfxFanfare();
+  } else if(pct >= 50){
+    resultEmoji.textContent = '👍';
+    resultTitle.textContent = 'Dah Faham Sikit!';
+    resultMsg.textContent = 'Baca balik penjelasan yang salah tadi, lepas tu try lagi sekali.';
+    sfxFanfare();
+  } else {
+    resultEmoji.textContent = '📖';
+    resultTitle.textContent = 'Jangan Risau, Ulang Semula';
+    resultMsg.textContent = 'Baca balik bahagian "3 benda ni je" kat atas tadi, pastu try semula.';
+  }
+
+  document.getElementById('resultScore').textContent = `${score} / ${QUESTIONS.length} (${pct}%)`;
+
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;color:#5a5346;">RINGKASAN JAWAPAN</div>';
+  selectedAnswers.forEach((a,i)=>{
+    const div = document.createElement('div');
+    div.className = 'breakdown-item';
+    const mark = a.correct ? '✅' : '❌';
+    let html = `<div class="row"><span class="mark">${mark}</span><span>${i+1}. [${a.q.expTitle}] ${a.q.qLabel}</span></div>`;
+    if(!a.correct){
+      const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
+      html += `<div class="answer-detail">
+        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="rightans">Jawapan betul:</span> ${a.q.correctText}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+    breakdown.appendChild(div);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex = 0;
+  score = 0;
+  selectedAnswers = [];
+  scoreVal.textContent = '0';
+  resultArea.style.display = 'none';
+  teachCard.style.display = 'block';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FBFDFF">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Sains Exam","short_name":"SainsExam","display":"fullscreen","orientation":"portrait","background_color":"%23FBFDFF","theme_color":"%23FBFDFF","start_url":"."}'>
+<title>Sains — Kertas Peperiksaan</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1E2A4A;--ink-soft:#5A6785;--paper:#FBFDFF;--grid:#DCE8F7;--margin-red:#F0857A;--pen-red:#E8503A;--tick-green:#2FA45C;--gold:#D4A017;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;color:var(--ink);font-family:'Nunito',system-ui,sans-serif;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;position:relative;}
+body::before{content:'';position:fixed;top:0;bottom:0;left:34px;width:2px;background:var(--margin-red);opacity:.7;z-index:0;}
+#app{position:relative;max-width:580px;margin:0 auto;padding:16px 14px 40px;z-index:1;}
+button{-webkit-tap-highlight-color:transparent;cursor:pointer;font-family:inherit;}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.home-eyebrow{font-family:'Fredoka';font-size:14px;font-weight:600;color:var(--pen-red);letter-spacing:1.5px;text-transform:uppercase;}
+h1.home-title{font-family:'Fredoka';font-size:34px;font-weight:700;margin:4px 0 6px;line-height:1.1;}
+.home-sub{font-weight:700;color:var(--ink-soft);font-size:14px;margin-bottom:20px;}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;}
+.lang-toggle{display:inline-flex;border:2px solid var(--ink);border-radius:99px;overflow:hidden;}
+.lang-toggle button{font-family:'Fredoka';font-size:13px;font-weight:700;padding:5px 12px;border:none;background:transparent;color:var(--ink);}
+.lang-toggle button.active{background:var(--ink);color:#fff;}
+.fs-btn{font-size:17px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);padding:3px 8px;}
+.darjah-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.darjah-btn{border-radius:18px;padding:16px 12px;text-align:center;border-width:3px;border-style:solid;background:#fff;}
+.darjah-label{font-family:'Fredoka';font-size:20px;font-weight:700;}
+.darjah-info{font-size:12px;font-weight:800;color:var(--ink-soft);margin-top:4px;}
+.darjah-score{font-size:13px;font-weight:800;margin-top:6px;}
+
+/* EXAM HEADER */
+.exam-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin-bottom:16px;text-align:center;}
+.exam-header .school{font-size:13px;font-weight:800;color:var(--ink-soft);letter-spacing:.5px;}
+.exam-header .subj{font-family:'Fredoka';font-size:22px;font-weight:700;margin:4px 0 2px;}
+.exam-header .meta{font-size:13px;font-weight:800;color:var(--ink-soft);}
+.exam-header .name-row{display:flex;gap:12px;margin-top:10px;font-size:13px;font-weight:800;}
+.exam-header .name-field{flex:1;border-bottom:2px solid var(--ink);padding-bottom:2px;}
+
+/* TIMER BAR */
+.timer-strip{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #B7C6E2;border-radius:12px;padding:8px 14px;margin-bottom:14px;}
+.timer-strip .tlabel{font-family:'Fredoka';font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+.tbar-wrap{flex:1;height:10px;background:#E7EEF9;border-radius:99px;overflow:hidden;}
+.tbar{height:100%;border-radius:99px;background:var(--tick-green);transition:width 1s linear,background .3s;}
+.tnum{font-family:'Fredoka';font-weight:700;font-size:15px;min-width:42px;text-align:right;}
+
+/* SECTION HEADER */
+.section-head{background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;margin:18px 0 12px;display:flex;justify-content:space-between;align-items:center;}
+.section-head .sname{font-family:'Fredoka';font-size:17px;font-weight:700;}
+.section-head .smarks{font-size:13px;font-weight:800;opacity:.85;}
+.section-instr{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:14px;line-height:1.5;}
+
+/* QUESTION CARDS */
+.qblock{background:#fff;border-radius:16px;border:2px solid #DCE8F7;padding:16px;margin-bottom:12px;animation:fadeIn .25s;}
+.qblock.answered-correct{border-color:var(--tick-green);}
+.qblock.answered-wrong{border-color:var(--pen-red);}
+.qnum{font-family:'Fredoka';font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+.qtext{font-size:16px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+.qtable{width:100%;border-collapse:collapse;font-size:15px;font-weight:800;margin:8px 0 12px;}
+.qtable th{background:#E7EEF9;padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qtable td{padding:7px 10px;text-align:center;border:2px solid #B7C6E2;}
+.qgrid{margin:8px 0 12px;padding:12px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qscene{margin:8px 0 12px;padding:16px;background:#FFF9E9;border:2px solid #E9DFB8;border-radius:8px;text-align:center;}
+.qscene-icons{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.qscene-label{margin-top:6px;font-size:11px;font-weight:700;color:#8A6D1D;}
+.qgrid-row{display:flex;gap:6px;justify-content:center;margin-bottom:6px;}
+.qgrid-row:last-child{margin-bottom:0;}
+.qgrid-icon{font-size:22px;line-height:1;}
+.qgrid-label{text-align:center;font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;}
+.qchart{margin:8px 0 12px;padding:14px 10px 6px;background:#F3F7FC;border:2px solid #B7C6E2;border-radius:8px;}
+.qchart-bars{display:flex;align-items:flex-end;justify-content:space-around;height:110px;gap:10px;}
+.qchart-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;}
+.qchart-bar-val{font-size:11px;font-weight:800;margin-bottom:3px;}
+.qchart-bar{width:100%;max-width:38px;background:#5B8DEF;border-radius:4px 4px 0 0;}
+.qchart-bar-label{font-size:11px;font-weight:700;color:#5a6785;margin-top:6px;text-align:center;}
+.name-input-wrap{margin:4px 0 16px;}
+.name-input-label{display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:5px;}
+.name-input{width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;font-weight:700;border:2px solid var(--grid);border-radius:8px;background:#fff;color:var(--ink);font-family:'Nunito',sans-serif;}
+.name-input:focus{outline:none;border-color:#2F6FE4;}
+.hof-wrap{margin:18px 0;padding:14px;background:#FBF8EE;border:2px solid #E9DFB8;border-radius:12px;}
+.hof-title{display:flex;align-items:center;gap:6px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#8A6D1D;margin-bottom:10px;}
+.hof-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dotted #E9DFB8;font-size:13px;}
+.hof-row:last-child{border-bottom:none;}
+.hof-rank{width:20px;font-weight:800;color:var(--ink-soft);text-align:center;flex:0 0 auto;}
+.hof-row.top1 .hof-rank{color:#D4A017;}
+.hof-name{flex:1;font-weight:800;color:var(--ink);}
+.hof-meta{font-size:10.5px;color:var(--ink-soft);font-weight:600;}
+.hof-pct{font-weight:800;color:#2F6FE4;}
+.hof-row.mine{background:#FFF6DC;border-radius:6px;padding:7px 6px;margin:0 -6px;}
+.qinfo{background:#F0F4FF;border:2px solid #B7C6E2;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:800;line-height:1.6;margin-bottom:12px;}
+
+/* MCQ OPTIONS */
+.mcq-opts{display:grid;gap:8px;}
+.mcq-opt{font-size:15px;font-weight:800;text-align:left;padding:11px 14px;border-radius:12px;border:2px solid #B7C6E2;background:#fff;color:var(--ink);box-shadow:0 2px 0 #C9D4E8;display:flex;align-items:flex-start;gap:10px;}
+.mcq-opt .opt-label{font-family:'Fredoka';font-size:15px;font-weight:700;color:var(--ink-soft);min-width:20px;}
+.mcq-opt.selected{border-color:#2F6FE4;background:#E3EDFF;box-shadow:0 2px 0 #2F6FE4;}
+.mcq-opt.correct{border-color:var(--tick-green);background:#E8F6EC;box-shadow:0 2px 0 var(--tick-green);}
+.mcq-opt.wrong{border-color:var(--pen-red);background:#FDEAE7;box-shadow:0 2px 0 var(--pen-red);}
+.mcq-opt:disabled{cursor:default;}
+
+/* SHORT ANSWER */
+.short-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.short-input{font-family:'Fredoka';font-size:22px;font-weight:700;width:100px;text-align:center;border:3px solid #B7C6E2;border-radius:10px;padding:8px 4px;background:#fff;color:var(--ink);}
+.short-input:focus{outline:none;border-color:#2F6FE4;}
+.short-input.correct{border-color:var(--tick-green);background:#E8F6EC;color:var(--tick-green);}
+.short-input.wrong{border-color:var(--pen-red);background:#FDEAE7;color:var(--pen-red);}
+.short-unit{font-size:15px;font-weight:800;color:var(--ink-soft);}
+.long-answer{font-family:'Nunito',sans-serif;font-size:16px;font-weight:600;width:100%;box-sizing:border-box;min-height:70px;line-height:1.5;border:3px solid #B7C6E2;border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);resize:vertical;}
+.long-answer:focus{outline:none;border-color:#2F6FE4;}
+.long-answer.correct{border-color:#2F7A4F;background:#F1FBF4;}
+.long-answer.wrong{border-color:#D9534F;background:#FBF0F0;}
+.long-hint{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;}
+
+/* FEEDBACK */
+.fb-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;font-weight:800;}
+.fb-tick{font-size:20px;}
+.fb-why{color:var(--ink-soft);}
+.fb-correct-ans{color:var(--pen-red);}
+.claim-btn{margin-top:6px;font-family:"Fredoka",sans-serif;font-size:12.5px;font-weight:600;padding:5px 12px;border:2px solid #2F7A4F;border-radius:16px;background:#fff;color:#2F7A4F;cursor:pointer;}
+.claim-btn:active{background:#2F7A4F;color:#fff;}
+.claim-done{margin-top:6px;font-size:12px;font-weight:800;color:#2F7A4F;}
+.fb-partial{color:#C68A00;}
+.fb-model{margin-top:4px;font-size:12.5px;font-weight:700;color:#2F7A4F;line-height:1.4;}
+.fb-row{flex-wrap:wrap;}
+
+/* NAV BUTTONS */
+.nav-bar{display:flex;gap:10px;margin:20px 0 10px;}
+.nav-btn{flex:1;font-family:'Fredoka';font-size:18px;font-weight:700;padding:13px 0;border-radius:14px;border:3px solid;background:#fff;}
+.submit-btn{width:100%;font-family:'Fredoka';font-size:20px;font-weight:700;padding:15px 0;border-radius:16px;border:none;background:#1E2A4A;color:#fff;margin-top:16px;box-shadow:0 4px 0 #0D1520;}
+.back-btn{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:6px 0;margin-bottom:4px;}
+
+/* RESULTS */
+.result-header{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:20px 16px;text-align:center;margin-bottom:16px;}
+.result-grade{font-family:'Fredoka';font-size:52px;font-weight:700;line-height:1;}
+.result-pct{font-family:'Fredoka';font-size:22px;font-weight:600;color:var(--ink-soft);}
+.result-band{display:inline-block;font-family:'Fredoka';font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;border-radius:99px;padding:4px 16px;margin:8px 0;}
+.result-breakdown{background:#fff;border:2px solid #DCE8F7;border-radius:14px;padding:14px 16px;margin-bottom:14px;}
+.rb-row{display:flex;justify-content:space-between;font-size:14px;font-weight:800;padding:6px 0;border-bottom:1px solid #E7EEF9;}
+.rb-row:last-child{border-bottom:none;}
+.result-review{margin-bottom:14px;}
+.rq{background:#fff;border:2px solid #DCE8F7;border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.rq .rq-num{font-family:'Fredoka';font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
+.rq .rq-q{font-size:14px;font-weight:800;line-height:1.5;margin-bottom:6px;}
+.rq .rq-ans{font-size:13px;font-weight:800;}
+.rq.rq-wrong{border-color:var(--pen-red);}
+.rq.rq-correct{border-color:var(--tick-green);}
+.res-btns{display:grid;gap:10px;margin-top:16px;}
+.big-btn{font-family:'Fredoka';font-size:19px;font-weight:700;padding:14px 0;border-radius:16px;border-width:3px;border-style:solid;}
+.home-btn2{background:none;border:none;font-family:'Fredoka';font-size:16px;font-weight:600;color:var(--ink-soft);padding:8px;}
+.star-dim{filter:grayscale(1) opacity(.35);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ============================================================
+// EXAM PAPERS DATA
+// ============================================================
+var PAPERS = {
+ms: {
+1: {
+  label:'Darjah 1', time:75, totalMarks:25,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Deria yang digunakan untuk melihat ialah?',opts:['mata','telinga','hidung','lidah'],a:0,m:1},
+    {sec:'A',q:'Deria yang digunakan untuk mendengar ialah?',opts:['mata','telinga','kulit','lidah'],a:1,m:1},
+    {sec:'A',q:'Deria yang digunakan untuk merasa ialah?',opts:['hidung','telinga','lidah','mata'],a:2,m:1},
+    {sec:'A',q:'Deria yang digunakan untuk menghidu ialah?',opts:['hidung','mata','telinga','lidah'],a:0,m:1},
+    {sec:'A',q:'Deria yang digunakan untuk menyentuh ialah?',opts:['kulit','lidah','hidung','mata'],a:0,m:1},
+    {sec:'A',q:'Berdasarkan gambar, yang manakah tergolong dalam hidupan?',scene:['stone','cat','chair','water'],opts:['batu','kucing','kerusi','air'],a:1,m:1},
+    {sec:'A',q:'Yang manakah tergolong dalam bukan hidupan?',opts:['ayam','pokok','meja','ikan'],a:2,m:1},
+    {sec:'A',q:'Yang manakah tergolong dalam hidupan?',opts:['buku','pensel','bunga','beg'],a:2,m:1},
+    {sec:'A',q:'Manakah antara berikut ialah haiwan?',opts:['mawar','kucing','rumput','pokok'],a:1,m:1},
+    {sec:'A',q:'Manakah antara berikut ialah tumbuhan?',opts:['kambing','ayam','pokok kelapa','itik'],a:2,m:1},
+    {sec:'A',q:'Apakah keperluan asas semua hidupan untuk hidup?',opts:['air, udara dan makanan','wang dan mainan','televisyen','buku'],a:0,m:1},
+    {sec:'A',q:'Tumbuhan memerlukan ___ untuk membuat makanan.',opts:['cahaya matahari','kegelapan','muzik','cat'],a:0,m:1},
+    {sec:'A',q:'Manusia bernafas menggunakan?',opts:['paru-paru','perut','kaki','tangan'],a:0,m:1},
+    {sec:'A',q:'Ikan bernafas menggunakan?',opts:['paru-paru','insang','kulit','hidung'],a:1,m:1},
+    {sec:'A',q:'Apakah yang berlaku jika tumbuhan tidak mendapat air?',opts:['ia akan layu dan mati','ia akan membesar lebih cepat','tiada kesan','ia akan berbunga'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Namakan DUA deria manusia dan fungsi masing-masing.',a:'Mata (melihat); Telinga (mendengar) - mana-mana 2 deria yang betul',m:2,unit:''},
+    {sec:'B',q:'Senaraikan DUA keperluan asas bagi hidupan untuk terus hidup.',a:'air; makanan; udara (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Nyatakan SATU perbezaan antara hidupan dan bukan hidupan.',a:'Hidupan boleh bernafas/membesar/bergerak; bukan hidupan tidak boleh',m:2,unit:''},
+    {sec:'B',q:'Kucing ialah haiwan. Senaraikan DUA ciri kucing sebagai hidupan.',a:'bernafas; bergerak; membesar; makan (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Mengapakah tumbuhan memerlukan cahaya matahari?',a:'Untuk membuat makanan (proses fotosintesis)',m:2,unit:''},
+  ]
+},
+2: {
+  label:'Darjah 2', time:75, totalMarks:25,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Yang manakah BUKAN ciri hidupan?',opts:['bernafas','membesar','tidak bergerak balas','membiak'],a:2,m:1},
+    {sec:'A',q:'Semua hidupan boleh?',opts:['bernafas dan membesar','terbang','bercakap','berenang'],a:0,m:1},
+    {sec:'A',q:'Apakah maksud \'membiak\'?',opts:['menghasilkan generasi baharu','bernafas','bergerak','makan'],a:0,m:1},
+    {sec:'A',q:'Air ialah contoh bahan dalam keadaan?',opts:['pepejal','cecair','gas','tiada keadaan'],a:1,m:1},
+    {sec:'A',q:'Batu ialah contoh bahan dalam keadaan?',opts:['pepejal','cecair','gas','wap'],a:0,m:1},
+    {sec:'A',q:'Udara yang kita sedut ialah contoh bahan dalam keadaan?',opts:['pepejal','cecair','gas','pepejal dan cecair'],a:2,m:1},
+    {sec:'A',q:'Yang manakah mempunyai bentuk tetap?',opts:['air','udara','batu','minyak'],a:2,m:1},
+    {sec:'A',q:'Yang manakah TIDAK mempunyai bentuk tetap dan mengambil bentuk bekas?',opts:['batu','kayu','air','besi'],a:2,m:1},
+    {sec:'A',q:'Objek di langit yang memberikan cahaya dan haba pada waktu siang ialah?',opts:['bulan','matahari','bintang','awan'],a:1,m:1},
+    {sec:'A',q:'Objek di langit yang kelihatan pada waktu malam dan memantulkan cahaya matahari ialah?',opts:['matahari','bulan','awan','hujan'],a:1,m:1},
+    {sec:'A',q:'Apakah yang terbentuk apabila wap air di udara menyejuk?',opts:['awan','matahari','bintang','angin'],a:0,m:1},
+    {sec:'A',q:'Hujan berlaku apabila?',opts:['awan menjadi terlalu berat dengan titisan air','matahari terbit','angin bertiup kuat','malam tiba'],a:0,m:1},
+    {sec:'A',q:'Cuaca panas dan cerah biasanya dikaitkan dengan?',opts:['matahari terang tanpa awan','awan mendung dan hujan','ribut petir','salji'],a:0,m:1},
+    {sec:'A',q:'Yang manakah contoh perubahan bahan pepejal kepada cecair?',opts:['ais mencair menjadi air','air membeku menjadi ais','air menyejat menjadi wap','besi menjadi keras'],a:0,m:1},
+    {sec:'A',q:'Apakah nama proses apabila air berubah menjadi wap?',opts:['peleburan','penyejatan','pembekuan','kondensasi'],a:1,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Senaraikan DUA ciri hidupan yang dimiliki oleh seekor ayam.',a:'bernafas; membesar; membiak; bergerak (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Nyatakan keadaan bahan bagi: (a) batu dan (b) minyak masak.',a:'(a) pepejal (b) cecair',m:2,unit:''},
+    {sec:'B',q:'Namakan DUA objek yang boleh dilihat di langit pada waktu malam.',a:'bulan; bintang (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Terangkan secara ringkas mengapa hujan turun.',a:'Awan menjadi terlalu berat dengan titisan air lalu jatuh sebagai hujan',m:2,unit:'',pk:['awan','titisan air|berat|air','hujan|jatuh']},
+    {sec:'B',q:'Apakah yang berlaku kepada ais apabila dibiarkan di tempat panas?',a:'Ia mencair menjadi air',m:2,unit:''},
+  ]
+},
+3: {
+  label:'Darjah 3', time:75, totalMarks:25,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Haiwan yang mempunyai tulang belakang dikenali sebagai?',opts:['vertebrata','invertebrata','mamalia sahaja','reptilia sahaja'],a:0,m:1},
+    {sec:'A',q:'Haiwan yang TIDAK mempunyai tulang belakang dikenali sebagai?',opts:['vertebrata','invertebrata','ikan','burung'],a:1,m:1},
+    {sec:'A',q:'Yang manakah contoh haiwan invertebrata?',opts:['kucing','burung','semut','ikan'],a:2,m:1},
+    {sec:'A',q:'Yang manakah contoh mamalia?',opts:['kucing','katak','ular','ikan'],a:0,m:1},
+    {sec:'A',q:'Tumbuhan boleh dikelaskan berdasarkan?',opts:['bentuk daun dan batang','warna baju','jenis makanan manusia','harga di pasar'],a:0,m:1},
+    {sec:'A',q:'Dalam rantai makanan, tumbuhan hijau dikenali sebagai?',opts:['pengeluar','pengguna primer','pengguna sekunder','pengurai'],a:0,m:1},
+    {sec:'A',q:'Haiwan yang memakan tumbuhan sahaja dikenali sebagai?',opts:['karnivor','herbivor','omnivor','pengurai'],a:1,m:1},
+    {sec:'A',q:'Haiwan yang memakan haiwan lain sahaja dikenali sebagai?',opts:['herbivor','karnivor','omnivor','pengeluar'],a:1,m:1},
+    {sec:'A',q:'Berdasarkan rajah rantai makanan, apakah peranan arnab?',scene:['plant','arrow','rabbit','arrow','eagle'],opts:['pengeluar','pengguna primer','pengguna sekunder','pengurai'],a:1,m:1},
+    {sec:'A',q:'Daya tolak dan tarik boleh menyebabkan objek?',opts:['bergerak, berhenti atau menukar arah','hilang berat','bertukar warna','menjadi lebih besar'],a:0,m:1},
+    {sec:'A',q:'Apabila kita menolak troli beli-belah, kita mengenakan daya?',opts:['tarikan','tolakan','graviti','geseran'],a:1,m:1},
+    {sec:'A',q:'Sumber cahaya semula jadi yang utama pada waktu siang ialah?',opts:['mentol','matahari','lilin','bulan'],a:1,m:1},
+    {sec:'A',q:'Bunyi dihasilkan apabila objek?',opts:['bergetar','berhenti bergerak','menjadi sejuk','hilang warna'],a:0,m:1},
+    {sec:'A',q:'Cahaya bergerak dalam garis?',opts:['lurus','bengkok','bulat','zig-zag'],a:0,m:1},
+    {sec:'A',q:'Bunyi TIDAK dapat merambat melalui?',opts:['udara','air','kevakuman (angkasa lepas)','kayu'],a:2,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Nyatakan DUA contoh haiwan vertebrata.',a:'kucing; ikan; burung; katak (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Dalam rantai makanan \'rumput → belalang → katak → ular\', nyatakan pengeluar dalam rantai makanan itu.',a:'rumput',m:2,unit:''},
+    {sec:'B',q:'Nyatakan SATU perbezaan antara daya tolak dan daya tarik.',a:'Tolak menjauhkan objek daripada kita; tarik mendekatkan objek kepada kita',m:2,unit:''},
+    {sec:'B',q:'Mengapakah kita tidak dapat mendengar bunyi di angkasa lepas?',a:'Kerana bunyi memerlukan medium (seperti udara) untuk merambat, dan angkasa lepas adalah vakum',m:2,unit:''},
+    {sec:'B',q:'Namakan haiwan yang herbivor dan haiwan yang karnivor.',a:'Herbivor: arnab/lembu; Karnivor: singa/harimau (contoh yang sesuai)',m:2,unit:''},
+  ]
+},
+4: {
+  label:'Darjah 4', time:75, totalMarks:27,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:12, type:'short'},
+  questions:[
+    {sec:'A',q:'Organ yang digunakan untuk bernafas ialah?',opts:['jantung','paru-paru','hati','buah pinggang'],a:1,m:1},
+    {sec:'A',q:'Organ yang mengepam darah ke seluruh badan ialah?',opts:['paru-paru','jantung','otak','perut'],a:1,m:1},
+    {sec:'A',q:'Organ yang mengawal semua aktiviti badan ialah?',opts:['otak','hati','perut','kulit'],a:0,m:1},
+    {sec:'A',q:'Rangka badan manusia berfungsi untuk?',opts:['menyokong dan melindungi organ dalaman','menghasilkan bunyi','merasa makanan','menghidu bau'],a:0,m:1},
+    {sec:'A',q:'Dalam satu kajian, pemboleh ubah yang DIUBAH oleh pengkaji dikenali sebagai?',opts:['pemboleh ubah dimanipulasikan','pemboleh ubah bergerak balas','pemboleh ubah dimalarkan','tiada nama khas'],a:0,m:1},
+    {sec:'A',q:'Pemboleh ubah yang DIUKUR sebagai hasil kajian dikenali sebagai?',opts:['pemboleh ubah dimanipulasikan','pemboleh ubah bergerak balas','pemboleh ubah dimalarkan','pemboleh ubah bebas'],a:1,m:1},
+    {sec:'A',q:'Pemboleh ubah yang dikekalkan SAMA sepanjang kajian dikenali sebagai?',opts:['pemboleh ubah dimanipulasikan','pemboleh ubah bergerak balas','pemboleh ubah dimalarkan','pemboleh ubah kajian'],a:2,m:1},
+    {sec:'A',q:'Air, minyak dan susu ialah contoh bahan dalam keadaan?',opts:['pepejal','cecair','gas','wap'],a:1,m:1},
+    {sec:'A',q:'Apabila ais dipanaskan, ia akan?',opts:['mencair menjadi air','membeku','menjadi lebih keras','hilang berat sepenuhnya'],a:0,m:1},
+    {sec:'A',q:'Sumber tenaga yang boleh diperbaharui ialah?',opts:['arang batu','gas asli','tenaga suria','petroleum'],a:2,m:1},
+    {sec:'A',q:'Sumber tenaga yang TIDAK boleh diperbaharui ialah?',opts:['tenaga suria','tenaga angin','petroleum','tenaga air'],a:2,m:1},
+    {sec:'A',q:'Tenaga yang tersimpan dalam makanan dikenali sebagai?',opts:['tenaga kimia','tenaga bunyi','tenaga cahaya','tenaga elektrik'],a:0,m:1},
+    {sec:'A',q:'Panel suria menukarkan tenaga cahaya kepada tenaga?',opts:['elektrik','bunyi','haba sahaja','kimia'],a:0,m:1},
+    {sec:'A',q:'Yang manakah contoh perubahan tenaga dalam kipas elektrik?',opts:['tenaga elektrik kepada tenaga kinetik','tenaga cahaya kepada tenaga bunyi','tenaga kimia kepada tenaga cahaya','tenaga bunyi kepada tenaga elektrik'],a:0,m:1},
+    {sec:'A',q:'Kulit manusia berfungsi sebagai organ deria untuk?',opts:['sentuhan','penglihatan','pendengaran','rasa'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Dalam satu kajian untuk mengkaji kesan cahaya matahari terhadap pertumbuhan tumbuhan, nyatakan (a) pemboleh ubah dimanipulasikan dan (b) pemboleh ubah bergerak balas.',a:'(a) Jumlah/kehadiran cahaya matahari (b) Ketinggian/pertumbuhan tumbuhan',m:3,unit:''},
+    {sec:'B',q:'Senaraikan TIGA organ dalam sistem badan manusia dan fungsi masing-masing.',a:'Jantung (mengepam darah); Paru-paru (bernafas); Otak (mengawal badan) - mana-mana 3',m:3,unit:''},
+    {sec:'B',q:'Nyatakan DUA sumber tenaga boleh diperbaharui.',a:'tenaga suria; tenaga angin; tenaga air (mana-mana 2)',m:2,unit:''},
+    {sec:'B',q:'Terangkan mengapa ais yang dibiarkan di atas meja akan menjadi air selepas beberapa waktu.',a:'Ais menyerap haba daripada persekitaran dan mencair menjadi air',m:2,unit:''},
+    {sec:'B',q:'Nyatakan perubahan tenaga yang berlaku pada sebuah lampu suluh yang dinyalakan.',a:'Tenaga kimia (dalam bateri) bertukar kepada tenaga cahaya',m:2,unit:''},
+  ]
+},
+5: {
+  label:'Darjah 5', time:75, totalMarks:29,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:14, type:'short'},
+  questions:[
+    {sec:'A',q:'Semasa bernafas, manusia menyedut gas?',opts:['oksigen','karbon dioksida','nitrogen sahaja','asap'],a:0,m:1},
+    {sec:'A',q:'Semasa menghembus nafas, manusia mengeluarkan gas?',opts:['oksigen sahaja','karbon dioksida','hidrogen','helium'],a:1,m:1},
+    {sec:'A',q:'Darah dipam oleh jantung mengalir melalui?',opts:['saluran darah','paru-paru sahaja','tulang','otot sahaja'],a:0,m:1},
+    {sec:'A',q:'Fungsi utama sistem peredaran darah ialah?',opts:['mengangkut oksigen dan nutrien ke seluruh badan','menghasilkan bunyi','mencernakan makanan','menyokong rangka badan'],a:0,m:1},
+    {sec:'A',q:'Proses perubahan cecair kepada gas dikenali sebagai?',opts:['penyejatan','pemejalwapan','kondensasi','pembekuan'],a:0,m:1},
+    {sec:'A',q:'Proses perubahan gas kepada cecair dikenali sebagai?',opts:['penyejatan','kondensasi','peleburan','pengejatan'],a:1,m:1},
+    {sec:'A',q:'Proses perubahan pepejal terus kepada gas tanpa melalui keadaan cecair dikenali sebagai?',opts:['kondensasi','pemejalwapan','peleburan','pembekuan'],a:1,m:1},
+    {sec:'A',q:'Kapur barus yang hilang secara beransur-ansur di dalam almari menunjukkan proses?',opts:['pemejalwapan','kondensasi','pembekuan','peleburan'],a:0,m:1},
+    {sec:'A',q:'Litar elektrik ringkas memerlukan sekurang-kurangnya?',opts:['bateri, wayar dan mentol','air dan udara sahaja','kayu dan kertas','batu dan pasir'],a:0,m:1},
+    {sec:'A',q:'Bahan yang membenarkan elektrik mengalir melaluinya dikenali sebagai?',opts:['penebat','pengalir','penebat elektrik','bahan lengai'],a:1,m:1},
+    {sec:'A',q:'Bahan yang TIDAK membenarkan elektrik mengalir melaluinya dikenali sebagai?',opts:['pengalir','penebat','logam','besi'],a:1,m:1},
+    {sec:'A',q:'Yang manakah contoh bahan pengalir elektrik yang baik?',opts:['kayu','getah','tembaga','plastik'],a:2,m:1},
+    {sec:'A',q:'Yang manakah contoh sumber asli bumi?',opts:['air, tanah dan hutan','televisyen','kereta','komputer'],a:0,m:1},
+    {sec:'A',q:'Mengapakah kita perlu menjimatkan penggunaan air?',opts:['air ialah sumber terhad walaupun boleh diperbaharui','air tidak penting','air sentiasa mencukupi','air tidak boleh habis'],a:0,m:1},
+    {sec:'A',q:'Penebangan hutan secara berlebihan boleh menyebabkan?',opts:['hakisan tanah dan kepupusan hidupan','peningkatan hidupan liar','udara lebih bersih','tiada kesan'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Terangkan secara ringkas laluan udara semasa manusia bernafas masuk (dari hidung hingga paru-paru).',a:'Hidung → trakea → bronkus → paru-paru (alveolus)',m:3,unit:'',pk:['hidung','trakea|trakeal','bronkus','paru-paru|alveolus|peparu']},
+    {sec:'B',q:'Nyatakan TIGA perubahan keadaan bahan (contoh: peleburan, penyejatan, kondensasi).',a:'peleburan; penyejatan; kondensasi; pembekuan; pemejalwapan (mana-mana 3)',m:3,unit:''},
+    {sec:'B',q:'Lukiskan/terangkan komponen yang diperlukan untuk membina satu litar elektrik ringkas yang berfungsi.',a:'Bateri, wayar penyambung dan mentol (disambung membentuk litar tertutup)',m:3,unit:''},
+    {sec:'B',q:'Berikan DUA cara untuk menjimatkan penggunaan sumber asli air di rumah.',a:'Tutup paip semasa tidak digunakan; guna mesin basuh sepenuh muatan (mana-mana 2 cara munasabah)',m:3,unit:''},
+    {sec:'B',q:'Nyatakan fungsi jantung dalam sistem peredaran darah.',a:'Mengepam darah ke seluruh badan',m:2,unit:''},
+  ]
+},
+6: {
+  label:'Darjah 6', time:80, totalMarks:35,
+  secA:{name:'Bahagian A', instr:'Bulatkan jawapan yang betul.', marks:15, type:'mcq'},
+  secB:{name:'Bahagian B', instr:'Tulis jawapan pada ruang yang disediakan.', marks:20, type:'short'},
+  questions:[
+    {sec:'A',q:'Sistem yang mengawal dan menghantar isyarat ke seluruh badan ialah?',opts:['sistem saraf','sistem respirasi','sistem peredaran darah','sistem pencernaan'],a:0,m:1},
+    {sec:'A',q:'Organ utama dalam sistem saraf ialah?',opts:['otak','jantung','paru-paru','hati'],a:0,m:1},
+    {sec:'A',q:'Saraf tunjang berfungsi untuk?',opts:['menghantar isyarat antara otak dan badan','mengepam darah','mencerna makanan','bernafas'],a:0,m:1},
+    {sec:'A',q:'Tindak balas pantas tanpa disedari seperti menarik tangan daripada api dikenali sebagai?',opts:['tindakan refleks','tindakan sedar','tindakan terancang','tindakan pembelajaran'],a:0,m:1},
+    {sec:'A',q:'Bulan mengelilingi?',opts:['bumi','matahari','marikh','bintang'],a:0,m:1},
+    {sec:'A',q:'Bumi mengambil masa lebih kurang berapa hari untuk mengelilingi matahari sekali?',opts:['1 hari','30 hari','365 hari','7 hari'],a:2,m:1},
+    {sec:'A',q:'Putaran bumi pada paksinya menyebabkan berlakunya?',opts:['siang dan malam','empat musim','hujan','gerhana'],a:0,m:1},
+    {sec:'A',q:'Fasa bulan berubah kerana?',opts:['kedudukan bulan berbanding matahari dan bumi berubah','bulan bertukar warna','bulan hilang setiap bulan','bumi berhenti berputar'],a:0,m:1},
+    {sec:'A',q:'Planet yang paling hampir dengan matahari ialah?',opts:['Marikh','Zuhrah','Utarid','Bumi'],a:2,m:1},
+    {sec:'A',q:'Teknologi hijau bermaksud?',opts:['teknologi yang mesra alam dan mampan','teknologi berwarna hijau','teknologi lama','teknologi termahal'],a:0,m:1},
+    {sec:'A',q:'Yang manakah amalan gaya hidup lestari?',opts:['mengitar semula dan menjimatkan tenaga','membazir air','membakar sampah sesuka hati','menebang hutan tanpa kawalan'],a:0,m:1},
+    {sec:'A',q:'Prinsip 3R dalam pengurusan sisa bermaksud?',opts:['Reduce, Reuse, Recycle (Kurangkan, Guna Semula, Kitar Semula)','Run, Rest, Repeat','Read, Write, React','Reduce, Remove, Repair'],a:0,m:1},
+    {sec:'A',q:'Penggunaan panel suria di rumah membantu mengurangkan pergantungan kepada?',opts:['bahan api fosil','air hujan','cahaya bulan','angin'],a:0,m:1},
+    {sec:'A',q:'Gerhana matahari berlaku apabila?',opts:['bulan berada di antara bumi dan matahari','bumi berada di antara bulan dan matahari','matahari berada di antara bumi dan bulan','bintang menghalang cahaya matahari'],a:0,m:1},
+    {sec:'A',q:'Kereta elektrik dianggap lebih mesra alam berbanding kereta petrol kerana?',opts:['ia tidak mengeluarkan asap ekzos yang mencemarkan udara','ia lebih murah','ia lebih laju','ia lebih besar'],a:0,m:1},
+    // BAHAGIAN B
+    {sec:'B',q:'Terangkan bagaimana sistem saraf membantu manusia bertindak balas dengan pantas terhadap bahaya (contohnya menyentuh objek panas).',a:'Otak/saraf tunjang menerima isyarat daripada deria dan menghantar isyarat tindak balas segera (refleks) ke otot tanpa perlu berfikir',m:4,unit:'',pk:['otak|saraf tunjang|saraf','isyarat|deria|menerima','refleks|tindak balas|otot']},
+    {sec:'B',q:'Terangkan mengapa berlaku fasa-fasa bulan yang berbeza sepanjang bulan.',a:'Kedudukan bulan berbanding bumi dan matahari berubah setiap hari, menyebabkan bahagian bulan yang disuluh cahaya matahari kelihatan berbeza dari bumi',m:4,unit:'',pk:['kedudukan|posisi|berubah','bulan|bumi|matahari','cahaya|disuluh|pantulan']},
+    {sec:'B',q:'Berikan DUA contoh amalan teknologi hijau yang boleh diamalkan di rumah.',a:'Penggunaan panel suria; kitar semula; jimat penggunaan air dan elektrik (mana-mana 2)',m:4,unit:''},
+    {sec:'B',q:'Terangkan kepentingan menjaga sumber asli bumi untuk generasi akan datang.',a:'Sumber asli adalah terhad; jika tidak dijaga, generasi akan datang tidak akan mempunyai akses kepada sumber tersebut untuk keperluan hidup',m:4,unit:'',pk:['terhad|habis|sumber asli','generasi akan datang|masa depan|generasi','jaga|pelihara|akses']},
+    {sec:'B',q:'Nyatakan urutan planet mengikut jarak paling hampir dengan matahari bagi TIGA planet pertama.',a:'Utarid, Zuhrah, Bumi (Mercury, Venus, Earth)',m:4,unit:''},
+  ]
+}
+},
+en: {
+1: {
+  label:'Year 1', time:75, totalMarks:25,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Which sense is used for seeing?',opts:['eyes','ears','nose','tongue'],a:0,m:1},
+    {sec:'A',q:'Which sense is used for hearing?',opts:['eyes','ears','skin','tongue'],a:1,m:1},
+    {sec:'A',q:'Which sense is used for tasting?',opts:['nose','ears','tongue','eyes'],a:2,m:1},
+    {sec:'A',q:'Which sense is used for smelling?',opts:['nose','eyes','ears','tongue'],a:0,m:1},
+    {sec:'A',q:'Which sense is used for touching?',opts:['skin','tongue','nose','eyes'],a:0,m:1},
+    {sec:'A',q:'Based on the picture, which of the following is a living thing?',scene:['stone','cat','chair','water'],opts:['stone','cat','chair','water'],a:1,m:1},
+    {sec:'A',q:'Which of the following is a non-living thing?',opts:['chicken','tree','table','fish'],a:2,m:1},
+    {sec:'A',q:'Which of the following is a living thing?',opts:['book','pencil','flower','bag'],a:2,m:1},
+    {sec:'A',q:'Which of the following is an animal?',opts:['rose','cat','grass','tree'],a:1,m:1},
+    {sec:'A',q:'Which of the following is a plant?',opts:['goat','chicken','coconut tree','duck'],a:2,m:1},
+    {sec:'A',q:'What is a basic need of all living things?',opts:['water, air and food','money and toys','television','books'],a:0,m:1},
+    {sec:'A',q:'Plants need ___ to make food.',opts:['sunlight','darkness','music','paint'],a:0,m:1},
+    {sec:'A',q:'Humans breathe using?',opts:['lungs','stomach','legs','hands'],a:0,m:1},
+    {sec:'A',q:'Fish breathe using?',opts:['lungs','gills','skin','nose'],a:1,m:1},
+    {sec:'A',q:'What happens if a plant does not get water?',opts:['it will wilt and die','it will grow faster','no effect','it will flower'],a:0,m:1},
+    // SECTION B
+    {sec:'B',q:'Name TWO human senses and their functions.',a:'Eyes (seeing); Ears (hearing) - any 2 correct senses',m:2,unit:''},
+    {sec:'B',q:'List TWO basic needs of living things to survive.',a:'water; food; air (any 2)',m:2,unit:''},
+    {sec:'B',q:'State ONE difference between living and non-living things.',a:'Living things can breathe/grow/move; non-living things cannot',m:2,unit:''},
+    {sec:'B',q:'A cat is an animal. List TWO characteristics of a cat as a living thing.',a:'breathing; moving; growing; eating (any 2)',m:2,unit:''},
+    {sec:'B',q:'Why do plants need sunlight?',a:'To make food (the process of photosynthesis)',m:2,unit:''},
+  ]
+},
+2: {
+  label:'Year 2', time:75, totalMarks:25,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Which is NOT a characteristic of living things?',opts:['breathing','growing','not responding','reproducing'],a:2,m:1},
+    {sec:'A',q:'All living things can?',opts:['breathe and grow','fly','talk','swim'],a:0,m:1},
+    {sec:'A',q:'What does \'reproduce\' mean?',opts:['producing new generations','breathing','moving','eating'],a:0,m:1},
+    {sec:'A',q:'Water is an example of matter in the state of?',opts:['solid','liquid','gas','no state'],a:1,m:1},
+    {sec:'A',q:'A stone is an example of matter in the state of?',opts:['solid','liquid','gas','vapour'],a:0,m:1},
+    {sec:'A',q:'The air we breathe is an example of matter in the state of?',opts:['solid','liquid','gas','solid and liquid'],a:2,m:1},
+    {sec:'A',q:'Which has a fixed shape?',opts:['water','air','stone','oil'],a:2,m:1},
+    {sec:'A',q:'Which does NOT have a fixed shape and takes the shape of its container?',opts:['stone','wood','water','iron'],a:2,m:1},
+    {sec:'A',q:'The object in the sky that gives light and heat during the day is?',opts:['moon','sun','star','cloud'],a:1,m:1},
+    {sec:'A',q:'The object in the sky seen at night that reflects sunlight is?',opts:['sun','moon','cloud','rain'],a:1,m:1},
+    {sec:'A',q:'What forms when water vapour in the air cools down?',opts:['clouds','sun','stars','wind'],a:0,m:1},
+    {sec:'A',q:'Rain occurs when?',opts:['clouds become too heavy with water droplets','the sun rises','strong wind blows','night falls'],a:0,m:1},
+    {sec:'A',q:'Hot and sunny weather is usually associated with?',opts:['bright sun without clouds','overcast clouds and rain','thunderstorm','snow'],a:0,m:1},
+    {sec:'A',q:'Which is an example of a solid changing into a liquid?',opts:['ice melting into water','water freezing into ice','water evaporating into vapour','iron becoming hard'],a:0,m:1},
+    {sec:'A',q:'What is the name of the process when water changes into vapour?',opts:['melting','evaporation','freezing','condensation'],a:1,m:1},
+    // SECTION B
+    {sec:'B',q:'List TWO characteristics of living things possessed by a chicken.',a:'breathing; growing; reproducing; moving (any 2)',m:2,unit:''},
+    {sec:'B',q:'State the state of matter for: (a) stone and (b) cooking oil.',a:'(a) solid (b) liquid',m:2,unit:''},
+    {sec:'B',q:'Name TWO objects that can be seen in the sky at night.',a:'moon; stars (any 2)',m:2,unit:''},
+    {sec:'B',q:'Briefly explain why rain falls.',a:'Clouds become too heavy with water droplets and fall as rain',m:2,unit:'',pk:['cloud','water droplet|heavy|water','rain|fall']},
+    {sec:'B',q:'What happens to ice when left in a hot place?',a:'It melts into water',m:2,unit:''},
+  ]
+},
+3: {
+  label:'Year 3', time:75, totalMarks:25,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:10, type:'short'},
+  questions:[
+    {sec:'A',q:'Animals with a backbone are known as?',opts:['vertebrates','invertebrates','mammals only','reptiles only'],a:0,m:1},
+    {sec:'A',q:'Animals without a backbone are known as?',opts:['vertebrates','invertebrates','fish','birds'],a:1,m:1},
+    {sec:'A',q:'Which is an example of an invertebrate?',opts:['cat','bird','ant','fish'],a:2,m:1},
+    {sec:'A',q:'Which is an example of a mammal?',opts:['cat','frog','snake','fish'],a:0,m:1},
+    {sec:'A',q:'Plants can be classified based on?',opts:['leaf and stem shape','clothing colour','type of human food','market price'],a:0,m:1},
+    {sec:'A',q:'In a food chain, green plants are known as?',opts:['producers','primary consumers','secondary consumers','decomposers'],a:0,m:1},
+    {sec:'A',q:'Animals that eat only plants are known as?',opts:['carnivores','herbivores','omnivores','decomposers'],a:1,m:1},
+    {sec:'A',q:'Animals that eat only other animals are known as?',opts:['herbivores','carnivores','omnivores','producers'],a:1,m:1},
+    {sec:'A',q:'Based on the food chain diagram, what is the rabbit\'s role?',scene:['plant','arrow','rabbit','arrow','eagle'],opts:['producer','primary consumer','secondary consumer','decomposer'],a:1,m:1},
+    {sec:'A',q:'Push and pull forces can cause an object to?',opts:['move, stop or change direction','lose weight','change colour','become bigger'],a:0,m:1},
+    {sec:'A',q:'When we push a shopping trolley, we are applying a force of?',opts:['pull','push','gravity','friction'],a:1,m:1},
+    {sec:'A',q:'The main natural source of light during the day is?',opts:['light bulb','sun','candle','moon'],a:1,m:1},
+    {sec:'A',q:'Sound is produced when an object?',opts:['vibrates','stops moving','becomes cold','loses colour'],a:0,m:1},
+    {sec:'A',q:'Light travels in a?',opts:['straight line','curved line','circular path','zig-zag'],a:0,m:1},
+    {sec:'A',q:'Sound CANNOT travel through?',opts:['air','water','vacuum (outer space)','wood'],a:2,m:1},
+    // SECTION B
+    {sec:'B',q:'State TWO examples of vertebrate animals.',a:'cat; fish; bird; frog (any 2)',m:2,unit:''},
+    {sec:'B',q:'In the food chain \'grass → grasshopper → frog → snake\', state the producer in this food chain.',a:'grass',m:2,unit:''},
+    {sec:'B',q:'State ONE difference between a push force and a pull force.',a:'A push moves an object away from us; a pull moves an object closer to us',m:2,unit:''},
+    {sec:'B',q:'Why can we not hear sound in outer space?',a:'Because sound needs a medium (such as air) to travel, and outer space is a vacuum',m:2,unit:''},
+    {sec:'B',q:'Name a herbivore animal and a carnivore animal.',a:'Herbivore: rabbit/cow; Carnivore: lion/tiger (any suitable example)',m:2,unit:''},
+  ]
+},
+4: {
+  label:'Year 4', time:75, totalMarks:27,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:12, type:'short'},
+  questions:[
+    {sec:'A',q:'The organ used for breathing is?',opts:['heart','lungs','liver','kidney'],a:1,m:1},
+    {sec:'A',q:'The organ that pumps blood throughout the body is?',opts:['lungs','heart','brain','stomach'],a:1,m:1},
+    {sec:'A',q:'The organ that controls all body activities is?',opts:['brain','liver','stomach','skin'],a:0,m:1},
+    {sec:'A',q:'The human skeleton functions to?',opts:['support and protect internal organs','produce sound','taste food','smell odours'],a:0,m:1},
+    {sec:'A',q:'In an investigation, the variable that is CHANGED by the researcher is known as?',opts:['manipulated variable','responding variable','constant variable','no special name'],a:0,m:1},
+    {sec:'A',q:'The variable that is MEASURED as the result of an investigation is known as?',opts:['manipulated variable','responding variable','constant variable','independent variable'],a:1,m:1},
+    {sec:'A',q:'The variable that is kept THE SAME throughout an investigation is known as?',opts:['manipulated variable','responding variable','constant variable','study variable'],a:2,m:1},
+    {sec:'A',q:'Water, oil and milk are examples of matter in the state of?',opts:['solid','liquid','gas','vapour'],a:1,m:1},
+    {sec:'A',q:'When ice is heated, it will?',opts:['melt into water','freeze','become harder','lose all its weight'],a:0,m:1},
+    {sec:'A',q:'A renewable source of energy is?',opts:['coal','natural gas','solar energy','petroleum'],a:2,m:1},
+    {sec:'A',q:'A non-renewable source of energy is?',opts:['solar energy','wind energy','petroleum','hydro energy'],a:2,m:1},
+    {sec:'A',q:'The energy stored in food is known as?',opts:['chemical energy','sound energy','light energy','electrical energy'],a:0,m:1},
+    {sec:'A',q:'Solar panels convert light energy into?',opts:['electrical energy','sound energy','heat only','chemical energy'],a:0,m:1},
+    {sec:'A',q:'Which is an example of energy change in an electric fan?',opts:['electrical energy to kinetic energy','light energy to sound energy','chemical energy to light energy','sound energy to electrical energy'],a:0,m:1},
+    {sec:'A',q:'Human skin functions as a sensory organ for?',opts:['touch','sight','hearing','taste'],a:0,m:1},
+    // SECTION B
+    {sec:'B',q:'In an investigation on the effect of sunlight on plant growth, state (a) the manipulated variable and (b) the responding variable.',a:'(a) Amount/presence of sunlight (b) Height/growth of the plant',m:3,unit:''},
+    {sec:'B',q:'List THREE organs in the human body system and their functions.',a:'Heart (pumps blood); Lungs (breathing); Brain (controls the body) - any 3',m:3,unit:''},
+    {sec:'B',q:'State TWO renewable sources of energy.',a:'solar energy; wind energy; hydro energy (any 2)',m:2,unit:''},
+    {sec:'B',q:'Explain why ice left on a table will turn into water after some time.',a:'Ice absorbs heat from its surroundings and melts into water',m:2,unit:''},
+    {sec:'B',q:'State the energy change that occurs in a lit torchlight.',a:'Chemical energy (in the battery) changes into light energy',m:2,unit:''},
+  ]
+},
+5: {
+  label:'Year 5', time:75, totalMarks:29,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:14, type:'short'},
+  questions:[
+    {sec:'A',q:'When breathing in, humans inhale?',opts:['oxygen','carbon dioxide','nitrogen only','smoke'],a:0,m:1},
+    {sec:'A',q:'When exhaling, humans release?',opts:['oxygen only','carbon dioxide','hydrogen','helium'],a:1,m:1},
+    {sec:'A',q:'Blood pumped by the heart flows through?',opts:['blood vessels','lungs only','bones','muscles only'],a:0,m:1},
+    {sec:'A',q:'The main function of the circulatory system is to?',opts:['transport oxygen and nutrients throughout the body','produce sound','digest food','support the skeleton'],a:0,m:1},
+    {sec:'A',q:'The process of a liquid changing into a gas is known as?',opts:['evaporation','sublimation','condensation','freezing'],a:0,m:1},
+    {sec:'A',q:'The process of a gas changing into a liquid is known as?',opts:['evaporation','condensation','melting','sublimation'],a:1,m:1},
+    {sec:'A',q:'The process of a solid changing directly into a gas without becoming liquid is known as?',opts:['condensation','sublimation','melting','freezing'],a:1,m:1},
+    {sec:'A',q:'Mothballs that gradually disappear in a cupboard show the process of?',opts:['sublimation','condensation','freezing','melting'],a:0,m:1},
+    {sec:'A',q:'A simple electrical circuit requires at least?',opts:['a battery, wire and bulb','water and air only','wood and paper','stone and sand'],a:0,m:1},
+    {sec:'A',q:'A material that allows electricity to flow through it is known as?',opts:['insulator','conductor','electrical insulator','inert material'],a:1,m:1},
+    {sec:'A',q:'A material that does NOT allow electricity to flow through it is known as?',opts:['conductor','insulator','metal','iron'],a:1,m:1},
+    {sec:'A',q:'Which is an example of a good electrical conductor?',opts:['wood','rubber','copper','plastic'],a:2,m:1},
+    {sec:'A',q:'Which is an example of a natural resource of the Earth?',opts:['water, soil and forests','television','car','computer'],a:0,m:1},
+    {sec:'A',q:'Why do we need to conserve water usage?',opts:['water is a limited resource even though it is renewable','water is not important','water is always sufficient','water can never run out'],a:0,m:1},
+    {sec:'A',q:'Excessive deforestation can cause?',opts:['soil erosion and extinction of living things','increase in wildlife','cleaner air','no effect'],a:0,m:1},
+    // SECTION B
+    {sec:'B',q:'Briefly explain the pathway of air when a human breathes in (from the nose to the lungs).',a:'Nose \u2192 trachea \u2192 bronchus \u2192 lungs (alveolus)',m:3,unit:'',pk:['nose','trachea','bronchus','lungs|alveolus']},
+    {sec:'B',q:'State THREE changes in the state of matter (e.g., melting, evaporation, condensation).',a:'melting; evaporation; condensation; freezing; sublimation (any 3)',m:3,unit:''},
+    {sec:'B',q:'Describe the components needed to build a simple working electrical circuit.',a:'A battery, connecting wires and a bulb (connected to form a closed circuit)',m:3,unit:''},
+    {sec:'B',q:'Give TWO ways to conserve water usage at home.',a:'Turn off taps when not in use; use the washing machine with a full load (any 2 reasonable ways)',m:3,unit:''},
+    {sec:'B',q:'State the function of the heart in the circulatory system.',a:'Pumps blood throughout the body',m:2,unit:''},
+  ]
+},
+6: {
+  label:'Year 6', time:80, totalMarks:35,
+  secA:{name:'Section A', instr:'Circle the correct answer.', marks:15, type:'mcq'},
+  secB:{name:'Section B', instr:'Write the answer in the space provided.', marks:20, type:'short'},
+  questions:[
+    {sec:'A',q:'The system that controls and sends signals throughout the body is?',opts:['nervous system','respiratory system','circulatory system','digestive system'],a:0,m:1},
+    {sec:'A',q:'The main organ in the nervous system is?',opts:['brain','heart','lungs','liver'],a:0,m:1},
+    {sec:'A',q:'The spinal cord functions to?',opts:['transmit signals between the brain and body','pump blood','digest food','breathe'],a:0,m:1},
+    {sec:'A',q:'A fast, unconscious response such as pulling a hand away from fire is known as?',opts:['reflex action','conscious action','planned action','learned action'],a:0,m:1},
+    {sec:'A',q:'The moon revolves around the?',opts:['Earth','Sun','Mars','stars'],a:0,m:1},
+    {sec:'A',q:'The Earth takes approximately how many days to orbit the Sun once?',opts:['1 day','30 days','365 days','7 days'],a:2,m:1},
+    {sec:'A',q:'The Earth\'s rotation on its axis causes?',opts:['day and night','the four seasons','rain','eclipses'],a:0,m:1},
+    {sec:'A',q:'The phases of the moon change because of?',opts:['the moon\'s position relative to the sun and Earth changes','the moon changes colour','the moon disappears every month','the Earth stops rotating'],a:0,m:1},
+    {sec:'A',q:'The planet closest to the sun is?',opts:['Mars','Venus','Mercury','Earth'],a:2,m:1},
+    {sec:'A',q:'Green technology means?',opts:['environmentally-friendly and sustainable technology','technology that is green in colour','old technology','the most expensive technology'],a:0,m:1},
+    {sec:'A',q:'Which is a sustainable lifestyle practice?',opts:['recycling and saving energy','wasting water','burning rubbish carelessly','uncontrolled deforestation'],a:0,m:1},
+    {sec:'A',q:'The 3R principle in waste management means?',opts:['Reduce, Reuse, Recycle','Run, Rest, Repeat','Read, Write, React','Reduce, Remove, Repair'],a:0,m:1},
+    {sec:'A',q:'Using solar panels at home helps reduce dependence on?',opts:['fossil fuels','rainwater','moonlight','wind'],a:0,m:1},
+    {sec:'A',q:'A solar eclipse occurs when?',opts:['the moon is between the Earth and the sun','the Earth is between the moon and the sun','the sun is between the Earth and the moon','stars block the sunlight'],a:0,m:1},
+    {sec:'A',q:'Electric cars are considered more environmentally friendly than petrol cars because?',opts:['it does not emit exhaust fumes that pollute the air','it is cheaper','it is faster','it is bigger'],a:0,m:1},
+    // SECTION B
+    {sec:'B',q:'Explain how the nervous system helps humans respond quickly to danger (e.g. touching a hot object).',a:'The brain/spinal cord receives signals from the senses and sends an immediate response signal (reflex) to the muscles without needing to think',m:4,unit:'',pk:['brain|spinal cord|nerve','signal|senses|receives','reflex|response|muscles']},
+    {sec:'B',q:'Explain why different phases of the moon occur throughout the month.',a:'The moon\'s position relative to the Earth and sun changes daily, causing the sunlit portion of the moon visible from Earth to appear different',m:4,unit:'',pk:['position|changes|relative','moon|earth|sun','sunlit|light|reflect']},
+    {sec:'B',q:'Give TWO examples of green technology practices that can be applied at home.',a:'Using solar panels; recycling; saving water and electricity usage (any 2)',m:4,unit:''},
+    {sec:'B',q:'Explain the importance of conserving the Earth\'s natural resources for future generations.',a:'Natural resources are limited; if not conserved, future generations will not have access to them for their needs',m:4,unit:'',pk:['limited|finite|resources','future generation|future','conserve|access|needs']},
+    {sec:'B',q:'State the order of planets by distance from the sun for the first THREE planets.',a:'Mercury, Venus, Earth',m:4,unit:''},
+  ]
+}
+}
+};
+
+// ============================================================
+// STATE
+// ============================================================
+var S={screen:'home',lang:'ms',darjah:null,paper:null,answers:{},secView:'A',submitted:false,timeLeft:0,playerName:'',hof:[],overrides:{}};
+function loadSave(){
+  try{var r=localStorage.getItem('sainsexam-save');if(r){var d=JSON.parse(r);S.lang=d.lang||'ms';S.scores=d.scores||{};S.playerName=d.playerName||'';S.hof=d.hof||[];}}catch(e){}
+  if(!S.scores)S.scores={};
+  if(!S.hof)S.hof=[];
+}
+function persist(){
+  try{localStorage.setItem('sainsexam-save',JSON.stringify({lang:S.lang,scores:S.scores,playerName:S.playerName,hof:S.hof}));}catch(e){}
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+var TIMER=null;
+function stopTimer(){if(TIMER){clearInterval(TIMER);TIMER=null;}}
+function startTimer(mins){
+  stopTimer();
+  S.timeLeft=mins*60;
+  updateTimerUI();
+  TIMER=setInterval(function(){
+    S.timeLeft--;
+    updateTimerUI();
+    if(S.timeLeft<=0){stopTimer();autoSubmit();}
+  },1000);
+}
+function updateTimerUI(){
+  var bar=document.getElementById('tbar'),num=document.getElementById('tnum');
+  if(!bar||!num)return;
+  var paper=PAPERS[S.lang][S.darjah];
+  var total=paper.time*60;
+  var pct=Math.max(0,(S.timeLeft/total)*100);
+  bar.style.width=pct+'%';
+  bar.style.background=S.timeLeft<=120?'var(--pen-red)':S.timeLeft<=300?'#E8A21D':'var(--tick-green)';
+  var m=Math.floor(S.timeLeft/60),sc=S.timeLeft%60;
+  num.textContent=(m<10?'0':'')+m+':'+(sc<10?'0':'')+sc;
+  num.style.color=S.timeLeft<=120?'var(--pen-red)':'var(--ink-soft)';
+}
+function autoSubmit(){submitExam(true);}
+
+// ============================================================
+// SOUNDS
+// ============================================================
+var actx=null;
+function getCtx(){try{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx;}catch(e){return null;}}
+function tone(c,f,st,dur,tp,v){var o=c.createOscillator(),g=c.createGain();o.type=tp||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.2,c.currentTime+st);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+st+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+st);o.stop(c.currentTime+st+dur+0.05);}
+function playCorrect(){var c=getCtx();if(!c)return;tone(c,660,0,.12,'sine');tone(c,880,.11,.18,'sine');}
+function playWrong(){var c=getCtx();if(!c)return;tone(c,200,0,.3,'sawtooth',.15);}
+function playDone(){var c=getCtx();if(!c)return;[523,659,784,1047].forEach(function(f,i){tone(c,f,i*.15,.25,'sine',.18);});}
+function playSubmit(){var c=getCtx();if(!c)return;tone(c,440,0,.15,'sine',.15);tone(c,554,.1,.2,'sine',.15);}
+function playTopScore(){var c=getCtx();if(!c)return;[523,659,784,1047,1319].forEach(function(f,i){tone(c,f,i*.12,.3,'sine',.2);});}
+
+// ============================================================
+// HELPERS
+// ============================================================
+var app=document.getElementById('app');
+function starsHTML(n,sz){var h='';for(var i=1;i<=3;i++)h+='<span style="font-size:'+sz+'px" class="'+(i<=n?'':'star-dim')+'">\u2B50</span>';return h;}
+function getGrade(pct){
+  if(pct>=90)return{g:'A+',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=80)return{g:'A',c:'#2FA45C',band:'Cemerlang'};
+  if(pct>=70)return{g:'B',c:'#2F6FE4',band:'Kepujian'};
+  if(pct>=60)return{g:'C',c:'#8A4FD3',band:'Lulus'};
+  if(pct>=50)return{g:'D',c:'#E88A2F',band:'Lulus'};
+  return{g:'E',c:'var(--pen-red)',band:'Tidak Lulus'};
+}
+function qKey(qi){return 'q'+qi;}
+
+// ============================================================
+// LENIENT ANSWER MATCHING (for Bahagian B / Section B structured answers)
+// ============================================================
+function normAns(s){
+  return (s||'').toString().trim().toLowerCase()
+    .replace(/[.,!?;:'"\u2018\u2019\u201c\u201d()]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function wordSim(a,b){
+  var wa=a.split(' ').filter(Boolean), wb=b.split(' ').filter(Boolean);
+  if(wa.length===0||wb.length===0) return 0;
+  var pool={}; wb.forEach(function(w){pool[w]=(pool[w]||0)+1;});
+  var matches=0;
+  wa.forEach(function(w){ if(pool[w]>0){matches++; pool[w]--;} });
+  return matches/Math.max(wa.length,wb.length);
+}
+function fuzzyMatch(g,c){
+  if(g===c) return true;
+  var gWords=g.split(' ').filter(Boolean), cWords=c.split(' ').filter(Boolean);
+  if(gWords.length===1 && cWords.length===1) return g===c;
+  if(g.length>=3 && c.length>=3 && gWords.length<=2 && cWords.length<=2 && (g.indexOf(c)!==-1 || c.indexOf(g)!==-1)) return true;
+  return wordSim(g,c)>=0.88;
+}
+function secBMarks(qi, given, q){
+  // returns actual marks earned for a section B question (supports override + partial)
+  if(S.overrides && S.overrides[qKey(qi)]) return q.m;
+  if(isSecBCorrect(given, q.a)) return q.m;
+  if(q.pk && given!=null && given.toString().trim()!==''){
+    var res=scoreByKeywords(given, q.pk, q.m);
+    if(res && res.marks>0) return res.marks;
+  }
+  return 0;
+}
+function scoreByKeywords(given, keywords, maxMarks){
+  if(!keywords || keywords.length===0) return null;
+  var g=(given||'').toString().toLowerCase().replace(/[.,!?;:()]/g,' ');
+  var matched=0;
+  keywords.forEach(function(kw){
+    var alts=kw.toLowerCase().split('|');
+    if(alts.some(function(a){return a.trim().length>0 && g.indexOf(a.trim())!==-1;})) matched++;
+  });
+  var frac=matched/keywords.length;
+  var marks=Math.ceil(frac*maxMarks);
+  return {matched:matched, total:keywords.length, marks:marks, full:(matched===keywords.length)};
+}
+function secBOK(qi, given, correctRaw){
+  if(S.overrides && S.overrides[qKey(qi)]) return true;
+  return isSecBCorrect(given, correctRaw);
+}
+function isSecBCorrect(given, correctRaw){
+  if(given==null) return false;
+  var g=normAns(given);
+  if(g==='') return false;
+  var raw=(correctRaw||'').toString();
+
+  var abMatch=raw.match(/\(a\)\s*(.*?)\s*\(b\)\s*(.*)/i);
+  if(abMatch){
+    var partA=normAns(abMatch[1]);
+    var partB=normAns(abMatch[2]);
+    var altsA=partA.split('/').map(normAns);
+    var altsB=partB.split('/').map(normAns);
+    var hasA=altsA.some(function(alt){return alt.length>0 && (g.indexOf(alt)!==-1 || fuzzyMatch(g,alt));});
+    var hasB=altsB.some(function(alt){return alt.length>0 && (g.indexOf(alt)!==-1 || fuzzyMatch(g,alt));});
+    return hasA && hasB;
+  }
+
+  if(raw.indexOf(';')!==-1){
+    var reqMatch=raw.match(/\(mana-mana\s*(\d+)[^)]*\)|\(any\s*(\d+)[^)]*\)/i);
+    var required=reqMatch?parseInt(reqMatch[1]||reqMatch[2],10):1;
+    var cleanRaw=raw.replace(/\(mana-mana\s*\d+[^)]*\)|\(any\s*\d+[^)]*\)/gi,'');
+    var alts=cleanRaw.split(';').map(normAns).filter(function(s){return s.length>0;});
+    var matched=0;
+    alts.forEach(function(alt){
+      if(g.indexOf(alt)!==-1 || fuzzyMatch(g,alt)) matched++;
+    });
+    return matched>=required;
+  }
+
+  var c=normAns(raw);
+  if(c==='') return false;
+  return fuzzyMatch(g,c);
+}
+
+
+// ============================================================
+// SIMPLE SVG ICON LIBRARY (consistent cross-device diagrams)
+// ============================================================
+var SVGICON = {
+  boy:'<svg viewBox="0 0 48 48" width="46" height="46"><circle cx="24" cy="13" r="7" fill="#F4C89B" stroke="#8A5A2B" stroke-width="1.5"/><path d="M17 12a7 7 0 0114 0" fill="#4A3520"/><rect x="17" y="21" width="14" height="16" rx="4" fill="#4C7BE1"/><rect x="19" y="36" width="4" height="9" fill="#333"/><rect x="25" y="36" width="4" height="9" fill="#333"/></svg>',
+  ball:'<svg viewBox="0 0 48 48" width="46" height="46"><circle cx="24" cy="24" r="16" fill="#fff" stroke="#333" stroke-width="2"/><polygon points="24,14 29,18 27,24 21,24 19,18" fill="#333"/><path d="M24 8v6M40 24h-6M8 24h6M24 40v-6" stroke="#333" stroke-width="1.5"/></svg>',
+  field:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="4" y="20" width="40" height="24" rx="2" fill="#6BBF59"/><rect x="4" y="20" width="40" height="4" fill="#7ED06B"/><rect x="20" y="10" width="2" height="12" fill="#8A5A2B"/><path d="M22 10h8v6h-8z" fill="#E14C4C"/></svg>',
+  elephant:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="22" cy="26" rx="16" ry="12" fill="#9AA5B1"/><circle cx="34" cy="20" r="9" fill="#9AA5B1"/><path d="M38 24q6 2 4 12" stroke="#9AA5B1" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="36" cy="18" r="1.5" fill="#333"/><rect x="12" y="36" width="4" height="7" fill="#9AA5B1"/><rect x="24" y="36" width="4" height="7" fill="#9AA5B1"/><path d="M26 22q-5-3-9 0" stroke="#7A8595" stroke-width="2" fill="none"/></svg>',
+  mouse:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="30" rx="9" ry="7" fill="#B0B0B0"/><circle cx="30" cy="26" r="5" fill="#B0B0B0"/><circle cx="27" cy="21" r="3" fill="#C8C8C8"/><circle cx="33" cy="21" r="3" fill="#C8C8C8"/><circle cx="31" cy="26" r="1" fill="#333"/><path d="M15 32q-6 1-8 5" stroke="#B0B0B0" stroke-width="2" fill="none"/></svg>',
+  cat:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="30" rx="11" ry="9" fill="#E8934A"/><circle cx="24" cy="18" r="8" fill="#E8934A"/><polygon points="17,12 15,5 22,10" fill="#E8934A"/><polygon points="31,12 33,5 26,10" fill="#E8934A"/><circle cx="21" cy="17" r="1.3" fill="#333"/><circle cx="27" cy="17" r="1.3" fill="#333"/><path d="M24 20l-1 2h2z" fill="#333"/><path d="M14 30q-5 2-7 6" stroke="#E8934A" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+  chair:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="14" y="8" width="4" height="34" fill="#8A5A2B"/><rect x="14" y="24" width="20" height="4" fill="#A56C34"/><rect x="30" y="24" width="4" height="18" fill="#8A5A2B"/><rect x="14" y="24" width="20" height="4" fill="#A56C34"/><rect x="16" y="38" width="16" height="4" fill="#8A5A2B"/></svg>',
+  stone:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M10 34q-2-10 8-14t18 4 2 14z" fill="#9098A1" stroke="#6B7280" stroke-width="1.5"/><path d="M18 26q4-3 8 0" stroke="#6B7280" stroke-width="1" fill="none"/></svg>',
+  water:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M24 6C16 18 12 24 12 30a12 12 0 0024 0c0-6-4-12-12-24z" fill="#4FA3E0" stroke="#2C7BB8" stroke-width="1.5"/><path d="M20 28a4 5 0 002 6" stroke="#BFE3F7" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  plant:'<svg viewBox="0 0 48 48" width="46" height="46"><rect x="22" y="26" width="4" height="16" fill="#5A8A3C"/><path d="M24 28q-10-2-12-12 10 0 12 8" fill="#6BBF59"/><path d="M24 24q10-3 12-13-10 0-12 9" fill="#7ED06B"/></svg>',
+  rabbit:'<svg viewBox="0 0 48 48" width="46" height="46"><ellipse cx="24" cy="32" rx="10" ry="8" fill="#D8CFC4"/><circle cx="24" cy="22" r="7" fill="#D8CFC4"/><ellipse cx="20" cy="10" rx="2.5" ry="7" fill="#D8CFC4"/><ellipse cx="28" cy="10" rx="2.5" ry="7" fill="#D8CFC4"/><circle cx="21" cy="21" r="1.2" fill="#333"/><circle cx="27" cy="21" r="1.2" fill="#333"/><circle cx="24" cy="24" r="1.3" fill="#E88" /></svg>',
+  eagle:'<svg viewBox="0 0 48 48" width="46" height="46"><path d="M24 20l-16-6 12 10z" fill="#6B4A2B"/><path d="M24 20l16-6-12 10z" fill="#6B4A2B"/><ellipse cx="24" cy="26" rx="6" ry="9" fill="#5A3A20"/><circle cx="24" cy="16" r="5" fill="#EFE8DC"/><polygon points="24,17 28,19 24,21" fill="#E0A020"/><circle cx="25" cy="15" r="1" fill="#333"/></svg>',
+  arrow:'<svg viewBox="0 0 48 48" width="30" height="46"><path d="M8 24h26M28 16l10 8-10 8" stroke="#555" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function renderScene(items){
+  var html='<div class="qscene"><div class="qscene-icons">';
+  items.forEach(function(key){
+    html+=(SVGICON[key]||('<span style="font-size:34px">'+key+'</span>'));
+  });
+  html+='</div><div class="qscene-label">Rajah</div></div>';
+  return html;
+}
+
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+  if(S.screen==='home')renderHome();
+  else if(S.screen==='exam')renderExam();
+  else if(S.screen==='hofview')renderHofView();
+  else renderResults();
+}
+
+function renderHofView(){
+  var isMS=S.lang==='ms';
+  var darjahs=['1','2','3','4','5','6'];
+  var labels=isMS?['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6']:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var sections='';
+  darjahs.forEach(function(d,i){
+    var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===d;}).sort(function(a,b){return b.pct-a.pct;});
+    var top5=ranked.slice(0,5);
+    var rows='';
+    if(top5.length===0){
+      rows='<div style="font-size:12.5px;color:var(--ink-soft);font-weight:700;padding:8px 0;text-align:center;">'+(isMS?'Belum ada rekod lagi':'No records yet')+'</div>';
+    } else {
+      top5.forEach(function(e,ri){
+        var rowCls='hof-row'+(ri===0?' top1':'');
+        var medal=ri===0?'\uD83C\uDFC6':(ri+1);
+        rows+='<div class="'+rowCls+'">'
+          +'<span class="hof-rank">'+medal+'</span>'
+          +'<span class="hof-name">'+e.name+'</span>'
+          +'<span class="hof-meta">'+e.date+'</span>'
+          +'<span class="hof-pct">'+e.pct+'%</span>'
+          +'</div>';
+      });
+    }
+    sections+='<div class="hof-wrap"><div class="hof-title" style="color:'+colors[i]+'">\uD83C\uDFC6 '+labels[i]+'</div>'+rows+'</div>';
+  });
+
+  app.innerHTML='<button class="back-btn" id="backHof">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Semua Darjah':'All Year Groups')+'</div>'
+    +'<h1 class="home-title">Hall of Fame</h1>'
+    +'</div>'
+    +'<div class="lang-toggle"><button data-lang="ms" class="'+(S.lang==='ms'?'active':'')+'">BM</button><button data-lang="en" class="'+(S.lang==='en'?'active':'')+'">EN</button></div>'
+    +'</div>'
+    +sections;
+
+  document.getElementById('backHof').onclick=function(){S.screen='home';render();};
+  app.querySelectorAll('[data-lang]').forEach(function(b){
+    b.onclick=function(){S.lang=b.dataset.lang;persist();render();};
+  });
+}
+
+function renderHome(){
+
+  var isMS=S.lang==='ms';
+  var darjahs=isMS?['1','2','3','4','5','6']:['1','2','3','4','5','6'];
+  var labels=isMS?['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6']:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
+  var infos=darjahs.map(function(d){var p=PAPERS[S.lang][d];return p.time+' min • '+p.totalMarks+(isMS?' markah':' marks');});
+  var colors=['#2F6FE4','#8A4FD3','#C0392B','#1FA396','#D9A441','#8C3B4A'];
+  var cards='';
+  darjahs.forEach(function(d,i){
+    var sc=S.scores&&S.scores[S.lang+d];
+    var scHTML=sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+isMS?'Skor terbaik: ':'Best: '+sc+'%</div>':'';
+    cards+='<button class="darjah-btn" data-d="'+d+'" style="border-color:'+colors[i]+';box-shadow:0 4px 0 '+colors[i]+'">'
+      +'<div class="darjah-label" style="color:'+colors[i]+'">'+labels[i]+'</div>'
+      +'<div class="darjah-info">'+infos[i]+'</div>'
+      +(sc!=null?'<div class="darjah-score" style="color:'+colors[i]+'">'+(isMS?'Skor: ':'Score: ')+sc+'%</div>':'')
+      +'</button>';
+  });
+  app.innerHTML='<div class="header-row" style="margin-bottom:10px">'
+    +'<div>'
+    +'<div class="home-eyebrow">'+(isMS?'Buku Latihan Saya':'My Exercise Book')+'</div>'
+    +'<h1 class="home-title">'+(isMS?'Sains':'Science')+'</h1>'
+    +'<div class="home-sub">'+(isMS?'Kertas Peperiksaan':'Examination Paper')+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:7px;align-items:flex-start">'
+    +'<div class="lang-toggle"><button data-lang="ms" class="'+(S.lang==='ms'?'active':'')+'">BM</button><button data-lang="en" class="'+(S.lang==='en'?'active':'')+'">EN</button></div>'
+    +'<button class="fs-btn" id="hofBtn" title="Hall of Fame">\uD83C\uDFC6</button>'
+    +'<button class="fs-btn" id="fs">\u26F6</button>'
+    +'</div></div>'
+    +'<div class="name-input-wrap">'
+    +'<label class="name-input-label">'+(isMS?'Nama pemain':'Player name')+'</label>'
+    +'<input type="text" id="playerName" class="name-input" maxlength="18" placeholder="'+(isMS?'contoh: Aiman':'e.g. Aiman')+'" value="'+(S.playerName||'')+'">'
+    +'</div>'
+    +'<div class="darjah-grid">'+cards+'</div>'
+    +'<p style="margin-top:18px;font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center">'+(isMS?'Pilih darjah untuk mulakan peperiksaan. Masa akan bermula!':'Pick your year group to start the exam. Timer starts immediately!')+'</p>'
+    +'<p style="margin-top:6px;font-size:11px;font-weight:700;color:#B9C2C8;text-align:center"><a href="javascript:void(0)" id="resetHof" style="color:#B9C2C8;">'+(isMS?'Set semula Hall of Fame':'Reset Hall of Fame')+'</a></p>';
+  var nameInput=document.getElementById('playerName');
+  nameInput.oninput=function(){S.playerName=nameInput.value;persist();};
+  app.querySelectorAll('[data-d]').forEach(function(b){
+    b.onclick=function(){
+      if(!S.playerName||!S.playerName.trim()){
+        nameInput.style.borderColor='var(--pen-red)';
+        nameInput.placeholder=isMS?'Isi nama dulu!':'Enter your name first!';
+        nameInput.focus();
+        return;
+      }
+      startExam(b.dataset.d);
+    };
+  });
+  app.querySelectorAll('[data-lang]').forEach(function(b){
+    b.onclick=function(){S.lang=b.dataset.lang;persist();render();};
+  });
+  document.getElementById('fs').onclick=function(){
+    try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen();}catch(e){}
+  };
+  document.getElementById('hofBtn').onclick=function(){S.screen='hofview';render();};
+  document.getElementById('resetHof').onclick=function(){
+    if(confirm(isMS?'Padam semua rekod Hall of Fame? Tindakan ini tidak boleh diundur.':'Clear all Hall of Fame records? This cannot be undone.')){
+      S.hof=[];
+      persist();
+      render();
+    }
+  };
+}
+
+function startExam(d){
+  S.darjah=d;
+  S.paper=PAPERS[S.lang][d];
+  S.answers={};
+  S.overrides={};
+  S.justAddedHofId=null;
+  S.secView='A';
+  S.submitted=false;
+  S.screen='exam';
+  render();
+  startTimer(S.paper.time);
+}
+
+function renderExam(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var qs=p.questions.filter(function(q){return q.sec===S.secView;});
+  var qOffset=S.secView==='B'?p.questions.filter(function(q){return q.sec==='A';}).length:0;
+  var secInfo=S.secView==='A'?p.secA:p.secB;
+  var answeredA=p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length;
+  var totalA=p.questions.filter(function(q){return q.sec==='A';}).length;
+  var answeredB=p.questions.filter(function(q,i){return q.sec==='B'&&S.answers[qKey(i)]!=null;}).length;
+  var totalB=p.questions.filter(function(q){return q.sec==='B';}).length;
+
+  var qHTML='';
+  qs.forEach(function(q,qi){
+    var globalIdx=qOffset+qi;
+    var ans=S.answers[qKey(globalIdx)];
+    var submitted=S.submitted;
+    var isCorrect=false,showFb=false;
+    if(submitted){
+      isCorrect=q.sec==='A'?(ans===q.a):(secBMarks(globalIdx,ans,q)===q.m);
+      showFb=true;
+    }
+    var qClass='qblock'+(submitted?(isCorrect?' answered-correct':' answered-wrong'):'');
+    var marksLabel=q.m>1?' ('+q.m+' '+(isMS?'markah':'marks')+')':"";
+    var inner='<div class="qnum">'+(isMS?'Soalan ':'Question ')+(globalIdx+1)+marksLabel+'</div>';
+    if(q.context){inner+='<div class="qinfo">'+q.context+'</div>';}
+    if(q.table){
+      inner+='<table class="qtable"><tr>';
+      q.table.headers.forEach(function(h){inner+='<th>'+h+'</th>';});
+      inner+='</tr>';
+      q.table.rows.forEach(function(r){inner+='<tr>';r.forEach(function(c){inner+='<td>'+c+'</td>';});inner+='</tr>';});
+      inner+='</table>';
+    }
+    if(q.grid){
+      inner+='<div class="qgrid">';
+      for(var gr=0; gr<q.grid.rows; gr++){
+        inner+='<div class="qgrid-row">';
+        for(var gc=0; gc<q.grid.cols; gc++){ inner+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+        inner+='</div>';
+      }
+      inner+='<div class="qgrid-label">'+q.grid.rows+' baris \u00d7 '+q.grid.cols+' setiap baris</div>';
+      inner+='</div>';
+    }
+    if(q.scene){
+      inner+=renderScene(q.scene);
+    }
+    if(q.chart){
+      var maxVal=Math.max.apply(null,q.chart.values);
+      inner+='<div class="qchart"><div class="qchart-bars">';
+      q.chart.values.forEach(function(v,vi){
+        var h=Math.round((v/maxVal)*90)+10;
+        inner+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+          +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+          +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+      });
+      inner+='</div></div>';
+    }
+    inner+='<div class="qtext">'+q.q.replace(/\n/g,'<br>')+'</div>';
+    if(q.sec==='A'){
+      inner+='<div class="mcq-opts">';
+      q.opts.forEach(function(opt,oi){
+        var cls='mcq-opt';
+        if(submitted){if(oi===q.a)cls+=' correct';else if(ans===oi)cls+=' wrong';}
+        else if(ans===oi)cls+=' selected';
+        inner+='<button class="'+cls+'" data-qi="'+globalIdx+'" data-oi="'+oi+'" '+(submitted?'disabled':'')+'>'+
+          '<span class="opt-label">'+['A','B','C','D'][oi]+'.</span><span>'+opt+'</span></button>';
+      });
+      inner+='</div>';
+      if(showFb){
+        inner+='<div class="fb-row"><span class="fb-tick">'+(isCorrect?'\u2705':'\u274C')+'</span>';
+        if(!isCorrect)inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct answer: ')+['A','B','C','D'][q.a]+'. '+q.opts[q.a]+'</span>';
+        else inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+'</span>';
+        inner+='</div>';
+      }
+    } else {
+      var inputCls='long-answer'+(submitted?(isCorrect?' correct':' wrong'):'');
+      var modelLen=(q.a||'').toString().length;
+      var rows=modelLen>120?5:(modelLen>60?4:(modelLen>25?3:2));
+      var safeAns=(ans!=null?ans:'').toString().replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      inner+='<div class="short-wrap" style="display:block;">'
+        +'<div class="long-hint">'+(isMS?'Tulis jawapan anda:':'Write your answer:')+'</div>'
+        +'<textarea class="'+inputCls+'" rows="'+rows+'" '
+        +'data-qi="'+globalIdx+'" '+(submitted?'readonly':'')
+        +' placeholder="'+(isMS?'Taip jawapan di sini...':'Type your answer here...')+'">'+safeAns+'</textarea>'
+        +'</div>';
+      if(showFb){
+        var earnedMarks=secBMarks(globalIdx,ans,q);
+        var isPartial=earnedMarks>0&&earnedMarks<q.m;
+        var tickIcon=isCorrect?'\u2705':(isPartial?'\uD83D\uDFE1':'\u274C');
+        inner+='<div class="fb-row"><span class="fb-tick">'+tickIcon+'</span>';
+        if(isCorrect){
+          inner+='<span class="fb-why">'+(isMS?'Betul!':'Correct!')+' ('+q.m+'/'+q.m+')</span>';
+        } else if(isPartial){
+          inner+='<span class="fb-partial">'+(isMS?'Separa betul: ':'Partly correct: ')+earnedMarks+'/'+q.m+' '+(isMS?'markah':'marks')+'</span>';
+        } else {
+          inner+='<span class="fb-correct-ans">'+(isMS?'Jawapan betul: ':'Correct: ')+q.a+(q.unit?' '+q.unit:'')+'</span>';
+        }
+        inner+='</div>';
+        if(!isCorrect){
+          if(isPartial)inner+='<div class="fb-model">'+(isMS?'Jawapan penuh: ':'Full answer: ')+q.a+'</div>';
+          if(S.overrides&&S.overrides[qKey(globalIdx)]){
+            inner+='<div class="claim-done">\u2714 '+(isMS?'Ditanda betul oleh anda':'Marked correct by you')+'</div>';
+          } else {
+            inner+='<button class="claim-btn" data-claim="'+globalIdx+'">'+(isMS?'Jawapan saya betul? Tuntut markah':'My answer is correct? Claim marks')+'</button>';
+          }
+        }
+      }
+    }
+    qHTML+='<div class="'+qClass+'" id="qb'+globalIdx+'">'+inner+'</div>';
+  });
+
+  var submitBtn=!S.submitted?'<button class="submit-btn" id="submitBtn">'+(isMS?'\uD83D\uDCDD Hantar Jawapan':'📝 Submit Answers')+'</button>':'';
+
+  app.innerHTML=
+    '<button class="back-btn" id="backBtn">\u2190 '+(isMS?'Kembali':'Back')+'</button>'
+    +'<div class="exam-header">'
+    +'<div class="school">'+(isMS?'PEPERIKSAAN SAINS':'SCIENCE EXAMINATION')+'</div>'
+    +'<div class="subj">'+p.label+'</div>'
+    +'<div class="meta">'+(isMS?'Masa: ':'Time: ')+p.time+(isMS?' minit &nbsp;|&nbsp; Markah Penuh: ':' minutes &nbsp;|&nbsp; Total Marks: ')+p.totalMarks+'</div>'
+    +'<div class="name-row"><div class="name-field">'+(isMS?'Nama: _______________':'Name: _______________')+'</div><div class="name-field">'+(isMS?'Kelas: _______________':'Class: _______________')+'</div></div>'
+    +'</div>'
+    +'<div class="timer-strip"><span class="tlabel">\u23F1 '+(isMS?'Masa Tinggal':'Time Left')+'</span><div class="tbar-wrap"><div class="tbar" id="tbar" style="width:100%"></div></div><span class="tnum" id="tnum">--:--</span></div>'
+    +'<div class="nav-bar">'
+    +'<button class="nav-btn" id="navA" style="border-color:#2F6FE4;color:#2F6FE4;'+(S.secView==='A'?'background:#E3EDFF;':'')+'">'+p.secA.name+' ('+answeredA+'/'+totalA+')</button>'
+    +'<button class="nav-btn" id="navB" style="border-color:#C0392B;color:#C0392B;'+(S.secView==='B'?'background:#FBE9E7;':'')+'">'+p.secB.name+' ('+answeredB+'/'+totalB+')</button>'
+    +'</div>'
+    +'<div class="section-head"><span class="sname">'+secInfo.name+'</span><span class="smarks">'+secInfo.marks+(isMS?' markah':' marks')+'</span></div>'
+    +'<div class="section-instr">'+secInfo.instr+'</div>'
+    +qHTML
+    +submitBtn;
+
+  document.getElementById('backBtn').onclick=function(){stopTimer();S.screen='home';render();};
+  document.getElementById('navA').onclick=function(){S.secView='A';render();updateTimerUI();};
+  document.getElementById('navB').onclick=function(){S.secView='B';render();updateTimerUI();};
+
+  app.querySelectorAll('[data-qi][data-oi]').forEach(function(b){
+    if(S.submitted)return;
+    b.onclick=function(){
+      var qi=parseInt(b.dataset.qi),oi=parseInt(b.dataset.oi);
+      S.answers[qKey(qi)]=oi;
+      playCorrect();
+      // update UI
+      var qBlock=document.getElementById('qb'+qi);
+      if(qBlock){
+        qBlock.querySelectorAll('.mcq-opt').forEach(function(x,xi){
+          x.classList.toggle('selected',xi===oi);
+        });
+        // update nav count
+        document.getElementById('navA').textContent=p.secA.name+' ('+p.questions.filter(function(q,i){return q.sec==='A'&&S.answers[qKey(i)]!=null;}).length+'/'+totalA+')';
+      }
+    };
+  });
+
+  app.querySelectorAll('input[data-qi], textarea[data-qi]').forEach(function(inp){
+    if(S.submitted)return;
+    inp.addEventListener('input',function(){
+      var qi=parseInt(inp.dataset.qi);
+      S.answers[qKey(qi)]=inp.value;
+    });
+  });
+
+  app.querySelectorAll('[data-claim]').forEach(function(btn){
+    btn.onclick=function(){
+      var qi=parseInt(btn.dataset.claim);
+      if(!S.overrides)S.overrides={};
+      S.overrides[qKey(qi)]=true;
+      recomputeScore();
+      persist();
+      render();
+    };
+  });
+
+  var sb=document.getElementById('submitBtn');
+  if(sb) sb.onclick=function(){
+    var total=p.questions.length;
+    var done=Object.keys(S.answers).length;
+    if(done<total){
+      var remaining=total-done;
+      var msg=isMS?('Masih ada '+remaining+' soalan belum dijawab. Hantar sekarang?'):('You have '+remaining+' unanswered questions. Submit now?');
+      if(!confirm(msg))return;
+    }
+    submitExam(false);
+  };
+
+  updateTimerUI();
+}
+
+function recomputeScore(){
+  var p=S.paper, score=0;
+  p.questions.forEach(function(q,i){
+    if(q.sec==='A'){if(S.answers[qKey(i)]===q.a)score+=q.m;}
+    else{score+=secBMarks(i,S.answers[qKey(i)],q);}
+  });
+  var pct=Math.round((score/p.totalMarks)*100);
+  S.finalScore=score;
+  S.finalPct=pct;
+  var key=S.lang+S.darjah;
+  if(!S.scores)S.scores={};
+  S.scores[key]=Math.max(S.scores[key]||0,pct);
+  // update the current Hall of Fame entry (the one just added this session)
+  if(S.hof&&S.justAddedHofId){
+    for(var j=0;j<S.hof.length;j++){
+      if(S.hof[j].id===S.justAddedHofId){S.hof[j].pct=pct;S.hof[j].score=score;break;}
+    }
+  }
+}
+
+function submitExam(auto){
+  stopTimer();
+  S.submitted=true;
+  var p=S.paper, score=0;
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    if(q.sec==='A'){if(ans===q.a)score+=q.m;}
+    else{score+=secBMarks(i,ans,q);}
+  });
+  var pct=Math.round((score/p.totalMarks)*100);
+  if(!S.scores)S.scores={};
+  var key=S.lang+S.darjah;
+  S.scores[key]=Math.max(S.scores[key]||0,pct);
+  S.finalScore=score;
+  S.finalPct=pct;
+
+  var entryId='e'+Date.now();
+  var entry={id:entryId,name:(S.playerName||(S.lang==='ms'?'Pemain':'Player')).trim(),lang:S.lang,darjah:S.darjah,pct:pct,score:score,totalMarks:p.totalMarks,date:new Date().toISOString().slice(0,10)};
+  if(!S.hof)S.hof=[];
+  S.hof.push(entry);
+  var ranked=S.hof.filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var myRank=ranked.findIndex(function(e){return e.id===entryId;});
+  S.justAddedHofId=entryId;
+  if(S.hof.length>500)S.hof=S.hof.slice(-500);
+  persist();
+
+  if(myRank>=0&&myRank<3)playTopScore();
+  else playSubmit();
+
+  S.screen='results';
+  render();
+}
+
+function renderResults(){
+  var p=S.paper, isMS=S.lang==='ms';
+  var grade=getGrade(S.finalPct);
+  var secAqs=p.questions.filter(function(q){return q.sec==='A';});
+  var secBqs=p.questions.filter(function(q){return q.sec==='B';});
+  var secAoffset=0, secBoffset=secAqs.length;
+  var secAScore=0,secBScore=0;
+  secAqs.forEach(function(q,i){var ans=S.answers[qKey(secAoffset+i)];if(ans===q.a)secAScore+=q.m;});
+  secBqs.forEach(function(q,i){var ans=S.answers[qKey(secBoffset+i)];secBScore+=secBMarks(secBoffset+i,ans,q);});
+
+  // wrong questions list
+  var wrongHTML='';
+  p.questions.forEach(function(q,i){
+    var ans=S.answers[qKey(i)];
+    var isCorrect=q.sec==='A'?(ans===q.a):(secBMarks(i,ans,q)===q.m);
+    if(!isCorrect){
+      var given=ans!=null?(q.sec==='A'?['A','B','C','D'][ans]+'. '+(q.opts&&q.opts[ans]?q.opts[ans]:''):ans):(isMS?'Tiada jawapan':'No answer');
+      var visualHTML='';
+      if(q.table){
+        visualHTML+='<table class="qtable" style="margin:6px 0;"><tr>';
+        q.table.headers.forEach(function(h){visualHTML+='<th>'+h+'</th>';});
+        visualHTML+='</tr>';
+        q.table.rows.forEach(function(r){visualHTML+='<tr>';r.forEach(function(c){visualHTML+='<td>'+c+'</td>';});visualHTML+='</tr>';});
+        visualHTML+='</table>';
+      }
+      if(q.grid){
+        visualHTML+='<div class="qgrid" style="margin:6px 0;">';
+        for(var gr=0; gr<q.grid.rows; gr++){
+          visualHTML+='<div class="qgrid-row">';
+          for(var gc=0; gc<q.grid.cols; gc++){ visualHTML+='<span class="qgrid-icon">'+q.grid.icon+'</span>'; }
+          visualHTML+='</div>';
+        }
+        visualHTML+='</div>';
+      }
+      if(q.scene){
+        visualHTML+=renderScene(q.scene);
+      }
+      if(q.chart){
+        var maxVal=Math.max.apply(null,q.chart.values);
+        visualHTML+='<div class="qchart" style="margin:6px 0;"><div class="qchart-bars">';
+        q.chart.values.forEach(function(v,vi){
+          var h=Math.round((v/maxVal)*70)+10;
+          visualHTML+='<div class="qchart-bar-wrap"><div class="qchart-bar-val">'+v+'</div>'
+            +'<div class="qchart-bar" style="height:'+h+'px;"></div>'
+            +'<div class="qchart-bar-label">'+q.chart.labels[vi]+'</div></div>';
+        });
+        visualHTML+='</div></div>';
+      }
+      wrongHTML+='<div class="rq rq-wrong">'
+        +'<div class="rq-num">'+(isMS?'Soalan ':'Q.')+(i+1)+'</div>'
+        +'<div class="rq-q">'+q.q.replace(/\n/g,' ')+'</div>'
+        +visualHTML
+        +'<div class="rq-ans" style="color:var(--pen-red)">'+(isMS?'Jawapan anda: ':'Your answer: ')+given+'</div>'
+        +'<div class="rq-ans" style="color:var(--tick-green)">'+(isMS?'Jawapan betul: ':'Correct: ')+(q.sec==='A'?['A','B','C','D'][q.a]+'. '+q.opts[q.a]:q.a+(q.unit?' '+q.unit:''))+'</div>'
+        +'</div>';
+    }
+  });
+
+  // Hall of Fame — top 5 for this lang + darjah
+  var ranked=(S.hof||[]).filter(function(e){return e.lang===S.lang&&e.darjah===S.darjah;}).sort(function(a,b){return b.pct-a.pct;});
+  var top5=ranked.slice(0,5);
+  var hofHTML='';
+  top5.forEach(function(e,i){
+    var isMine=e.id===S.justAddedHofId;
+    var rowCls='hof-row'+(i===0?' top1':'')+(isMine?' mine':'');
+    var medal=i===0?'\uD83C\uDFC6':(i+1);
+    hofHTML+='<div class="'+rowCls+'">'
+      +'<span class="hof-rank">'+medal+'</span>'
+      +'<span class="hof-name">'+e.name+'</span>'
+      +'<span class="hof-meta">'+e.date+'</span>'
+      +'<span class="hof-pct">'+e.pct+'%</span>'
+      +'</div>';
+  });
+  var hofBlock='<div class="hof-wrap"><div class="hof-title">\uD83C\uDFC6 '+(isMS?'Hall of Fame — ':'Hall of fame — ')+p.label+'</div>'+hofHTML+'</div>';
+
+  app.innerHTML='<div class="result-header">'
+    +'<div class="home-eyebrow">'+p.label+' &nbsp;|&nbsp; '+(isMS?'Keputusan':'Results')+'</div>'
+    +'<div class="result-grade" style="color:'+grade.c+'">'+grade.g+'</div>'
+    +'<div class="result-pct">'+S.finalScore+' / '+p.totalMarks+' &nbsp;('+S.finalPct+'%)</div>'
+    +'<span class="result-band" style="background:'+grade.c+'">'+grade.band+'</span>'
+    +'</div>'
+    +'<div class="result-breakdown">'
+    +'<div class="rb-row"><span>'+p.secA.name+'</span><span>'+secAScore+' / '+p.secA.marks+'</span></div>'
+    +'<div class="rb-row"><span>'+p.secB.name+'</span><span>'+secBScore+' / '+p.secB.marks+'</span></div>'
+    +'<div class="rb-row" style="color:var(--ink);font-size:15px"><span>'+(isMS?'Jumlah':'Total')+'</span><span>'+S.finalScore+' / '+p.totalMarks+'</span></div>'
+    +'</div>'
+    +hofBlock
+    +(wrongHTML?'<div style="font-family:Fredoka;font-size:14px;font-weight:700;color:var(--ink-soft);margin-bottom:8px">'+(isMS?'Soalan yang salah:':'Questions to review:')+'</div>'
+    +'<div class="result-review">'+wrongHTML+'</div>':'<div style="text-align:center;font-size:18px;font-weight:800;color:var(--tick-green);margin:16px 0">'+(isMS?'Semua betul! Luar biasa! 🎉':'All correct! Excellent! 🎉')+'</div>')
+    +'<div class="res-btns">'
+    +'<button class="big-btn" id="retry" style="background:#1E2A4A;border-color:#1E2A4A;color:#fff;box-shadow:0 4px 0 #0D1520">'+(isMS?'Cuba Semula':'Try Again')+'</button>'
+    +'<button class="home-btn2" id="home">\uD83C\uDFE0 '+(isMS?'Utama':'Home')+'</button>'
+    +'</div>';
+
+  document.getElementById('retry').onclick=function(){startExam(S.darjah);};
+  document.getElementById('home').onclick=function(){S.justAddedHofId=null;S.screen='home';render();};
+}
+
+loadSave();
+render();
+</script>
+</body>
+</html>

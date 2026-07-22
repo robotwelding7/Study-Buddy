@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Matematik — Latihan</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#EEF3F5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFDFF;
+    --ink:#1E2A4A;
+    --ink-soft:#5A6785;
+    --grid:#DCE8F7;
+    --math:#2F6FE4;
+    --math-soft:#E8EFFC;
+    --ready:#2F7A4F;
+    --ready-bg:#EAF7EF;
+    --soon-bg:#F1F2F5;
+    --soon-ink:#9099AA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:18px 16px 40px;
+  }
+  .back-btn{
+    background:none;border:none;font-family:'Fredoka';font-size:14px;font-weight:600;
+    color:var(--ink-soft);padding:6px 0 14px;cursor:pointer;
+  }
+  header{margin-bottom:18px;}
+  .eyebrow{
+    font-family:'Fredoka';font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--math);
+  }
+  h1{
+    font-family:'Fredoka';font-weight:700;font-size:clamp(26px,7vw,34px);
+    margin:4px 0 4px;color:var(--ink);
+  }
+  .sub{font-size:14px;color:var(--ink-soft);max-width:48ch;}
+
+  /* ---- Darjah picker grid ---- */
+  .darjah-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;
+  }
+  .darjah-card{
+    background:#fff;border:2.5px solid var(--math);border-radius:14px;
+    padding:16px 14px;text-align:center;cursor:pointer;
+    box-shadow:0 4px 0 var(--math);
+    transition:transform .1s;
+  }
+  .darjah-card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--math);}
+  .darjah-num{font-family:'Fredoka';font-weight:700;font-size:28px;color:var(--math);}
+  .darjah-name{font-family:'Fredoka';font-weight:600;font-size:13px;color:var(--ink-soft);margin-top:2px;}
+  .darjah-count{font-size:11px;color:var(--ink-soft);margin-top:6px;font-weight:700;}
+
+  /* ---- Topic list (within a darjah) ---- */
+  .topic-list{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+  .topic-card{
+    display:flex;align-items:center;gap:12px;
+    background:#fff;border-radius:12px;padding:14px 16px;
+    text-decoration:none;color:inherit;
+    box-shadow:0 1px 0 rgba(0,0,0,0.04),0 4px 12px rgba(30,42,74,0.06);
+  }
+  .topic-card.ready{border-left:5px solid var(--ready);}
+  .topic-card.soon{border-left:5px solid #D8DCE3;opacity:0.72;}
+  .topic-icon{font-size:24px;flex:0 0 auto;width:34px;text-align:center;}
+  .topic-body{flex:1;min-width:0;}
+  .topic-name{font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--ink);}
+  .topic-desc{font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.4;}
+  .topic-badge{
+    flex:0 0 auto;font-family:'Fredoka';font-size:10.5px;font-weight:600;
+    padding:4px 10px;border-radius:20px;white-space:nowrap;
+  }
+  .badge-ready{background:var(--ready-bg);color:var(--ready);}
+  .badge-soon{background:var(--soon-bg);color:var(--soon-ink);}
+  .topic-card.soon .topic-name,.topic-card.soon .topic-desc{color:var(--soon-ink);}
+
+  footer{text-align:center;margin-top:32px;font-size:11px;color:var(--ink-soft);font-family:'Fredoka';}
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+var DARJAH_LABELS = ['Darjah 1','Darjah 2','Darjah 3','Darjah 4','Darjah 5','Darjah 6'];
+
+var TOPICS = {
+  1: [
+    {name:'Nombor 0-100', desc:'Kenal & banding nombor', icon:'🔢', ready:true, href:'latihan-math.html?topic=d1-nombor-0-100'},
+    {name:'Tambah & Tolak dalam 100', desc:'Operasi asas', icon:'➕', ready:true, href:'latihan-math.html?topic=d1-tambah-tolak-100'},
+    {name:'Wang Asas', desc:'Sen & ringgit', icon:'💰', ready:true, href:'latihan-math.html?topic=d1-wang-asas'},
+    {name:'Masa', desc:'Jam, hari, bulan', icon:'🕐', ready:true, href:'latihan-math.html?topic=d1-masa'},
+    {name:'Bentuk 2D & 3D Asas', desc:'Kenal bentuk sekeliling', icon:'🔺', ready:true, href:'latihan-math.html?topic=d1-bentuk-2d-3d'},
+    {name:'Ukuran (Perbandingan)', desc:'Panjang, berat, isipadu', icon:'📏', ready:true, href:'latihan-math.html?topic=d1-ukuran-perbandingan'},
+  ],
+  2: [
+    {name:'Nombor hingga 1000', desc:'Nilai tempat & banding', icon:'🔢', ready:true, href:'latihan-math.html?topic=d2-nombor-1000'},
+    {name:'Empat Operasi Asas', desc:'Tambah, tolak, darab, bahagi', icon:'➗', ready:true, href:'latihan-math.html?topic=d2-empat-operasi-asas'},
+    {name:'Wang hingga RM100', desc:'Pengiraan wang', icon:'💰', ready:true, href:'latihan-math.html?topic=d2-wang-rm100'},
+    {name:'Masa & Jadual Waktu', desc:'Minit, jadual sekolah', icon:'🕐', ready:true, href:'latihan-math.html?topic=d2-masa-jadual'},
+    {name:'Ukuran (Unit Piawai)', desc:'Meter, kilogram, liter', icon:'📏', ready:true, href:'latihan-math.html?topic=d2-ukuran-piawai'},
+    {name:'Bentuk 2D & 3D (Sifat)', desc:'Bucu, sisi, permukaan', icon:'🔺', ready:true, href:'latihan-math.html?topic=d2-bentuk-sifat'},
+  ],
+  3: [
+    {name:'Nombor hingga 10 000', desc:'Nilai tempat lanjutan', icon:'🔢', ready:true, href:'latihan-math.html?topic=d3-nombor-10000'},
+    {name:'Empat Operasi (Gabungan)', desc:'Operasi bercampur', icon:'➗', ready:true, href:'latihan-math.html?topic=d3-empat-operasi'},
+    {name:'Pecahan Asas', desc:'Kenal & operasi pecahan', icon:'🍕', ready:true, href:'latihan-math.html?topic=d3-pecahan-asas'},
+    {name:'Wang hingga RM1000', desc:'Pengiraan wang lanjutan', icon:'💰', ready:true, href:'latihan-math.html?topic=d3-wang-rm1000'},
+    {name:'Masa & Tempoh Masa', desc:'Kira tempoh masa', icon:'🕐', ready:true, href:'latihan-math.html?topic=d3-masa-tempoh'},
+    {name:'Perimeter Asas', desc:'Ukur keliling bentuk', icon:'📐', ready:true, href:'latihan-math.html?topic=d3-perimeter-asas'},
+  ],
+  4: [
+    {name:'Nombor hingga 100 000', desc:'Nilai tempat besar', icon:'🔢', ready:true, href:'latihan-math.html?topic=d4-nombor-100000'},
+    {name:'Operasi Bergabung', desc:'2 langkah operasi', icon:'🧮', ready:true, href:'latihan-math.html?topic=d4-operasi-bergabung'},
+    {name:'Pecahan & Operasi', desc:'Tambah, tolak, darab pecahan', icon:'🍕', ready:true, href:'latihan-math.html?topic=d4-pecahan-operasi'},
+    {name:'Perpuluhan Asas', desc:'Kenal & operasi perpuluhan', icon:'🔟', ready:true, href:'latihan-math.html?topic=d4-perpuluhan-asas'},
+    {name:'Wang (Pengurusan)', desc:'Pengurusan wang harian', icon:'💰', ready:true, href:'latihan-math.html?topic=d4-wang-pengurusan'},
+    {name:'Masa (Format 24 Jam)', desc:'Baca jam 24 jam', icon:'🕐', ready:true, href:'latihan-math.html?topic=d4-masa-24jam'},
+    {name:'Perimeter & Luas', desc:'Formula & pengiraan', icon:'📐', ready:true, href:'latihan-math.html?topic=d4-perimeter-luas'},
+    {name:'Purata (Min) & Data', desc:'Carta & purata', icon:'📊', ready:true, href:'latihan-math.html?topic=d4-purata-data'},
+  ],
+  5: [
+    {name:'Nombor hingga 1 Juta', desc:'Nilai tempat besar', icon:'🔢', ready:true, href:'latihan-math.html?topic=d5-nombor-1juta'},
+    {name:'Pecahan Lanjutan', desc:'Operasi pecahan kompleks', icon:'🍕', ready:true, href:'latihan-math.html?topic=d5-pecahan-lanjutan'},
+    {name:'Perpuluhan', desc:'Operasi perpuluhan', icon:'🔟', ready:true, href:'latihan-math.html?topic=d5-perpuluhan'},
+    {name:'Peratus Asas', desc:'Kenal & kira peratus', icon:'💯', ready:true, href:'latihan-math.html?topic=d5-peratus-asas'},
+    {name:'Wang (Untung/Rugi/Diskaun)', desc:'Perniagaan asas', icon:'💰', ready:true, href:'latihan-math.html?topic=d5-wang-untung-rugi'},
+    {name:'Ruang (Isipadu Cecair)', desc:'Isipadu & purata', icon:'🧊', ready:true, href:'latihan-math.html?topic=d5-ruang-isipadu'},
+    {name:'Bentuk 3D (Isipadu)', desc:'Kubus & kuboid', icon:'📦', ready:true, href:'latihan-math.html?topic=d5-bentuk-3d-isipadu'},
+    {name:'Data & Carta Pai', desc:'Baca carta pai', icon:'📊', ready:true, href:'latihan-math.html?topic=d5-data-carta-pai'},
+  ],
+  6: [
+    {name:'Nombor hingga 10 Juta', desc:'Nilai tempat terbesar', icon:'🔢', ready:true, href:'latihan-math.html?topic=d6-nombor-10juta'},
+    {name:'Pecahan/Perpuluhan/Peratus', desc:'Pertukaran & operasi', icon:'🔀', ready:true, href:'latihan-math.html?topic=d6-pecahan-perpuluhan-peratus'},
+    {name:'Wang (Untung/Rugi/Diskaun)', desc:'Peratus untung rugi', icon:'💰', ready:true, href:'latihan-math.html?topic=d6-wang-untung-rugi-diskaun'},
+    {name:'Masa & Kelajuan', desc:'Jarak, masa, kelajuan', icon:'🚗', ready:true, href:'latihan-math.html?topic=d6-masa-kelajuan'},
+    {name:'Ruang (Bulatan)', desc:'Lilitan & diameter', icon:'⭕', ready:true, href:'latihan-math.html?topic=d6-ruang-bulatan'},
+    {name:'Rasio & Kadar', desc:'Nisbah & kadar asas', icon:'⚖️', ready:true, href:'latihan-math.html?topic=d6-rasio-kadar'},
+    {name:'Algebra Asas', desc:'Selesaikan persamaan mudah', icon:'✖️', ready:true, href:'latihan-math.html?topic=d6-algebra-asas'},
+    {name:'Data & Statistik', desc:'Min, median, mod, julat', icon:'📊', ready:true, href:'latihan-math.html?topic=d6-data-statistik'},
+  ],
+};
+
+var state = {screen:'darjah', darjah:null};
+var app = document.getElementById('app');
+
+function readyCount(d){
+  return TOPICS[d].filter(function(t){return t.ready;}).length;
+}
+
+function renderDarjahPicker(){
+  var html = '<header>'
+    + '<div class="eyebrow">Latihan &middot; Matematik</div>'
+    + '<h1>Pilih darjah</h1>'
+    + '<div class="sub">Setiap darjah ada beberapa topik. Topik yang dah siap boleh main terus.</div>'
+    + '</header>'
+    + '<div class="darjah-grid">';
+  for(var d=1; d<=6; d++){
+    var rc = readyCount(d);
+    html += '<div class="darjah-card" data-d="'+d+'">'
+      + '<div class="darjah-num">'+d+'</div>'
+      + '<div class="darjah-name">'+DARJAH_LABELS[d-1]+'</div>'
+      + '<div class="darjah-count">'+rc+' / '+TOPICS[d].length+' topik siap</div>'
+      + '</div>';
+  }
+  html += '</div>'
+    + '<footer>lebih banyak topik akan ditambah dari semasa ke semasa</footer>';
+  app.innerHTML = html;
+  document.querySelectorAll('[data-d]').forEach(function(card){
+    card.onclick = function(){
+      state.darjah = parseInt(card.dataset.d);
+      state.screen = 'topics';
+      render();
+    };
+  });
+}
+
+function renderTopicList(){
+  var d = state.darjah;
+  var topics = TOPICS[d];
+  var html = '<button class="back-btn" id="backBtn">\u2190 Darjah</button>'
+    + '<header>'
+    + '<div class="eyebrow">Matematik &middot; '+DARJAH_LABELS[d-1]+'</div>'
+    + '<h1>Senarai latihan</h1>'
+    + '<div class="sub">Pilih topik untuk mula berlatih.</div>'
+    + '</header>'
+    + '<div class="topic-list">';
+
+  topics.forEach(function(t){
+    if(t.ready){
+      html += '<a class="topic-card ready" href="'+t.href+'">'
+        + '<div class="topic-icon">'+t.icon+'</div>'
+        + '<div class="topic-body"><div class="topic-name">'+t.name+'</div><div class="topic-desc">'+t.desc+'</div></div>'
+        + '<div class="topic-badge badge-ready">Sedia</div>'
+        + '</a>';
+    } else {
+      html += '<div class="topic-card soon">'
+        + '<div class="topic-icon">'+t.icon+'</div>'
+        + '<div class="topic-body"><div class="topic-name">'+t.name+'</div><div class="topic-desc">'+t.desc+'</div></div>'
+        + '<div class="topic-badge badge-soon">Akan Datang</div>'
+        + '</div>';
+    }
+  });
+
+  html += '</div>'
+    + '<footer>topik "Akan Datang" akan diisi bila diperlukan</footer>';
+  app.innerHTML = html;
+  document.getElementById('backBtn').onclick = function(){
+    state.screen = 'darjah';
+    render();
+  };
+}
+
+function render(){
+  if(state.screen==='darjah') renderDarjahPicker();
+  else renderTopicList();
+}
+render();
+</script>
+</body>
+</html>

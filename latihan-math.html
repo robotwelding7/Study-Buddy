@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Matematik — Buku Latihan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sriracha&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#f2ece0;
+    --paper-line:#d0c3a5;
+    --ink:#2a2620;
+    --plum:#5c3d5c;
+    --plum-mid:#8a6a8a;
+    --plum-light:#d3c0d3;
+    --teal:#3a7d6e;
+    --teal-dark:#2a5c50;
+    --amber:#d9932b;
+    --card:#fffdf7;
+    --shadow:rgba(42,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 34px, var(--paper-line) 35px),
+      var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+    padding:26px 14px 60px;
+  }
+  .book{ width:100%; max-width:660px; }
+
+  .back-link{
+    display:inline-block; margin-bottom:12px; font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:13px; color:var(--plum); text-decoration:none;
+  }
+
+  .cover{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:6px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px 24px 18px;
+    position:relative;
+    margin-bottom:18px;
+  }
+  .cover::before{
+    content:"";
+    position:absolute; left:16px; top:0; bottom:0; width:2px;
+    background:repeating-linear-gradient(0deg,var(--amber) 0 8px, transparent 8px 16px);
+    opacity:0.5;
+  }
+  .stamp{
+    position:absolute; top:14px; right:18px;
+    width:66px; height:66px;
+    border:3px solid var(--plum);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-12deg);
+    color:var(--plum);
+    font-family:'Sriracha',cursive;
+    font-size:11.5px; text-align:center; line-height:1.15;
+    opacity:0.85;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase;
+    font-size:11px; color:var(--teal-dark);
+    margin-left:22px;
+  }
+  h1{
+    font-family:'Sriracha',cursive; font-weight:400;
+    font-size:26px; margin:4px 0 2px 22px; color:var(--plum);
+  }
+  .sub{ margin:0 0 4px 22px; font-size:13.5px; color:#5a5346; }
+
+  .startBtn{
+    margin-top:16px; width:100%; padding:14px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .startBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  /* ===== quiz area ===== */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin:0 0 14px;
+  }
+  .hud-box{
+    background:var(--card); border:2px solid var(--ink); border-radius:6px;
+    box-shadow:3px 3px 0 var(--shadow); padding:8px 14px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hud-box .val{ font-size:18px; }
+  #timerBox{
+    position:relative; overflow:hidden;
+    min-width:88px; justify-content:center;
+  }
+  #timerBar{
+    position:absolute; left:0; bottom:0; top:0; width:100%;
+    background:var(--plum-light); z-index:0;
+    transition:width 1s linear, background 0.3s ease;
+  }
+  #timerBox span{ position:relative; z-index:1; }
+  #timerBox.low #timerBar{ background:#e79a8a; }
+  .soundToggle{
+    background:var(--card); border:2px solid var(--ink); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); font-size:16px; user-select:none;
+  }
+  .soundToggle:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .progressWrap{
+    height:8px; background:#e6ddc4; border-radius:20px; overflow:hidden;
+    margin-bottom:16px; border:1.5px solid var(--ink);
+  }
+  .progressBar{
+    height:100%; background:linear-gradient(90deg, var(--plum-mid), var(--plum));
+    width:0%; transition:width 0.4s ease;
+  }
+
+  .card{
+    background:var(--card); border:2px solid var(--ink); border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow); padding:22px 22px 20px; position:relative;
+  }
+  .expTag{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.05em; background:var(--teal-dark); color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .qnum{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--plum); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .qtext{
+    font-size:17px; line-height:1.5; font-weight:600; margin:0 0 16px; color:var(--ink);
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:#fff; border:2px solid #ddd3ba; border-radius:7px;
+    padding:12px 14px; font-size:15px; font-family:'Inter',sans-serif; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:background 0.15s, border-color 0.15s, transform 0.08s;
+  }
+  .opt:hover{ border-color:var(--plum-mid); background:#faf6ec; }
+  .opt:active{ transform:scale(0.99); }
+  .opt .letter{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  }
+  .opt.correct{ background:#e0efe9; border-color:var(--teal-dark); }
+  .opt.correct .letter{ background:var(--teal-dark); color:#fff; }
+  .opt.wrong{ background:#f4e2ea; border-color:var(--plum); }
+  .opt.wrong .letter{ background:var(--plum); color:#fff; }
+  .opt.disabled{ pointer-events:none; opacity:0.75; }
+  .opt.disabled.correct, .opt.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:14px; padding:12px 14px; border-radius:7px;
+    font-size:14px; line-height:1.55; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:#e0efe9; border:1.5px dashed var(--teal-dark); color:var(--teal-dark); }
+  .feedback.bad{ background:#f4e2ea; border:1.5px dashed var(--plum); color:var(--plum); }
+  .feedback b{ display:block; margin-bottom:3px; font-family:'Space Grotesk',sans-serif; }
+
+  .nextBtn{
+    margin-top:16px; width:100%; padding:13px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.03em; cursor:pointer; display:none; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .nextBtn.show{ display:block; }
+  .nextBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .result{ text-align:center; padding:10px 6px; }
+  .result .emoji{ font-size:52px; }
+  .result h2{
+    font-family:'Sriracha',cursive; font-weight:400; color:var(--plum);
+    font-size:26px; margin:6px 0 2px;
+  }
+  .result .scoreLine{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin:8px 0 4px; }
+  .result p{ color:#5a5346; font-size:14px; margin:6px 0 18px; }
+  .restartBtn, .homeBtn{
+    padding:13px 22px; background:var(--amber); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); margin:4px;
+  }
+  .homeBtn{ background:var(--plum); }
+  .restartBtn:active, .homeBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .breakdown{ text-align:left; margin-top:18px; border-top:1.5px dashed var(--paper-line); padding-top:14px; }
+  .breakdown-item{
+    display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:6px 0;
+    border-bottom:1px dotted #e6ddc4;
+  }
+  .breakdown-item .mark{ flex:0 0 auto; font-size:16px; }
+  .breakdown-item{ flex-direction:column; }
+  .breakdown-item .row{ display:flex; gap:8px; align-items:flex-start; width:100%; }
+  .breakdown-item .answer-detail{
+    margin:6px 0 2px 24px; font-size:12.5px; line-height:1.5;
+    background:#FBEAEA; border-left:3px solid #D9534F; border-radius:4px;
+    padding:6px 10px;
+  }
+  .breakdown-item .answer-detail .yourans{ color:#B93A2E; }
+  .breakdown-item .answer-detail .rightans{ color:#2F7A4F; font-weight:600; }
+
+  footer{ text-align:center; font-size:11.5px; color:#8a8371; margin-top:20px; }
+
+  @media (max-width:420px){
+    h1{ font-size:20px; }
+    .qtext{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="math-latihan-hub.html">← Kembali ke senarai topik</a>
+
+  <div class="cover">
+    <div class="stamp" id="coverStamp">MATEMATIK</div>
+    <div class="eyebrow" id="coverEyebrow">Buku Latihan</div>
+    <h1 id="coverTitle">Latihan Matematik</h1>
+    <p class="sub" id="coverSub">Sedia menanti...</p>
+  </div>
+
+  <div class="cover" id="startCard">
+    <button class="startBtn" id="startBtn">Mula Latihan →</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quizArea" style="display:none;">
+    <div class="hud">
+      <div class="hud-box">⭐ <span class="val" id="scoreVal">0</span></div>
+      <div class="hud-box" id="timerBox"><div id="timerBar"></div><span>⏱ <span id="timeVal">30</span>s</span></div>
+      <div class="hud-box">📋 <span class="val" id="qCounter">1/12</span></div>
+      <div class="soundToggle" id="soundToggle" title="Bunyi hidup/mati">🔊</div>
+    </div>
+
+    <div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+
+    <div class="card" id="quizCard">
+      <span class="expTag" id="expTag">Soalan</span>
+      <div class="qnum" id="qNum">&nbsp;</div>
+      <p class="qtext" id="qText">...</p>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nextBtn" id="nextBtn">Seterusnya →</button>
+    </div>
+  </div>
+
+  <div class="card result" id="resultArea" style="display:none;">
+    <div class="emoji" id="resultEmoji">🎉</div>
+    <h2 id="resultTitle">Syabas!</h2>
+    <div class="scoreLine" id="resultScore">0 / 12</div>
+    <p id="resultMsg">Cuba lagi untuk skor lebih tinggi!</p>
+    <button class="restartBtn" id="restartBtn">Ulang Latihan</button>
+    <button class="homeBtn" id="homeBtn">🏠 Senarai Topik</button>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <footer id="footerText">Latihan Matematik · Study Buddy</footer>
+</div>
+
+<script>
+var TOPIC_BANKS = {
+  'd1-nombor-0-100': [
+    {q:'Nombor manakah mewakili 74?',options:['24','69','74','45'],correct:'74'},
+    {q:'Nombor manakah mewakili 77?',options:['77','36','62','28'],correct:'77'},
+    {q:'Nombor manakah mewakili 9?',options:['20','24','32','9'],correct:'9'},
+    {q:'Nombor manakah mewakili 24?',options:['24','41','100','60'],correct:'24'},
+    {q:'Nombor manakah mewakili 54?',options:['8','54','26','55'],correct:'54'},
+    {q:'Nombor manakah mewakili 14?',options:['14','83','87','79'],correct:'14'},
+    {q:'Nombor manakah mewakili 50?',options:['48','100','50','29'],correct:'50'},
+    {q:'Nombor manakah mewakili 95?',options:['85','53','95','0'],correct:'95'},
+    {q:'Nombor selepas 44 ialah?',options:['46','44','43','45'],correct:'45'},
+    {q:'Nombor selepas 35 ialah?',options:['36','34','38','35'],correct:'36'},
+    {q:'Nombor selepas 21 ialah?',options:['24','23','21','22'],correct:'22'},
+    {q:'Nombor selepas 4 ialah?',options:['6','5','7','3'],correct:'5'},
+    {q:'Nombor selepas 87 ialah?',options:['88','90','86','87'],correct:'88'},
+    {q:'Nombor selepas 48 ialah?',options:['50','47','51','49'],correct:'49'},
+    {q:'Antara 41 dan 86, yang manakah lebih besar?',options:['38','44','83','86'],correct:'86'},
+    {q:'Antara 58 dan 78, yang manakah lebih besar?',options:['75','61','81','78'],correct:'78'},
+    {q:'Antara 44 dan 86, yang manakah lebih besar?',options:['41','83','86','89'],correct:'86'},
+    {q:'Antara 18 dan 43, yang manakah lebih besar?',options:['43','21','46','15'],correct:'43'},
+    {q:'Antara 32 dan 94, yang manakah lebih besar?',options:['94','35','29','91'],correct:'94'},
+    {q:'Antara 56 dan 85, yang manakah lebih besar?',options:['82','53','59','85'],correct:'85'},
+  ],
+  'd1-tambah-tolak-100': [
+    {q:'10 + 87 = ?',options:['97','98','99','96'],correct:'97'},
+    {q:'37 + 38 = ?',options:['73','74','75','77'],correct:'75'},
+    {q:'6 + 7 = ?',options:['11','13','15','12'],correct:'13'},
+    {q:'54 + 22 = ?',options:['77','75','76','78'],correct:'76'},
+    {q:'41 + 19 = ?',options:['60','62','61','59'],correct:'60'},
+    {q:'41 + 35 = ?',options:['75','77','78','76'],correct:'76'},
+    {q:'31 + 23 = ?',options:['56','54','55','52'],correct:'54'},
+    {q:'14 + 41 = ?',options:['54','57','53','55'],correct:'55'},
+    {q:'18 + 20 = ?',options:['38','40','36','37'],correct:'38'},
+    {q:'47 + 29 = ?',options:['75','77','76','78'],correct:'76'},
+    {q:'34 - 30 = ?',options:['4','2','5','3'],correct:'4'},
+    {q:'95 - 88 = ?',options:['7','5','9','6'],correct:'7'},
+    {q:'38 - 12 = ?',options:['25','24','28','26'],correct:'26'},
+    {q:'30 - 9 = ?',options:['19','21','20','23'],correct:'21'},
+    {q:'53 - 35 = ?',options:['18','17','16','20'],correct:'18'},
+    {q:'81 - 20 = ?',options:['63','59','60','61'],correct:'61'},
+    {q:'66 - 4 = ?',options:['62','64','63','61'],correct:'62'},
+    {q:'22 - 6 = ?',options:['15','14','16','17'],correct:'16'},
+    {q:'60 - 15 = ?',options:['45','44','47','46'],correct:'45'},
+    {q:'43 - 29 = ?',options:['12','13','16','14'],correct:'14'},
+  ],
+  'd1-wang-asas': [
+    {q:'20 sen + 50 sen = ? sen',options:['75','80','65','70'],correct:'70'},
+    {q:'10 sen + 20 sen = ? sen',options:['40','25','30','35'],correct:'30'},
+    {q:'5 sen + 50 sen = ? sen',options:['50','60','55','65'],correct:'55'},
+    {q:'10 sen + 50 sen = ? sen',options:['65','70','60','55'],correct:'60'},
+    {q:'5 sen + 20 sen = ? sen',options:['20','35','25','30'],correct:'25'},
+    {q:'5 sen + 10 sen = ? sen',options:['20','15','25','10'],correct:'15'},
+    {q:'5 sen + 5 sen = ? sen',options:['20','10','15','5'],correct:'10'},
+    {q:'10 sen + 10 sen = ? sen',options:['15','25','20','30'],correct:'20'},
+    {q:'Duit syiling/wang kertas RM1 bernilai berapa sen?',options:['100','50','150','200'],correct:'100'},
+    {q:'Duit syiling/wang kertas RM2 bernilai berapa sen?',options:['300','250','200','150'],correct:'200'},
+    {q:'Duit syiling/wang kertas RM5 bernilai berapa sen?',options:['550','500','450','600'],correct:'500'},
+    {q:'Duit syiling/wang kertas RM10 bernilai berapa sen?',options:['1000','950','1050','1100'],correct:'1000'},
+    {q:'Wang kertas RM20 bernilai berapa sen?',options:['3000','1500','2500','2000'],correct:'2000'},
+    {q:'Wang kertas RM50 bernilai berapa sen?',options:['4500','6000','5000','5500'],correct:'5000'},
+    {q:'RM1 + RM2 = RM?',options:['2','5','3','1'],correct:'3'},
+    {q:'RM17 + RM20 = RM?',options:['36','37','35','39'],correct:'37'},
+    {q:'RM16 + RM19 = RM?',options:['33','35','37','36'],correct:'35'},
+    {q:'RM4 + RM18 = RM?',options:['23','24','20','22'],correct:'22'},
+    {q:'RM12 + RM15 = RM?',options:['26','28','27','25'],correct:'27'},
+    {q:'RM6 + RM9 = RM?',options:['17','14','15','13'],correct:'15'},
+  ],
+  'd1-masa': [
+    {q:'Berapa banyakkah hari dalam seminggu?',options:['5','6','7','8'],correct:'7'},
+    {q:'Berapa banyakkah bulan dalam setahun?',options:['10','11','12','13'],correct:'12'},
+    {q:'Hari selepas Isnin ialah?',options:['Selasa','Ahad','Rabu','Khamis'],correct:'Selasa'},
+    {q:'Hari sebelum Jumaat ialah?',options:['Khamis','Sabtu','Rabu','Ahad'],correct:'Khamis'},
+    {q:'Bulan pertama dalam setahun ialah?',options:['Januari','Disember','Februari','Mac'],correct:'Januari'},
+    {q:'Bulan terakhir dalam setahun ialah?',options:['Disember','Januari','November','Oktober'],correct:'Disember'},
+    {q:'Berapa jam dalam sehari?',options:['12','24','20','36'],correct:'24'},
+    {q:'Berapa minit dalam sejam?',options:['30','45','60','100'],correct:'60'},
+    {q:'Jam menunjukkan 3 pukul. Selepas 2 jam, pukul berapakah?',options:['5','4','6','1'],correct:'5'},
+    {q:'Jam menunjukkan 9 pukul. Sebelum 3 jam, pukul berapakah tadi?',options:['6','12','3','9'],correct:'6'},
+    {q:'Hari kelima dalam seminggu (bermula Isnin) ialah?',options:['Jumaat','Khamis','Sabtu','Ahad'],correct:'Jumaat'},
+    {q:'Berapa hari dalam bulan Februari (tahun biasa)?',options:['28','29','30','31'],correct:'28'},
+    {q:'Waktu pagi biasanya bermula dari pukul berapa?',options:['6 pagi','6 petang','12 tengah malam','6 malam'],correct:'6 pagi'},
+    {q:'Waktu malam biasanya bermula dari pukul berapa?',options:['7 malam','7 pagi','12 tengah hari','3 petang'],correct:'7 malam'},
+    {q:'Hari yang terletak antara Selasa dan Khamis ialah?',options:['Rabu','Isnin','Jumaat','Ahad'],correct:'Rabu'},
+    {q:'Bulan ketiga dalam setahun ialah?',options:['Mac','Februari','April','Januari'],correct:'Mac'},
+    {q:'Cuti hujung minggu biasanya jatuh pada hari?',options:['Sabtu dan Ahad','Isnin dan Selasa','Rabu dan Khamis','Jumaat dan Sabtu sahaja'],correct:'Sabtu dan Ahad'},
+    {q:'Jam menunjukkan 11 pukul. Selepas 3 jam, pukul berapakah?',options:['2','1','3','14'],correct:'2'},
+    {q:'Berapa minggu lebih kurang dalam sebulan?',options:['4','2','6','8'],correct:'4'},
+    {q:'Hari ke-2 dalam seminggu (bermula Ahad) ialah?',options:['Isnin','Selasa','Ahad','Rabu'],correct:'Isnin'},
+  ],
+  'd1-bentuk-2d-3d': [
+    {q:'Bentuk yang mempunyai 3 sisi dikenali sebagai?',options:['segi tiga','segi empat','bulatan','segi lima'],correct:'segi tiga'},
+    {q:'Bentuk yang mempunyai 4 sisi sama panjang dikenali sebagai?',options:['segi empat sama','segi tiga','bulatan','segi lima'],correct:'segi empat sama'},
+    {q:'Bentuk yang tiada sisi dan bulat dikenali sebagai?',options:['bulatan','segi tiga','segi empat','segi lima'],correct:'bulatan'},
+    {q:'Berapakah bilangan sisi bagi segi empat tepat?',options:['4','3','5','6'],correct:'4'},
+    {q:'Bentuk yang mempunyai 5 sisi dikenali sebagai?',options:['pentagon (segi lima)','segi tiga','segi empat','bulatan'],correct:'pentagon (segi lima)'},
+    {q:'Manakah antara berikut objek berbentuk kubus?',options:['kotak hadiah','bola','tin minuman','kon aiskrim'],correct:'kotak hadiah'},
+    {q:'Manakah antara berikut objek berbentuk sfera (bulat)?',options:['bola','kotak','segi tiga','buku'],correct:'bola'},
+    {q:'Manakah antara berikut objek berbentuk silinder?',options:['tin minuman','bola','kotak','segi tiga'],correct:'tin minuman'},
+    {q:'Bentuk 3D yang mempunyai semua sisi sama dikenali sebagai?',options:['kubus','kuboid','kon','sfera'],correct:'kubus'},
+    {q:'Manakah antara berikut BUKAN bentuk 2D?',options:['kubus','segi tiga','bulatan','segi empat'],correct:'kubus'},
+    {q:'Manakah antara berikut BUKAN bentuk 3D?',options:['segi tiga','kubus','sfera','silinder'],correct:'segi tiga'},
+    {q:'Bumbung rumah biasanya berbentuk?',options:['segi tiga','bulatan','sfera','kon'],correct:'segi tiga'},
+    {q:'Roda kereta berbentuk?',options:['bulatan','segi tiga','segi empat','pentagon'],correct:'bulatan'},
+    {q:'Manakah antara berikut objek berbentuk kon?',options:['topi hari jadi','bola','kotak','buku'],correct:'topi hari jadi'},
+    {q:'Bentuk kuboid mempunyai berapa permukaan rata?',options:['6','4','8','5'],correct:'6'},
+    {q:'Bentuk kubus mempunyai berapa bucu (sudut)?',options:['8','6','4','12'],correct:'8'},
+    {q:'Skrin telefon biasanya berbentuk?',options:['segi empat tepat','bulatan','segi tiga','kon'],correct:'segi empat tepat'},
+    {q:'Manakah antara berikut mempunyai permukaan yang licin dan bulat sepenuhnya?',options:['sfera','kubus','kuboid','kon'],correct:'sfera'},
+    {q:'Piza yang bulat, bila dipotong menjadi segmen, setiap segmen menyerupai bentuk?',options:['segi tiga','segi empat','bulatan penuh','kubus'],correct:'segi tiga'},
+    {q:'Bentuk yang mempunyai 6 sisi dikenali sebagai?',options:['heksagon (segi enam)','pentagon','segi empat','segi tiga'],correct:'heksagon (segi enam)'},
+  ],
+  'd1-ukuran-perbandingan': [
+    {q:'Antara gajah dan semut, yang manakah LEBIH BERAT?',options:['gajah','semut','sama berat','tidak boleh dibandingkan'],correct:'gajah'},
+    {q:'Antara pensel dan bas, yang manakah LEBIH PANJANG?',options:['bas','pensel','sama panjang','tidak boleh dibandingkan'],correct:'bas'},
+    {q:'Antara botol air dan tangki air, yang manakah mengandungi ISI PADU lebih banyak?',options:['tangki air','botol air','sama banyak','tidak boleh dibandingkan'],correct:'tangki air'},
+    {q:'Antara buku dan meja, yang manakah LEBIH RINGAN?',options:['buku','meja','sama berat','tidak boleh dibandingkan'],correct:'buku'},
+    {q:'Antara ular dan cacing, yang manakah biasanya LEBIH PANJANG?',options:['ular','cacing','sama panjang','tidak boleh dibandingkan'],correct:'ular'},
+    {q:'Antara cawan dan baldi, yang manakah mengandungi air LEBIH SEDIKIT?',options:['cawan','baldi','sama banyak','tidak boleh dibandingkan'],correct:'cawan'},
+    {q:'Antara batu kecil dan batu besar, yang manakah LEBIH BERAT?',options:['batu besar','batu kecil','sama berat','tidak boleh dibandingkan'],correct:'batu besar'},
+    {q:'Antara tali pendek dan tali panjang, yang manakah lebih sesuai untuk mengukat objek yang jauh?',options:['tali panjang','tali pendek','kedua-dua sama sesuai','tiada yang sesuai'],correct:'tali panjang'},
+    {q:'Alat yang digunakan untuk mengukur berat ialah?',options:['penimbang','pembaris','jam','termometer'],correct:'penimbang'},
+    {q:'Alat yang digunakan untuk mengukur panjang ialah?',options:['pembaris','penimbang','jam','termometer'],correct:'pembaris'},
+    {q:'Antara kereta dan basikal, yang manakah LEBIH BERAT?',options:['kereta','basikal','sama berat','tidak boleh dibandingkan'],correct:'kereta'},
+    {q:'Antara kolam renang dan mangkuk, yang manakah mengandungi ISI PADU air lebih banyak?',options:['kolam renang','mangkuk','sama banyak','tidak boleh dibandingkan'],correct:'kolam renang'},
+    {q:'Antara jerapah dan kucing, yang manakah LEBIH TINGGI?',options:['jerapah','kucing','sama tinggi','tidak boleh dibandingkan'],correct:'jerapah'},
+    {q:'Antara gunung dan bukit kecil, yang manakah LEBIH TINGGI?',options:['gunung','bukit kecil','sama tinggi','tidak boleh dibandingkan'],correct:'gunung'},
+    {q:'Unit yang biasa digunakan untuk mengukur panjang ialah?',options:['meter','kilogram','liter','celsius'],correct:'meter'},
+    {q:'Unit yang biasa digunakan untuk mengukur berat ialah?',options:['kilogram','meter','liter','celsius'],correct:'kilogram'},
+    {q:'Unit yang biasa digunakan untuk mengukur isi padu cecair ialah?',options:['liter','meter','kilogram','celsius'],correct:'liter'},
+    {q:'Antara beg buku dan beg pasir, yang manakah biasanya LEBIH BERAT?',options:['beg pasir','beg buku','sama berat','tidak boleh dibandingkan'],correct:'beg pasir'},
+    {q:'Antara jalan raya dan lorong kecil, yang manakah LEBIH LEBAR?',options:['jalan raya','lorong kecil','sama lebar','tidak boleh dibandingkan'],correct:'jalan raya'},
+    {q:'Kaedah paling tepat untuk membandingkan berat dua objek ialah?',options:['Menggunakan penimbang','Meneka sahaja','Melihat warna objek','Melihat saiz objek sahaja'],correct:'Menggunakan penimbang'},
+  ],
+  'd2-nombor-1000': [
+    {q:'Nombor manakah mewakili 882?',options:['882','881','892','872'],correct:'882'},
+    {q:'Nombor manakah mewakili 136?',options:['137','136','135','236'],correct:'136'},
+    {q:'Nombor manakah mewakili 989?',options:['990','989','999','988'],correct:'989'},
+    {q:'Nombor manakah mewakili 634?',options:['634','635','633','644'],correct:'634'},
+    {q:'Nombor manakah mewakili 146?',options:['145','156','146','136'],correct:'146'},
+    {q:'Nombor manakah mewakili 318?',options:['319','308','318','317'],correct:'318'},
+    {q:'Nombor manakah mewakili 546?',options:['547','546','556','545'],correct:'546'},
+    {q:'Nombor manakah mewakili 727?',options:['727','827','726','737'],correct:'727'},
+    {q:'Antara 213 dan 302, yang manakah lebih besar?',options:['218','307','302','208'],correct:'302'},
+    {q:'Antara 457 dan 453, yang manakah lebih besar?',options:['462','458','457','452'],correct:'457'},
+    {q:'Antara 115 dan 182, yang manakah lebih besar?',options:['120','182','187','110'],correct:'182'},
+    {q:'Antara 701 dan 432, yang manakah lebih besar?',options:['706','427','701','437'],correct:'701'},
+    {q:'Antara 261 dan 346, yang manakah lebih besar?',options:['351','256','346','341'],correct:'346'},
+    {q:'Antara 669 dan 999, yang manakah lebih besar?',options:['999','664','994','1004'],correct:'999'},
+    {q:'Nilai digit 4 dalam 456 ialah?',options:['400','390','410','500'],correct:'400'},
+    {q:'Nilai digit 8 dalam 789 ialah?',options:['80','90','70','180'],correct:'80'},
+    {q:'Nilai digit 1 dalam 321 ialah?',options:['101','1','11','14'],correct:'1'},
+    {q:'Nilai digit 6 dalam 654 ialah?',options:['610','600','590','700'],correct:'600'},
+    {q:'Nilai digit 8 dalam 987 ialah?',options:['70','80','90','180'],correct:'80'},
+    {q:'Nilai digit 5 dalam 135 ialah?',options:['105','15','14','5'],correct:'5'},
+  ],
+  'd2-empat-operasi-asas': [
+    {q:'96 + 71 = ?',options:['177','167','157','162'],correct:'167'},
+    {q:'61 + 177 = ?',options:['228','243','233','238'],correct:'238'},
+    {q:'342 + 183 = ?',options:['515','535','525','520'],correct:'525'},
+    {q:'354 + 282 = ?',options:['631','626','641','636'],correct:'636'},
+    {q:'296 + 312 = ?',options:['608','613','618','598'],correct:'608'},
+    {q:'222 + 373 = ?',options:['590','595','585','600'],correct:'595'},
+    {q:'426 - 401 = ?',options:['25','15','35','20'],correct:'25'},
+    {q:'244 - 126 = ?',options:['113','128','108','118'],correct:'118'},
+    {q:'270 - 71 = ?',options:['194','189','204','199'],correct:'199'},
+    {q:'245 - 232 = ?',options:['23','8','18','13'],correct:'13'},
+    {q:'478 - 3 = ?',options:['465','485','475','470'],correct:'475'},
+    {q:'215 - 138 = ?',options:['87','72','67','77'],correct:'77'},
+    {q:'10 × 3 = ?',options:['26','30','28','32'],correct:'30'},
+    {q:'8 × 3 = ?',options:['26','24','28','20'],correct:'24'},
+    {q:'3 × 8 = ?',options:['28','20','26','24'],correct:'24'},
+    {q:'5 × 4 = ?',options:['22','18','16','20'],correct:'20'},
+    {q:'10 ÷ 2 = ?',options:['7','6','3','5'],correct:'5'},
+    {q:'24 ÷ 8 = ?',options:['3','1','4','5'],correct:'3'},
+    {q:'104 ÷ 8 = ?',options:['11','12','14','13'],correct:'13'},
+    {q:'48 ÷ 4 = ?',options:['13','12','14','11'],correct:'12'},
+  ],
+  'd2-wang-rm100': [
+    {q:'RM30 + RM15 = RM?',options:['43','47','50','45'],correct:'45'},
+    {q:'RM25 + RM57 = RM?',options:['84','87','82','77'],correct:'82'},
+    {q:'RM23 + RM35 = RM?',options:['60','56','58','63'],correct:'58'},
+    {q:'RM56 + RM22 = RM?',options:['78','73','83','76'],correct:'78'},
+    {q:'RM33 + RM30 = RM?',options:['58','63','65','68'],correct:'63'},
+    {q:'RM57 + RM34 = RM?',options:['91','96','86','93'],correct:'91'},
+    {q:'RM37 + RM53 = RM?',options:['95','85','90','92'],correct:'90'},
+    {q:'RM59 + RM13 = RM?',options:['72','74','77','67'],correct:'72'},
+    {q:'RM52 + RM12 = RM?',options:['64','62','66','69'],correct:'64'},
+    {q:'RM17 + RM25 = RM?',options:['47','40','44','42'],correct:'42'},
+    {q:'RM46 - RM31 = RM?',options:['15','17','20','13'],correct:'15'},
+    {q:'RM46 - RM19 = RM?',options:['27','29','32','22'],correct:'27'},
+    {q:'RM36 - RM16 = RM?',options:['18','25','20','15'],correct:'20'},
+    {q:'RM95 - RM46 = RM?',options:['49','54','51','47'],correct:'49'},
+    {q:'RM88 - RM31 = RM?',options:['55','57','52','59'],correct:'57'},
+    {q:'RM61 - RM12 = RM?',options:['51','49','47','54'],correct:'49'},
+    {q:'RM78 - RM25 = RM?',options:['58','48','55','53'],correct:'53'},
+    {q:'RM98 - RM50 = RM?',options:['43','46','53','48'],correct:'48'},
+    {q:'RM54 - RM52 = RM?',options:['4','7','2','0'],correct:'2'},
+    {q:'RM62 - RM16 = RM?',options:['46','48','41','44'],correct:'46'},
+  ],
+  'd2-masa-jadual': [
+    {q:'Berapa minit dalam setengah jam?',options:['30','20','45','60'],correct:'30'},
+    {q:'Berapa minit dalam satu jam suku (1/4 jam)?',options:['15','10','20','30'],correct:'15'},
+    {q:'Jam menunjukkan 8:00 pagi. Selepas 30 minit, pukul berapakah?',options:['8:30 pagi','9:00 pagi','8:15 pagi','7:30 pagi'],correct:'8:30 pagi'},
+    {q:'Jam menunjukkan 2:15 petang. Selepas 45 minit, pukul berapakah?',options:['3:00 petang','2:45 petang','3:15 petang','2:30 petang'],correct:'3:00 petang'},
+    {q:'Kelas Matematik bermula pukul 8:00 pagi dan tamat pukul 9:00 pagi. Berapa lamakah kelas itu?',options:['1 jam','30 minit','45 minit','2 jam'],correct:'1 jam'},
+    {q:'Waktu rehat sekolah bermula pukul 10:00 pagi dan tamat pukul 10:30 pagi. Berapa lamakah waktu rehat?',options:['30 minit','15 minit','1 jam','45 minit'],correct:'30 minit'},
+    {q:'Jam menunjukkan 11:45 pagi. 15 minit kemudian, pukul berapakah?',options:['12:00 tengah hari','11:00 pagi','12:15 petang','11:30 pagi'],correct:'12:00 tengah hari'},
+    {q:'Jadual waktu sekolah membantu murid untuk?',options:['Mengetahui masa setiap mata pelajaran','Bermain sahaja','Tidak perlu ke sekolah','Menentukan cuti'],correct:'Mengetahui masa setiap mata pelajaran'},
+    {q:'Jika sekarang pukul 4:00 petang, 2 jam lagi ialah pukul?',options:['6:00 petang','5:00 petang','6:00 pagi','4:30 petang'],correct:'6:00 petang'},
+    {q:'Jika sekarang pukul 9:30 pagi, 1 jam yang lalu ialah pukul?',options:['8:30 pagi','10:30 pagi','9:00 pagi','8:00 pagi'],correct:'8:30 pagi'},
+    {q:'Wayang bermula pukul 7:20 malam dan berlangsung selama 2 jam. Pukul berapakah wayang tamat?',options:['9:20 malam','8:20 malam','9:00 malam','10:20 malam'],correct:'9:20 malam'},
+    {q:'Berapa minit dalam 2 jam?',options:['120','100','90','60'],correct:'120'},
+    {q:'Jam menunjukkan 6:50 pagi. 10 minit lagi, pukul berapakah?',options:['7:00 pagi','6:40 pagi','7:10 pagi','6:00 pagi'],correct:'7:00 pagi'},
+    {q:'Latihan bola sepak bermula pukul 4:15 petang dan tamat pukul 5:00 petang. Berapa lamakah latihan itu?',options:['45 minit','30 minit','1 jam','15 minit'],correct:'45 minit'},
+    {q:'Pukul berapakah biasanya waktu makan tengah hari?',options:['12:00 tengah hari','6:00 pagi','9:00 malam','3:00 pagi'],correct:'12:00 tengah hari'},
+    {q:'Jika kelas bermula pukul 10:00 pagi dan berlangsung 90 minit, pukul berapakah kelas tamat?',options:['11:30 pagi','11:00 pagi','12:00 tengah hari','10:30 pagi'],correct:'11:30 pagi'},
+    {q:'Berapa minit dalam 1 jam 20 minit?',options:['80','70','90','60'],correct:'80'},
+    {q:'Jam menunjukkan 5:05 petang. 55 minit sebelum ini, pukul berapakah?',options:['4:10 petang','5:00 petang','4:00 petang','6:00 petang'],correct:'4:10 petang'},
+    {q:'Perjalanan bas dari rumah ke sekolah mengambil masa 25 minit. Jika bas bertolak pukul 6:40 pagi, pukul berapakah sampai ke sekolah?',options:['7:05 pagi','7:00 pagi','6:55 pagi','7:15 pagi'],correct:'7:05 pagi'},
+    {q:'Jadual waktu sekolah biasanya disusun mengikut?',options:['Urutan mata pelajaran dan masa','Warna buku','Berat beg sekolah','Bilangan murid'],correct:'Urutan mata pelajaran dan masa'},
+  ],
+  'd2-ukuran-piawai': [
+    {q:'Unit piawai untuk mengukur panjang ialah?',options:['meter','kilogram','liter','celsius'],correct:'meter'},
+    {q:'Unit piawai untuk mengukur berat ialah?',options:['kilogram','meter','liter','celsius'],correct:'kilogram'},
+    {q:'Unit piawai untuk mengukur isi padu cecair ialah?',options:['liter','meter','kilogram','celsius'],correct:'liter'},
+    {q:'1 meter bersamaan berapa sentimeter?',options:['100','10','1000','50'],correct:'100'},
+    {q:'1 kilogram bersamaan berapa gram?',options:['1000','100','10','500'],correct:'1000'},
+    {q:'1 liter bersamaan berapa mililiter?',options:['1000','100','10','500'],correct:'1000'},
+    {q:'Alat yang digunakan untuk mengukur panjang meja ialah?',options:['pembaris atau pita ukur','penimbang','jam','gelas ukur'],correct:'pembaris atau pita ukur'},
+    {q:'Alat yang digunakan untuk mengukur berat badan ialah?',options:['penimbang','pembaris','jam','gelas ukur'],correct:'penimbang'},
+    {q:'Alat yang digunakan untuk mengukur isi padu air ialah?',options:['gelas ukur','penimbang','pembaris','jam'],correct:'gelas ukur'},
+    {q:'Berat sebuah buku biasanya diukur dalam unit?',options:['gram','meter','liter','celsius'],correct:'gram'},
+    {q:'Panjang bangku sekolah biasanya diukur dalam unit?',options:['sentimeter atau meter','kilogram','liter','celsius'],correct:'sentimeter atau meter'},
+    {q:'Isi padu air dalam botol biasanya diukur dalam unit?',options:['mililiter atau liter','gram','meter','celsius'],correct:'mililiter atau liter'},
+    {q:'Berat sebuah beg beras biasanya diukur dalam unit?',options:['kilogram','gram','meter','liter'],correct:'kilogram'},
+    {q:'200 sentimeter bersamaan berapa meter?',options:['2','20','0.2','200'],correct:'2'},
+    {q:'3000 gram bersamaan berapa kilogram?',options:['3','30','0.3','300'],correct:'3'},
+    {q:'2000 mililiter bersamaan berapa liter?',options:['2','20','0.2','200'],correct:'2'},
+    {q:'Manakah unit yang sesuai untuk mengukur jarak dari rumah ke sekolah?',options:['kilometer','gram','mililiter','celsius'],correct:'kilometer'},
+    {q:'1 kilometer bersamaan berapa meter?',options:['1000','100','10','10000'],correct:'1000'},
+    {q:'Manakah unit yang sesuai untuk mengukur berat sebiji epal?',options:['gram','kilometer','liter','meter'],correct:'gram'},
+    {q:'Manakah unit yang sesuai untuk mengukur isi padu air dalam kolam renang?',options:['liter','gram','sentimeter','celsius'],correct:'liter'},
+  ],
+  'd2-bentuk-sifat': [
+    {q:'Segi tiga mempunyai berapa bucu (sudut)?',options:['3','4','5','6'],correct:'3'},
+    {q:'Segi empat sama mempunyai berapa sisi yang sama panjang?',options:['4','3','2','1'],correct:'4'},
+    {q:'Bulatan tidak mempunyai?',options:['sisi lurus atau bucu','warna','saiz','permukaan'],correct:'sisi lurus atau bucu'},
+    {q:'Kubus mempunyai berapa permukaan rata?',options:['6','4','8','5'],correct:'6'},
+    {q:'Kuboid berbeza dengan kubus kerana?',options:['Sisi-sisinya tidak semestinya sama panjang','Ia tidak mempunyai permukaan rata','Ia berbentuk bulat','Ia tiada bucu'],correct:'Sisi-sisinya tidak semestinya sama panjang'},
+    {q:'Sfera mempunyai berapa permukaan rata?',options:['0 (tiada permukaan rata)','6','4','2'],correct:'0 (tiada permukaan rata)'},
+    {q:'Silinder mempunyai berapa permukaan rata (bulat)?',options:['2','1','3','0'],correct:'2'},
+    {q:'Kon mempunyai berapa bucu?',options:['1','0','2','3'],correct:'1'},
+    {q:'Segi empat tepat mempunyai berapa pasang sisi yang sama panjang?',options:['2','1','3','4'],correct:'2'},
+    {q:'Manakah bentuk 2D yang mempunyai bucu paling sedikit?',options:['bulatan','segi tiga','segi empat','segi lima'],correct:'bulatan'},
+    {q:'Manakah bentuk 3D yang menyerupai kotak?',options:['kuboid','sfera','kon','silinder'],correct:'kuboid'},
+    {q:'Kubus mempunyai berapa bucu?',options:['8','6','4','12'],correct:'8'},
+    {q:'Kubus mempunyai berapa tepi (sisi lurus penyambung)?',options:['12','8','6','10'],correct:'12'},
+    {q:'Manakah bentuk yang semua permukaannya rata (tiada permukaan bulat)?',options:['kubus','sfera','silinder','kon'],correct:'kubus'},
+    {q:'Manakah bentuk yang mempunyai gabungan permukaan rata dan bulat?',options:['kon','kubus','kuboid','segi empat'],correct:'kon'},
+    {q:'Segi lima (pentagon) mempunyai berapa bucu?',options:['5','4','6','3'],correct:'5'},
+    {q:'Segi enam (heksagon) mempunyai berapa sisi?',options:['6','5','7','4'],correct:'6'},
+    {q:'Manakah pernyataan yang BETUL tentang kubus?',options:['Semua sisi kubus sama panjang','Sisi kubus tidak sama panjang','Kubus tiada permukaan rata','Kubus berbentuk bulat'],correct:'Semua sisi kubus sama panjang'},
+    {q:'Manakah pernyataan yang BETUL tentang segi tiga sama sisi?',options:['Ketiga-tiga sisinya sama panjang','Hanya dua sisi sama panjang','Tiada sisi yang sama panjang','Ia mempunyai 4 sisi'],correct:'Ketiga-tiga sisinya sama panjang'},
+    {q:'Manakah bentuk 3D yang paling sesuai untuk membuat bola?',options:['sfera','kubus','kuboid','kon'],correct:'sfera'},
+  ],
+  'd3-nombor-10000': [
+    {q:'Nombor manakah mewakili 1518?',options:['1418','1508','1518','1528'],correct:'1518'},
+    {q:'Nombor manakah mewakili 8747?',options:['8747','8757','8847','8647'],correct:'8747'},
+    {q:'Nombor manakah mewakili 1067?',options:['1077','967','1067','1167'],correct:'1067'},
+    {q:'Nombor manakah mewakili 3434?',options:['3434','3334','3444','3424'],correct:'3434'},
+    {q:'Nombor manakah mewakili 9611?',options:['9601','9611','9621','9511'],correct:'9611'},
+    {q:'Nombor manakah mewakili 6774?',options:['6674','6774','6764','6874'],correct:'6774'},
+    {q:'Nombor manakah mewakili 3015?',options:['3115','3015','2915','3005'],correct:'3015'},
+    {q:'Nombor manakah mewakili 6284?',options:['6184','6274','6384','6284'],correct:'6284'},
+    {q:'Antara 3209 dan 3766, yang manakah lebih besar?',options:['3259','3766','3159','3716'],correct:'3766'},
+    {q:'Antara 7173 dan 1651, yang manakah lebih besar?',options:['1601','7123','7173','7223'],correct:'7173'},
+    {q:'Antara 9462 dan 8382, yang manakah lebih besar?',options:['9462','8332','9512','8432'],correct:'9462'},
+    {q:'Antara 9808 dan 2396, yang manakah lebih besar?',options:['9808','9858','2446','2346'],correct:'9808'},
+    {q:'Antara 5369 dan 1719, yang manakah lebih besar?',options:['5419','5369','1669','1769'],correct:'5369'},
+    {q:'Antara 3551 dan 1338, yang manakah lebih besar?',options:['1288','1388','3551','3601'],correct:'3551'},
+    {q:'Nilai digit 4 dalam 4567 ialah?',options:['4000','4100','5000','3900'],correct:'4000'},
+    {q:'Nilai digit 9 dalam 8912 ialah?',options:['900','800','1000','1900'],correct:'900'},
+    {q:'Nilai digit 5 dalam 3456 ialah?',options:['149','50','150','1050'],correct:'50'},
+    {q:'Nilai digit 2 dalam 2345 ialah?',options:['2000','3000','1900','2100'],correct:'2000'},
+    {q:'Nilai digit 7 dalam 6789 ialah?',options:['700','800','1700','600'],correct:'700'},
+    {q:'Nilai digit 0 dalam 1230 ialah?',options:['50','5','0','100'],correct:'0'},
+  ],
+  'd3-empat-operasi': [
+    {q:'1048 + 1348 = ?',options:['2416','2386','2396','2376'],correct:'2396'},
+    {q:'707 + 714 = ?',options:['1401','1441','1421','1431'],correct:'1421'},
+    {q:'2374 + 2814 = ?',options:['5198','5208','5188','5178'],correct:'5188'},
+    {q:'1598 + 2965 = ?',options:['4573','4563','4543','4583'],correct:'4563'},
+    {q:'1695 + 1222 = ?',options:['2937','2927','2897','2917'],correct:'2917'},
+    {q:'2905 - 193 = ?',options:['2722','2702','2712','2732'],correct:'2712'},
+    {q:'4131 - 1313 = ?',options:['2828','2838','2798','2818'],correct:'2818'},
+    {q:'1131 - 167 = ?',options:['944','984','954','964'],correct:'964'},
+    {q:'2660 - 171 = ?',options:['2469','2499','2489','2509'],correct:'2489'},
+    {q:'1272 - 410 = ?',options:['842','882','852','862'],correct:'862'},
+    {q:'13 × 10 = ?',options:['125','135','130','120'],correct:'130'},
+    {q:'50 × 10 = ?',options:['490','510','495','500'],correct:'500'},
+    {q:'10 × 11 = ?',options:['115','110','105','120'],correct:'110'},
+    {q:'6 × 18 = ?',options:['108','103','113','98'],correct:'108'},
+    {q:'36 × 16 = ?',options:['586','576','566','581'],correct:'576'},
+    {q:'24 ÷ 4 = ?',options:['7','6','5','9'],correct:'6'},
+    {q:'200 ÷ 10 = ?',options:['20','17','19','23'],correct:'20'},
+    {q:'22 ÷ 2 = ?',options:['14','8','10','11'],correct:'11'},
+    {q:'154 ÷ 11 = ?',options:['14','15','11','17'],correct:'14'},
+    {q:'176 ÷ 11 = ?',options:['15','19','17','16'],correct:'16'},
+  ],
+  'd3-pecahan-asas': [
+    {q:'Pecahan yang mewakili separuh ialah?',options:['1/2','1/4','1/3','2/3'],correct:'1/2'},
+    {q:'Pecahan yang mewakili satu perempat ialah?',options:['1/4','1/2','1/3','3/4'],correct:'1/4'},
+    {q:'1/2 + 1/2 = ?',options:['1','2','1/4','0'],correct:'1'},
+    {q:'3/4 - 1/4 = ?',options:['2/4','1/4','1/2','3/4'],correct:'2/4'},
+    {q:'1/4 + 1/4 = ?',options:['2/4','1/2','3/4','1/8'],correct:'2/4'},
+    {q:'Pecahan 2/4 boleh dipermudahkan kepada?',options:['1/2','1/4','2/2','1/8'],correct:'1/2'},
+    {q:'Jika sebuah kek dibahagi kepada 4 bahagian sama besar, setiap bahagian mewakili pecahan?',options:['1/4','1/2','1/3','2/4'],correct:'1/4'},
+    {q:'Manakah pecahan yang lebih besar, 1/2 atau 1/4?',options:['1/2','1/4','sama besar','tidak boleh dibandingkan'],correct:'1/2'},
+    {q:'Manakah pecahan yang lebih kecil, 1/3 atau 1/2?',options:['1/3','1/2','sama besar','tidak boleh dibandingkan'],correct:'1/3'},
+    {q:'3/6 boleh dipermudahkan kepada?',options:['1/2','1/3','2/3','1/6'],correct:'1/2'},
+    {q:'2/3 - 1/3 = ?',options:['1/3','2/3','1','0'],correct:'1/3'},
+    {q:'Denominator (penyebut) dalam pecahan 3/5 ialah?',options:['5','3','8','2'],correct:'5'},
+    {q:'Numerator (pengangka) dalam pecahan 3/5 ialah?',options:['3','5','8','2'],correct:'3'},
+    {q:'1/3 + 1/3 = ?',options:['2/3','1/3','2/6','1'],correct:'2/3'},
+    {q:'Jika sebuah piza dibahagi kepada 8 bahagian dan Ali makan 2 bahagian, berapakah pecahan piza yang dimakan Ali?',options:['2/8','8/2','2/6','6/8'],correct:'2/8'},
+    {q:'Pecahan 4/8 setara dengan?',options:['1/2','1/4','3/4','1/8'],correct:'1/2'},
+    {q:'1 keseluruhan sama dengan pecahan?',options:['4/4 (atau mana-mana pecahan dengan pengangka=penyebut)','1/2','1/4','0/4'],correct:'4/4 (atau mana-mana pecahan dengan pengangka=penyebut)'},
+    {q:'3/4 + 1/4 = ?',options:['1 (4/4)','3/8','4/8','1/2'],correct:'1 (4/4)'},
+    {q:'Manakah pecahan yang mewakili tiga perempat?',options:['3/4','1/4','1/3','4/3'],correct:'3/4'},
+    {q:'Jika 5 daripada 10 bahagian sebuah bentuk diwarnakan, pecahan yang diwarnakan ialah?',options:['5/10 (atau 1/2)','10/5','5/5','1/10'],correct:'5/10 (atau 1/2)'},
+  ],
+  'd3-wang-rm1000': [
+    {q:'RM143 + RM638 = RM?',options:['791','771','781','801'],correct:'781'},
+    {q:'RM340 + RM361 = RM?',options:['681','691','701','721'],correct:'701'},
+    {q:'RM424 + RM293 = RM?',options:['707','717','697','727'],correct:'717'},
+    {q:'RM230 + RM552 = RM?',options:['792','772','782','802'],correct:'782'},
+    {q:'RM370 + RM262 = RM?',options:['652','622','632','642'],correct:'632'},
+    {q:'RM377 + RM569 = RM?',options:['936','966','946','926'],correct:'946'},
+    {q:'RM190 + RM179 = RM?',options:['379','349','369','359'],correct:'369'},
+    {q:'RM102 + RM310 = RM?',options:['422','392','432','412'],correct:'412'},
+    {q:'RM907 - RM737 = RM?',options:['160','190','170','180'],correct:'170'},
+    {q:'RM814 - RM60 = RM?',options:['734','774','744','754'],correct:'754'},
+    {q:'RM235 - RM197 = RM?',options:['38','58','48','28'],correct:'38'},
+    {q:'RM886 - RM561 = RM?',options:['305','335','325','315'],correct:'325'},
+    {q:'RM376 - RM187 = RM?',options:['169','179','189','209'],correct:'189'},
+    {q:'RM647 - RM484 = RM?',options:['153','163','143','173'],correct:'163'},
+    {q:'RM447 - RM97 = RM?',options:['370','350','340','330'],correct:'350'},
+    {q:'RM416 - RM86 = RM?',options:['330','320','350','340'],correct:'330'},
+    {q:'Harga sebiji buah ialah RM67. Berapakah harga 8 biji buah?',options:['546','536','541','531'],correct:'536'},
+    {q:'Harga sebiji buah ialah RM51. Berapakah harga 3 biji buah?',options:['153','148','163','143'],correct:'153'},
+    {q:'Harga sebiji buah ialah RM15. Berapakah harga 8 biji buah?',options:['120','110','125','115'],correct:'120'},
+    {q:'Harga sebiji buah ialah RM69. Berapakah harga 3 biji buah?',options:['217','197','202','207'],correct:'207'},
+  ],
+  'd3-masa-tempoh': [
+    {q:'Jika sesuatu aktiviti bermula pukul 2:00 petang dan tamat pukul 4:00 petang, berapa lamakah tempoh aktiviti itu?',options:['2 jam','1 jam','3 jam','4 jam'],correct:'2 jam'},
+    {q:'Jika perjalanan bermula pukul 8:15 pagi dan tamat pukul 9:45 pagi, berapa lamakah tempoh perjalanan itu?',options:['1 jam 30 minit','1 jam','2 jam','45 minit'],correct:'1 jam 30 minit'},
+    {q:'Berapa jam dalam sehari semalam (24 jam)?',options:['24','12','48','20'],correct:'24'},
+    {q:'Berapa hari dalam 2 minggu?',options:['14','7','10','21'],correct:'14'},
+    {q:'Berapa bulan dalam 2 tahun?',options:['24','12','20','18'],correct:'24'},
+    {q:'Jika sekarang pukul 10:20 pagi, 40 minit lagi ialah pukul?',options:['11:00 pagi','10:40 pagi','11:20 pagi','10:00 pagi'],correct:'11:00 pagi'},
+    {q:'Jika ujian bermula pukul 9:00 pagi dan berlangsung selama 1 jam 15 minit, pukul berapakah ujian tamat?',options:['10:15 pagi','10:00 pagi','9:45 pagi','10:30 pagi'],correct:'10:15 pagi'},
+    {q:'Berapa minit dalam 3 jam?',options:['180','150','200','120'],correct:'180'},
+    {q:'Cuti sekolah bermula 5 Jun dan tamat 20 Jun. Berapa harikah tempoh cuti itu?',options:['15 hari','10 hari','20 hari','5 hari'],correct:'15 hari'},
+    {q:'Jika Ali mula membaca pukul 7:30 malam dan berhenti pukul 8:50 malam, berapa lamakah dia membaca?',options:['1 jam 20 minit','1 jam','1 jam 30 minit','50 minit'],correct:'1 jam 20 minit'},
+    {q:'Berapa saat dalam seminit?',options:['60','100','30','120'],correct:'60'},
+    {q:'Berapa minit dalam 1 jam 45 minit?',options:['105','100','90','145'],correct:'105'},
+    {q:'Perjalanan kereta dari bandar A ke bandar B mengambil masa 2 jam 30 minit. Jika bertolak pukul 6:00 pagi, pukul berapakah sampai?',options:['8:30 pagi','8:00 pagi','9:00 pagi','7:30 pagi'],correct:'8:30 pagi'},
+    {q:'Jika sesuatu program bermula pukul 3:40 petang dan tamat pukul 5:10 petang, berapa lamakah tempoh program itu?',options:['1 jam 30 minit','1 jam','2 jam','1 jam 20 minit'],correct:'1 jam 30 minit'},
+    {q:'Setahun mempunyai berapa hari (tahun biasa)?',options:['365','360','366','350'],correct:'365'},
+    {q:'Jika waktu solat Zuhur pukul 1:15 petang dan waktu solat Asar pukul 4:30 petang, berapa lamakah jarak antara dua waktu solat itu?',options:['3 jam 15 minit','3 jam','3 jam 30 minit','2 jam 45 minit'],correct:'3 jam 15 minit'},
+    {q:'Berapa minggu dalam setahun (anggaran)?',options:['52','48','50','60'],correct:'52'},
+    {q:'Jika mesyuarat bermula pukul 2:50 petang dan berlangsung 50 minit, pukul berapakah mesyuarat tamat?',options:['3:40 petang','3:30 petang','3:50 petang','4:00 petang'],correct:'3:40 petang'},
+    {q:'Berapa jam dalam 150 minit?',options:['2 jam 30 minit','2 jam','3 jam','1 jam 50 minit'],correct:'2 jam 30 minit'},
+    {q:'Jika kelas tuisyen bermula pukul 4:00 petang dan tamat pukul 6:15 petang, berapa lamakah tempoh kelas itu?',options:['2 jam 15 minit','2 jam','1 jam 45 minit','2 jam 30 minit'],correct:'2 jam 15 minit'},
+  ],
+  'd3-perimeter-asas': [
+    {q:'Perimeter ialah jumlah ukuran?',options:['Semua sisi sesuatu bentuk','Luas sesuatu bentuk','Isi padu sesuatu bentuk','Berat sesuatu bentuk'],correct:'Semua sisi sesuatu bentuk'},
+    {q:'Perimeter segi empat tepat dengan panjang 16 cm dan lebar 19 cm ialah?',options:['68 cm','70 cm','72 cm','74 cm'],correct:'70 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 4 cm dan lebar 14 cm ialah?',options:['38 cm','36 cm','40 cm','32 cm'],correct:'36 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 20 cm dan lebar 11 cm ialah?',options:['66 cm','58 cm','62 cm','64 cm'],correct:'62 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 20 cm dan lebar 13 cm ialah?',options:['62 cm','68 cm','66 cm','70 cm'],correct:'66 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 15 cm dan lebar 19 cm ialah?',options:['68 cm','66 cm','70 cm','64 cm'],correct:'68 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 8 cm dan lebar 15 cm ialah?',options:['48 cm','42 cm','44 cm','46 cm'],correct:'46 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 10 cm dan lebar 7 cm ialah?',options:['32 cm','30 cm','38 cm','34 cm'],correct:'34 cm'},
+    {q:'Perimeter segi empat tepat dengan panjang 19 cm dan lebar 10 cm ialah?',options:['56 cm','60 cm','54 cm','58 cm'],correct:'58 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 24 cm ialah?',options:['104 cm','96 cm','100 cm','92 cm'],correct:'96 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 9 cm ialah?',options:['32 cm','44 cm','40 cm','36 cm'],correct:'36 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 6 cm ialah?',options:['24 cm','20 cm','28 cm','32 cm'],correct:'24 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 13 cm ialah?',options:['60 cm','48 cm','56 cm','52 cm'],correct:'52 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 15 cm ialah?',options:['64 cm','68 cm','60 cm','56 cm'],correct:'60 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 17 cm ialah?',options:['76 cm','64 cm','72 cm','68 cm'],correct:'68 cm'},
+    {q:'Perimeter segi empat sama dengan sisi 20 cm ialah?',options:['80 cm','84 cm','76 cm','88 cm'],correct:'80 cm'},
+    {q:'Perimeter segi tiga dengan sisi 7 cm, 10 cm dan 13 cm ialah?',options:['33 cm','36 cm','27 cm','30 cm'],correct:'30 cm'},
+    {q:'Perimeter segi tiga dengan sisi 10 cm, 6 cm dan 9 cm ialah?',options:['25 cm','31 cm','28 cm','22 cm'],correct:'25 cm'},
+    {q:'Perimeter segi tiga dengan sisi 10 cm, 14 cm dan 10 cm ialah?',options:['34 cm','31 cm','40 cm','37 cm'],correct:'34 cm'},
+    {q:'Perimeter segi tiga dengan sisi 8 cm, 15 cm dan 3 cm ialah?',options:['23 cm','32 cm','26 cm','29 cm'],correct:'26 cm'},
+  ],
+  'd4-nombor-100000': [
+    {q:'Nombor manakah mewakili 75232?',options:['75232','76232','74232','75332'],correct:'75232'},
+    {q:'Nombor manakah mewakili 34550?',options:['34650','34450','35550','34550'],correct:'34550'},
+    {q:'Nombor manakah mewakili 44257?',options:['43257','44357','45257','44257'],correct:'44257'},
+    {q:'Nombor manakah mewakili 30681?',options:['30681','30581','31681','30781'],correct:'30681'},
+    {q:'Nombor manakah mewakili 60945?',options:['60945','61945','59945','61045'],correct:'60945'},
+    {q:'Nombor manakah mewakili 31289?',options:['31289','31189','30289','32289'],correct:'31289'},
+    {q:'Nombor manakah mewakili 49093?',options:['50093','49193','49093','48093'],correct:'49093'},
+    {q:'Nombor manakah mewakili 97202?',options:['98202','97202','97302','97102'],correct:'97202'},
+    {q:'Antara 86369 dan 10224, yang manakah lebih besar?',options:['10724','85869','9724','86369'],correct:'86369'},
+    {q:'Antara 67658 dan 95374, yang manakah lebih besar?',options:['94874','95874','67158','95374'],correct:'95374'},
+    {q:'Antara 78662 dan 36533, yang manakah lebih besar?',options:['78162','78662','37033','79162'],correct:'78662'},
+    {q:'Antara 16739 dan 70049, yang manakah lebih besar?',options:['70049','17239','69549','16239'],correct:'70049'},
+    {q:'Antara 83036 dan 69041, yang manakah lebih besar?',options:['83036','69541','82536','68541'],correct:'83036'},
+    {q:'Antara 92665 dan 53288, yang manakah lebih besar?',options:['53788','93165','92665','92165'],correct:'92665'},
+    {q:'Nilai digit 4 dalam 45678 ialah?',options:['50000','41000','40000','39000'],correct:'40000'},
+    {q:'Nilai digit 9 dalam 89123 ialah?',options:['8000','10000','19000','9000'],correct:'9000'},
+    {q:'Nilai digit 5 dalam 34567 ialah?',options:['1498','500','1500','10500'],correct:'500'},
+    {q:'Nilai digit 0 dalam 78901 ialah?',options:['0','50','100','10'],correct:'0'},
+    {q:'Nilai digit 6 dalam 23456 ialah?',options:['1011','10006','6','1006'],correct:'6'},
+    {q:'Nilai digit 6 dalam 67890 ialah?',options:['70000','60000','59000','61000'],correct:'60000'},
+  ],
+  'd4-operasi-bergabung': [
+    {q:'(41 × 3) + 14 = ?',options:['132','142','147','137'],correct:'137'},
+    {q:'(20 × 4) + 9 = ?',options:['99','79','89','84'],correct:'89'},
+    {q:'(50 × 6) + 15 = ?',options:['320','315','310','305'],correct:'315'},
+    {q:'(20 × 8) + 19 = ?',options:['174','189','184','179'],correct:'179'},
+    {q:'(50 × 8) + 11 = ?',options:['401','421','411','406'],correct:'411'},
+    {q:'(35 × 7) + 20 = ?',options:['260','255','265','270'],correct:'265'},
+    {q:'(45 × 2) + 19 = ?',options:['119','99','109','104'],correct:'109'},
+    {q:'(35 × 8) + 6 = ?',options:['276','281','291','286'],correct:'286'},
+    {q:'(28 × 9) + 17 = ?',options:['274','269','264','279'],correct:'269'},
+    {q:'(44 × 3) + 3 = ?',options:['140','130','125','135'],correct:'135'},
+    {q:'471 - (29 × 4) = ?',options:['360','365','355','345'],correct:'355'},
+    {q:'487 - (38 × 6) = ?',options:['259','264','269','249'],correct:'259'},
+    {q:'272 - (41 × 6) = ?',options:['26','31','21','36'],correct:'26'},
+    {q:'413 - (17 × 7) = ?',options:['299','284','294','304'],correct:'294'},
+    {q:'469 - (40 × 7) = ?',options:['184','194','189','199'],correct:'189'},
+    {q:'256 - (19 × 9) = ?',options:['95','75','90','85'],correct:'85'},
+    {q:'432 - (47 × 8) = ?',options:['56','66','46','61'],correct:'56'},
+    {q:'332 - (44 × 2) = ?',options:['254','244','249','234'],correct:'244'},
+    {q:'389 - (47 × 7) = ?',options:['50','70','60','65'],correct:'60'},
+    {q:'234 - (23 × 6) = ?',options:['96','101','91','106'],correct:'96'},
+  ],
+  'd4-pecahan-operasi': [
+    {q:'1/4 + 2/4 = ?',options:['3/4','1/2','2/8','1/4'],correct:'3/4'},
+    {q:'3/5 + 1/5 = ?',options:['4/5','2/5','3/10','1/5'],correct:'4/5'},
+    {q:'5/6 - 2/6 = ?',options:['3/6 (atau 1/2)','2/6','4/6','1/6'],correct:'3/6 (atau 1/2)'},
+    {q:'7/8 - 3/8 = ?',options:['4/8 (atau 1/2)','3/8','5/8','1/8'],correct:'4/8 (atau 1/2)'},
+    {q:'2/3 + 2/3 = ?',options:['4/3 (atau 1 1/3)','4/6','2/3','1'],correct:'4/3 (atau 1 1/3)'},
+    {q:'3/4 × 2 = ?',options:['6/4 (atau 1 1/2)','3/8','5/4','3/2'],correct:'6/4 (atau 1 1/2)'},
+    {q:'1/2 × 4 = ?',options:['2','1/8','4/2','8'],correct:'2'},
+    {q:'2/5 daripada 20 ialah?',options:['8','10','4','12'],correct:'8'},
+    {q:'3/4 daripada 24 ialah?',options:['18','16','20','12'],correct:'18'},
+    {q:'Pecahan tak wajar 5/3 boleh ditulis sebagai nombor bercampur?',options:['1 2/3','1 1/3','2 1/3','5/3 tidak boleh ditulis'],correct:'1 2/3'},
+    {q:'Pecahan tak wajar 7/2 boleh ditulis sebagai nombor bercampur?',options:['3 1/2','2 1/2','3 1/3','7/2 tidak boleh ditulis'],correct:'3 1/2'},
+    {q:'Nombor bercampur 2 1/3 boleh ditulis sebagai pecahan tak wajar?',options:['7/3','6/3','5/3','8/3'],correct:'7/3'},
+    {q:'3/6 dipermudahkan kepada bentuk paling ringkas ialah?',options:['1/2','1/3','2/3','1/6'],correct:'1/2'},
+    {q:'4/8 dipermudahkan kepada bentuk paling ringkas ialah?',options:['1/2','1/4','1/8','2/4'],correct:'1/2'},
+    {q:'Manakah pecahan yang setara dengan 1/2?',options:['3/6','2/5','3/5','1/3'],correct:'3/6'},
+    {q:'1/6 + 1/3 = ? (samakan penyebut dahulu)',options:['1/2 (3/6)','2/9','2/6','1/9'],correct:'1/2 (3/6)'},
+    {q:'5/8 - 1/4 = ? (samakan penyebut dahulu)',options:['3/8','4/8','1/2','1/4'],correct:'3/8'},
+    {q:'Ali makan 2/6 daripada sebuah pizza. Adik makan 1/6 lagi. Berapa jumlah pizza yang dimakan mereka?',options:['3/6 (atau 1/2)','2/6','1/6','4/6'],correct:'3/6 (atau 1/2)'},
+    {q:'2/4 ÷ 2 = ?',options:['1/4','2/8','4/2','1/2'],correct:'1/4'},
+    {q:'1/5 daripada 30 ialah?',options:['6','5','10','3'],correct:'6'},
+  ],
+  'd4-perpuluhan-asas': [
+    {q:'0.5 dibaca sebagai?',options:['kosong perpuluhan lima','lima perpuluhan kosong','separuh sahaja','lima puluh'],correct:'kosong perpuluhan lima'},
+    {q:'1/2 sebagai perpuluhan ialah?',options:['0.5','0.2','0.25','0.05'],correct:'0.5'},
+    {q:'1/4 sebagai perpuluhan ialah?',options:['0.25','0.5','0.4','0.14'],correct:'0.25'},
+    {q:'3/10 sebagai perpuluhan ialah?',options:['0.3','0.03','3.0','0.13'],correct:'0.3'},
+    {q:'Manakah lebih besar, 0.5 atau 0.25?',options:['0.5','0.25','sama besar','tidak boleh dibandingkan'],correct:'0.5'},
+    {q:'5.7 + 7.5 = ?',options:['13.2','13.7','13.4','13.0'],correct:'13.2'},
+    {q:'15.1 + 18.0 = ?',options:['33.6','32.6','33.1','32.9'],correct:'33.1'},
+    {q:'3.8 + 4.0 = ?',options:['8.3','7.6','7.3','7.8'],correct:'7.8'},
+    {q:'16.1 + 14.8 = ?',options:['31.4','31.1','30.4','30.9'],correct:'30.9'},
+    {q:'10.2 + 15.5 = ?',options:['25.2','26.2','25.5','25.7'],correct:'25.7'},
+    {q:'18.4 + 15.0 = ?',options:['32.9','33.6','33.4','33.9'],correct:'33.4'},
+    {q:'10.0 - 2.2 = ?',options:['7.6','7.3','8.0','7.8'],correct:'7.8'},
+    {q:'10.2 - 5.7 = ?',options:['4.0','4.3','4.7','4.5'],correct:'4.5'},
+    {q:'13.5 - 3.4 = ?',options:['10.3','9.9','10.1','10.6'],correct:'10.1'},
+    {q:'12.8 - 6.9 = ?',options:['5.7','6.4','5.9','5.4'],correct:'5.9'},
+    {q:'11.7 - 10.3 = ?',options:['1.4','0.9','1.6','1.9'],correct:'1.4'},
+    {q:'23.3 - 21.0 = ?',options:['2.1','2.5','2.8','2.3'],correct:'2.3'},
+    {q:'9/10 sebagai perpuluhan ialah?',options:['0.9','0.09','9.0','0.19'],correct:'0.9'},
+    {q:'0.75 sebagai pecahan ialah?',options:['3/4','1/4','1/2','7/5'],correct:'3/4'},
+    {q:'Nombor manakah yang paling kecil: 0.1, 0.5, 0.05, 0.3?',options:['0.05','0.1','0.3','0.5'],correct:'0.05'},
+  ],
+  'd4-wang-pengurusan': [
+    {q:'RM11.56 + RM30.75 = RM?',options:['41.31','42.81','42.31','41.81'],correct:'42.31'},
+    {q:'RM71.19 + RM7.54 = RM?',options:['78.23','77.73','78.73','79.73'],correct:'78.73'},
+    {q:'RM73.78 + RM5.89 = RM?',options:['78.67','79.67','80.17','80.67'],correct:'79.67'},
+    {q:'RM10.60 + RM22.53 = RM?',options:['33.13','32.13','32.63','34.13'],correct:'33.13'},
+    {q:'RM7.22 + RM40.43 = RM?',options:['47.15','47.65','48.65','48.15'],correct:'47.65'},
+    {q:'RM37.77 + RM14.45 = RM?',options:['51.72','52.22','51.22','52.72'],correct:'52.22'},
+    {q:'RM39.29 + RM5.40 = RM?',options:['45.19','45.69','43.69','44.69'],correct:'44.69'},
+    {q:'RM46.36 + RM21.29 = RM?',options:['68.15','68.65','67.15','67.65'],correct:'67.65'},
+    {q:'RM65.66 - RM41.12 = RM?',options:['25.04','25.54','23.54','24.54'],correct:'24.54'},
+    {q:'RM52.67 - RM51.67 = RM?',options:['0.50','1.00','2.00','1.50'],correct:'1.00'},
+    {q:'RM53.18 - RM4.55 = RM?',options:['48.63','49.63','48.13','47.63'],correct:'48.63'},
+    {q:'RM83.33 - RM38.53 = RM?',options:['44.80','45.80','43.80','44.30'],correct:'44.80'},
+    {q:'RM49.14 - RM22.49 = RM?',options:['27.15','26.65','27.65','25.65'],correct:'26.65'},
+    {q:'RM32.01 - RM29.03 = RM?',options:['3.98','2.98','2.48','1.98'],correct:'2.98'},
+    {q:'RM26.19 - RM14.29 = RM?',options:['11.40','10.90','12.40','11.90'],correct:'11.90'},
+    {q:'Sebiji barang berharga RM30. Berapakah harga 9 biji barang?',options:['RM240','RM260','RM300','RM270'],correct:'RM270'},
+    {q:'Sebiji barang berharga RM17. Berapakah harga 9 biji barang?',options:['RM153','RM163','RM136','RM143'],correct:'RM153'},
+    {q:'Sebiji barang berharga RM49. Berapakah harga 6 biji barang?',options:['RM294','RM304','RM245','RM284'],correct:'RM294'},
+    {q:'Sebiji barang berharga RM46. Berapakah harga 8 biji barang?',options:['RM358','RM378','RM368','RM322'],correct:'RM368'},
+    {q:'Sebiji barang berharga RM46. Berapakah harga 4 biji barang?',options:['RM184','RM194','RM174','RM230'],correct:'RM184'},
+  ],
+  'd4-masa-24jam': [
+    {q:'Pukul 1:00 petang dalam format 24 jam ditulis sebagai?',options:['1300','0100','1200','1400'],correct:'1300'},
+    {q:'Pukul 8:00 malam dalam format 24 jam ditulis sebagai?',options:['2000','0800','1800','2200'],correct:'2000'},
+    {q:'0900 dalam format 12 jam ialah?',options:['9:00 pagi','9:00 malam','9:00 petang','19:00'],correct:'9:00 pagi'},
+    {q:'1530 dalam format 12 jam ialah?',options:['3:30 petang','3:30 pagi','15:30 pagi','5:30 petang'],correct:'3:30 petang'},
+    {q:'Tengah malam dalam format 24 jam ditulis sebagai?',options:['0000','1200','2400','1000'],correct:'0000'},
+    {q:'Tengah hari dalam format 24 jam ditulis sebagai?',options:['1200','0000','1400','1000'],correct:'1200'},
+    {q:'Pukul 6:45 petang dalam format 24 jam ditulis sebagai?',options:['1845','0645','1645','2045'],correct:'1845'},
+    {q:'2200 dalam format 12 jam ialah?',options:['10:00 malam','10:00 pagi','12:00 malam','2:00 petang'],correct:'10:00 malam'},
+    {q:'Jika satu penerbangan berlepas 1420 dan tiba 1650, berapa lamakah penerbangan itu?',options:['2 jam 30 minit','2 jam','3 jam','1 jam 30 minit'],correct:'2 jam 30 minit'},
+    {q:'Jika kedai buka 0930 dan tutup 2200, berapa lamakah kedai itu beroperasi?',options:['12 jam 30 minit','12 jam','11 jam 30 minit','13 jam'],correct:'12 jam 30 minit'},
+    {q:'Pukul 11:15 malam dalam format 24 jam ditulis sebagai?',options:['2315','1115','0115','2215'],correct:'2315'},
+    {q:'0715 dalam format 12 jam ialah?',options:['7:15 pagi','7:15 malam','7:15 petang','17:15'],correct:'7:15 pagi'},
+    {q:'Jika kelas bermula 1345 dan berlangsung 1 jam 30 minit, pukul berapakah (24 jam) kelas tamat?',options:['1515','1445','1345','1600'],correct:'1515'},
+    {q:'1200 dalam format 12 jam ialah?',options:['12:00 tengah hari','12:00 tengah malam','1:00 petang','2:00 petang'],correct:'12:00 tengah hari'},
+    {q:'0000 dalam format 12 jam ialah?',options:['12:00 tengah malam','12:00 tengah hari','1:00 pagi','11:00 malam'],correct:'12:00 tengah malam'},
+    {q:'Jika bas bertolak 0640 dan sampai 0815, berapa lamakah perjalanan bas itu?',options:['1 jam 35 minit','1 jam 15 minit','1 jam 45 minit','2 jam'],correct:'1 jam 35 minit'},
+    {q:'Pukul 4:05 pagi dalam format 24 jam ditulis sebagai?',options:['0405','1605','0455','1405'],correct:'0405'},
+    {q:'1855 dalam format 12 jam ialah?',options:['6:55 petang','6:55 pagi','8:55 malam','18:55 malam'],correct:'6:55 petang'},
+    {q:'Jika mesyuarat bermula 1000 dan tamat 1240, berapa lamakah tempoh mesyuarat?',options:['2 jam 40 minit','2 jam','3 jam','2 jam 20 minit'],correct:'2 jam 40 minit'},
+    {q:'Format masa 24 jam kerap digunakan dalam?',options:['Jadual penerbangan dan pengangkutan','Perbualan harian sahaja','Cerita kanak-kanak','Buku masakan'],correct:'Jadual penerbangan dan pengangkutan'},
+  ],
+  'd4-perimeter-luas': [
+    {q:'Luas ialah ukuran?',options:['Permukaan sesuatu bentuk','Jumlah semua sisi','Berat sesuatu objek','Isi padu sesuatu bekas'],correct:'Permukaan sesuatu bentuk'},
+    {q:'Formula luas segi empat tepat ialah?',options:['panjang × lebar','2 × (panjang + lebar)','panjang + lebar','panjang ÷ lebar'],correct:'panjang × lebar'},
+    {q:'Formula perimeter segi empat tepat ialah?',options:['2 × (panjang + lebar)','panjang × lebar','panjang + lebar','panjang ÷ lebar'],correct:'2 × (panjang + lebar)'},
+    {q:'Luas segi empat tepat dengan panjang 5 cm dan lebar 9 cm ialah?',options:['50 cm²','45 cm²','35 cm²','55 cm²'],correct:'45 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 20 cm dan lebar 14 cm ialah?',options:['285 cm²','280 cm²','270 cm²','290 cm²'],correct:'280 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 19 cm dan lebar 14 cm ialah?',options:['276 cm²','266 cm²','256 cm²','261 cm²'],correct:'266 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 17 cm dan lebar 12 cm ialah?',options:['214 cm²','209 cm²','204 cm²','199 cm²'],correct:'204 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 9 cm dan lebar 13 cm ialah?',options:['117 cm²','107 cm²','127 cm²','122 cm²'],correct:'117 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 4 cm dan lebar 17 cm ialah?',options:['58 cm²','63 cm²','68 cm²','73 cm²'],correct:'68 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 17 cm dan lebar 9 cm ialah?',options:['153 cm²','163 cm²','143 cm²','148 cm²'],correct:'153 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 15 cm dan lebar 10 cm ialah?',options:['155 cm²','150 cm²','140 cm²','145 cm²'],correct:'150 cm²'},
+    {q:'Luas segi empat tepat dengan panjang 8 cm dan lebar 6 cm ialah?',options:['48 cm²','43 cm²','58 cm²','38 cm²'],correct:'48 cm²'},
+    {q:'Luas segi empat sama dengan sisi 3 cm ialah?',options:['-1 cm²','9 cm²','19 cm²','14 cm²'],correct:'9 cm²'},
+    {q:'Luas segi empat sama dengan sisi 5 cm ialah?',options:['30 cm²','25 cm²','20 cm²','35 cm²'],correct:'25 cm²'},
+    {q:'Luas segi empat sama dengan sisi 4 cm ialah?',options:['11 cm²','26 cm²','6 cm²','16 cm²'],correct:'16 cm²'},
+    {q:'Luas segi empat sama dengan sisi 14 cm ialah?',options:['206 cm²','196 cm²','186 cm²','201 cm²'],correct:'196 cm²'},
+    {q:'Luas segi empat sama dengan sisi 13 cm ialah?',options:['179 cm²','164 cm²','169 cm²','159 cm²'],correct:'169 cm²'},
+    {q:'Luas segi empat sama dengan sisi 8 cm ialah?',options:['64 cm²','59 cm²','54 cm²','74 cm²'],correct:'64 cm²'},
+    {q:'Luas segi empat sama dengan sisi 6 cm ialah?',options:['46 cm²','41 cm²','36 cm²','26 cm²'],correct:'36 cm²'},
+    {q:'Luas segi empat sama dengan sisi 10 cm ialah?',options:['90 cm²','110 cm²','100 cm²','95 cm²'],correct:'100 cm²'},
+  ],
+  'd4-purata-data': [
+    {q:'Apakah min (purata) bagi 13, 37, 46?',options:['30','34','32','35'],correct:'32'},
+    {q:'Apakah min (purata) bagi 20, 45, 13, 49, 48?',options:['35','38','32','33'],correct:'35'},
+    {q:'Apakah min (purata) bagi 40, 28, 34, 10?',options:['31','30','26','28'],correct:'28'},
+    {q:'Apakah min (purata) bagi 45, 15, 7, 40, 23?',options:['23','26','24','29'],correct:'26'},
+    {q:'Apakah min (purata) bagi 49, 50, 9, 16?',options:['34','33','31','28'],correct:'31'},
+    {q:'Apakah min (purata) bagi 6, 22, 15, 25, 42?',options:['20','24','22','25'],correct:'22'},
+    {q:'Apakah min (purata) bagi 44, 43, 20, 19, 24?',options:['27','33','28','30'],correct:'30'},
+    {q:'Apakah min (purata) bagi 23, 33, 49?',options:['33','37','35','32'],correct:'35'},
+    {q:'Apakah min (purata) bagi 13, 16, 9, 46?',options:['19','23','24','21'],correct:'21'},
+    {q:'Apakah min (purata) bagi 7, 37, 24, 8?',options:['22','19','16','21'],correct:'19'},
+    {q:'Min (purata) dikira dengan?',options:['Jumlah semua nilai dibahagi bilangan nilai','Nilai terbesar dalam data','Nilai terkecil dalam data','Bilangan nilai sahaja'],correct:'Jumlah semua nilai dibahagi bilangan nilai'},
+    {q:'Carta palang digunakan untuk?',options:['Membandingkan data secara visual','Mengira purata sahaja','Menambah nombor','Menunjukkan masa sahaja'],correct:'Membandingkan data secara visual'},
+    {q:'Piktograf menggunakan simbol untuk mewakili?',options:['Kuantiti atau bilangan data','Warna sahaja','Bentuk sahaja','Saiz objek'],correct:'Kuantiti atau bilangan data'},
+    {q:'Jika markah ujian 5 murid ialah 60, 70, 80, 90, 100, apakah min markah mereka?',options:['80','70','90','75'],correct:'80'},
+    {q:'Data yang paling kerap muncul dalam set data dikenali sebagai?',options:['mod','min','median','julat'],correct:'mod'},
+    {q:'Perbezaan antara nilai terbesar dan terkecil dalam set data dikenali sebagai?',options:['julat','min','mod','purata'],correct:'julat'},
+    {q:'Jika data ialah 10, 20, 20, 30, apakah mod bagi data itu?',options:['20','10','30','25'],correct:'20'},
+    {q:'Jika data ialah 5, 10, 15, apakah julat bagi data itu?',options:['10','15','5','30'],correct:'10'},
+    {q:'Manakah cara terbaik untuk memaparkan data bilangan murid mengikut darjah?',options:['Carta palang','Ayat panjang','Nombor sahaja','Warna sahaja'],correct:'Carta palang'},
+    {q:'Jika markah 4 murid ialah 70, 80, 90, 60, apakah min markah mereka?',options:['75','80','70','85'],correct:'75'},
+  ],
+  'd5-nombor-1juta': [
+    {q:'Nombor manakah mewakili 770 481?',options:['769 481','771 481','770 481','780 481'],correct:'770 481'},
+    {q:'Nombor manakah mewakili 584 721?',options:['585 721','584 721','583 721','574 721'],correct:'584 721'},
+    {q:'Nombor manakah mewakili 589 439?',options:['588 439','590 439','589 439','599 439'],correct:'589 439'},
+    {q:'Nombor manakah mewakili 793 798?',options:['783 798','803 798','793 798','792 798'],correct:'793 798'},
+    {q:'Nombor manakah mewakili 297 262?',options:['287 262','297 262','298 262','307 262'],correct:'297 262'},
+    {q:'Nombor manakah mewakili 536 475?',options:['546 475','526 475','535 475','536 475'],correct:'536 475'},
+    {q:'Nombor manakah mewakili 982 813?',options:['972 813','992 813','982 813','983 813'],correct:'982 813'},
+    {q:'Nombor manakah mewakili 473 772?',options:['463 772','474 772','483 772','473 772'],correct:'473 772'},
+    {q:'Antara 603 191 dan 156 612  yang manakah lebih besar?',options:['608 191','603 191','598 191','161 612'],correct:'603 191'},
+    {q:'Antara 236 612 dan 147 028  yang manakah lebih besar?',options:['236 612','152 028','231 612','241 612'],correct:'236 612'},
+    {q:'Antara 364 144 dan 345 083  yang manakah lebih besar?',options:['340 083','364 144','359 144','369 144'],correct:'364 144'},
+    {q:'Antara 521 950 dan 713 103  yang manakah lebih besar?',options:['718 103','526 950','516 950','713 103'],correct:'713 103'},
+    {q:'Antara 645 369 dan 998 172  yang manakah lebih besar?',options:['640 369','993 172','1 003 172','998 172'],correct:'998 172'},
+    {q:'Antara 519 240 dan 833 289  yang manakah lebih besar?',options:['833 289','838 289','524 240','514 240'],correct:'833 289'},
+    {q:'Nilai digit 4 dalam 456 789 ialah?',options:['400 000','410 000','399 000','401 000'],correct:'400 000'},
+    {q:'Nilai digit 9 dalam 891 234 ialah?',options:['90 000','91 000','89 000','100 000'],correct:'90 000'},
+    {q:'Nilai digit 5 dalam 345 678 ialah?',options:['5 000','4 000','15 000','6 000'],correct:'5 000'},
+    {q:'Nilai digit 0 dalam 789 012 ialah?',options:['10','100','0','50'],correct:'0'},
+    {q:'Nilai digit 6 dalam 234 567 ialah?',options:['1 060','60','-940','10 060'],correct:'60'},
+    {q:'Nilai digit 1 dalam 678 901 ialah?',options:['-999','1','10 001','1 001'],correct:'1'},
+  ],
+  'd5-pecahan-lanjutan': [
+    {q:'1/3 + 1/6 = ? (samakan penyebut dahulu)',options:['1/2 (3/6)','2/9','2/6','1/9'],correct:'1/2 (3/6)'},
+    {q:'2/3 + 1/4 = ? (samakan penyebut dahulu)',options:['11/12','3/7','3/12','1/2'],correct:'11/12'},
+    {q:'3/4 - 1/3 = ? (samakan penyebut dahulu)',options:['5/12','2/12','2/1','1/12'],correct:'5/12'},
+    {q:'1/2 × 2/3 = ?',options:['2/6 (atau 1/3)','3/5','1/6','3/2'],correct:'2/6 (atau 1/3)'},
+    {q:'2/5 × 1/2 = ?',options:['2/10 (atau 1/5)','3/7','2/5','1/10'],correct:'2/10 (atau 1/5)'},
+    {q:'3/4 ÷ 1/2 = ?',options:['3/2 (atau 1 1/2)','3/8','6/4','2/3'],correct:'3/2 (atau 1 1/2)'},
+    {q:'1 1/2 + 1/2 = ?',options:['2','1','1 1/2','3/2'],correct:'2'},
+    {q:'2 1/4 - 1 1/4 = ?',options:['1','2','1/4','2 1/2'],correct:'1'},
+    {q:'3/8 daripada 40 ialah?',options:['15','10','20','12'],correct:'15'},
+    {q:'5/6 daripada 60 ialah?',options:['50','40','45','55'],correct:'50'},
+    {q:'1 2/3 sebagai pecahan tak wajar ialah?',options:['5/3','4/3','6/3','2/3'],correct:'5/3'},
+    {q:'2 1/4 sebagai pecahan tak wajar ialah?',options:['9/4','8/4','7/4','5/4'],correct:'9/4'},
+    {q:'9/4 sebagai nombor bercampur ialah?',options:['2 1/4','2 1/2','1 3/4','2 3/4'],correct:'2 1/4'},
+    {q:'1/4 + 1/2 + 1/8 = ? (samakan penyebut kepada 8)',options:['7/8','6/8','5/8','4/8'],correct:'7/8'},
+    {q:'5/6 - 1/2 = ? (samakan penyebut dahulu)',options:['2/6 (atau 1/3)','4/6','3/6','1/6'],correct:'2/6 (atau 1/3)'},
+    {q:'2/3 × 3/5 = ?',options:['6/15 (atau 2/5)','5/8','6/8','3/5'],correct:'6/15 (atau 2/5)'},
+    {q:'1/5 ÷ 2 = ?',options:['1/10','2/5','1/7','2/10'],correct:'1/10'},
+    {q:'Ali makan 1/4 sebuah kek. Abu makan 1/8 sebuah kek. Berapa jumlah kek yang dimakan mereka?',options:['3/8','2/12','1/2','2/8'],correct:'3/8'},
+    {q:'3/5 - 1/10 = ? (samakan penyebut dahulu)',options:['5/10 (atau 1/2)','4/10','2/5','2/10'],correct:'5/10 (atau 1/2)'},
+    {q:'2/7 daripada 21 ialah?',options:['6','7','3','14'],correct:'6'},
+  ],
+  'd5-perpuluhan': [
+    {q:'9.38 + 18.34 = ?',options:['27.82','27.72','28.22','27.62'],correct:'27.72'},
+    {q:'3.01 + 21.67 = ?',options:['24.68','24.18','25.18','24.78'],correct:'24.68'},
+    {q:'24.2 + 41.9 = ?',options:['66.0','66.1','66.6','66.2'],correct:'66.1'},
+    {q:'22.26 + 49.48 = ?',options:['72.24','71.64','71.24','71.74'],correct:'71.74'},
+    {q:'35.05 + 24.45 = ?',options:['59.6','59.4','59.5','59.0'],correct:'59.5'},
+    {q:'4.33 + 10.22 = ?',options:['14.65','14.55','14.45','14.05'],correct:'14.55'},
+    {q:'53.06 - 30.65 = ?',options:['22.31','21.91','22.41','22.91'],correct:'22.41'},
+    {q:'56.13 - 55.23 = ?',options:['1.0','1.4','0.9','0.8'],correct:'0.9'},
+    {q:'59.73 - 55.46 = ?',options:['4.37','4.77','3.77','4.27'],correct:'4.27'},
+    {q:'70.77 - 22.62 = ?',options:['48.25','48.65','48.15','47.65'],correct:'48.15'},
+    {q:'38.6 - 34.63 = ?',options:['3.47','3.97','3.87','4.47'],correct:'3.97'},
+    {q:'58.62 - 22.81 = ?',options:['35.31','35.71','36.31','35.81'],correct:'35.81'},
+    {q:'14.4 × 5 = ?',options:['71.0','72.5','73.0','72.0'],correct:'72.0'},
+    {q:'7.4 × 6 = ?',options:['44.9','44.4','45.4','43.9'],correct:'44.4'},
+    {q:'13.9 × 2 = ?',options:['28.3','28.8','27.8','26.8'],correct:'27.8'},
+    {q:'1.3 × 9 = ?',options:['12.2','11.2','11.7','12.7'],correct:'11.7'},
+    {q:'3/4 sebagai perpuluhan ialah?',options:['0.75','0.25','0.5','0.34'],correct:'0.75'},
+    {q:'7/10 sebagai perpuluhan ialah?',options:['0.7','0.07','7.0','0.17'],correct:'0.7'},
+    {q:'0.125 sebagai pecahan ialah?',options:['1/8','1/4','1/2','1/16'],correct:'1/8'},
+    {q:'15.6 ÷ 3 = ?',options:['5.2','5.5','4.2','5.0'],correct:'5.2'},
+  ],
+  'd5-peratus-asas': [
+    {q:'50% bersamaan dengan pecahan?',options:['1/2','1/4','3/4','1/5'],correct:'1/2'},
+    {q:'25% bersamaan dengan pecahan?',options:['1/4','1/2','3/4','1/5'],correct:'1/4'},
+    {q:'75% bersamaan dengan pecahan?',options:['3/4','1/4','1/2','2/3'],correct:'3/4'},
+    {q:'100% bersamaan dengan?',options:['Keseluruhan (1)','Separuh','Suku','Tiada apa-apa'],correct:'Keseluruhan (1)'},
+    {q:'1/2 sebagai peratus ialah?',options:['50%','25%','75%','10%'],correct:'50%'},
+    {q:'30% daripada 200 = ?',options:['62','55','58','60'],correct:'60'},
+    {q:'90% daripada 50 = ?',options:['40','45','47','43'],correct:'45'},
+    {q:'25% daripada 20 = ?',options:['10','7','0','5'],correct:'5'},
+    {q:'10% daripada 40 = ?',options:['6','-1','4','9'],correct:'4'},
+    {q:'90% daripada 100 = ?',options:['95','85','92','90'],correct:'90'},
+    {q:'90% daripada 40 = ?',options:['36','41','31','38'],correct:'36'},
+    {q:'90% daripada 60 = ?',options:['54','59','56','52'],correct:'54'},
+    {q:'40% daripada 40 = ?',options:['21','16','11','18'],correct:'16'},
+    {q:'Berapa peratuskah 15 daripada 60?',options:['30%','25%','20%','35%'],correct:'25%'},
+    {q:'Berapa peratuskah 8 daripada 40?',options:['30%','25%','20%','15%'],correct:'20%'},
+    {q:'Berapa peratuskah 30 daripada 40?',options:['80%','75%','70%','85%'],correct:'75%'},
+    {q:'Berapa peratuskah 3 daripada 60?',options:['5%','10%','0%','15%'],correct:'5%'},
+    {q:'Berapa peratuskah 6 daripada 60?',options:['5%','20%','15%','10%'],correct:'10%'},
+    {q:'Berapa peratuskah 30 daripada 150?',options:['20%','25%','30%','15%'],correct:'20%'},
+    {q:'Berapa peratuskah 40 daripada 80?',options:['45%','55%','50%','60%'],correct:'50%'},
+  ],
+  'd5-wang-untung-rugi': [
+    {q:'Seorang peniaga membeli barang dengan harga RM58 dan menjualnya dengan harga RM79. Berapakah untung yang diperoleh?',options:['RM21','RM26','RM31','RM16'],correct:'RM21'},
+    {q:'Seorang peniaga membeli barang dengan harga RM171 dan menjualnya dengan harga RM210. Berapakah untung yang diperoleh?',options:['RM49','RM34','RM39','RM44'],correct:'RM39'},
+    {q:'Seorang peniaga membeli barang dengan harga RM25 dan menjualnya dengan harga RM48. Berapakah untung yang diperoleh?',options:['RM28','RM23','RM33','RM18'],correct:'RM23'},
+    {q:'Seorang peniaga membeli barang dengan harga RM117 dan menjualnya dengan harga RM141. Berapakah untung yang diperoleh?',options:['RM34','RM19','RM29','RM24'],correct:'RM24'},
+    {q:'Seorang peniaga membeli barang dengan harga RM123 dan menjualnya dengan harga RM151. Berapakah untung yang diperoleh?',options:['RM38','RM28','RM33','RM23'],correct:'RM28'},
+    {q:'Seorang peniaga membeli barang dengan harga RM153 dan menjualnya dengan harga RM197. Berapakah untung yang diperoleh?',options:['RM39','RM44','RM49','RM54'],correct:'RM44'},
+    {q:'Seorang peniaga membeli barang dengan harga RM182 dan menjualnya dengan harga RM149. Berapakah rugi yang dialami?',options:['RM33','RM38','RM28','RM43'],correct:'RM33'},
+    {q:'Seorang peniaga membeli barang dengan harga RM108 dan menjualnya dengan harga RM68. Berapakah rugi yang dialami?',options:['RM45','RM50','RM35','RM40'],correct:'RM40'},
+    {q:'Seorang peniaga membeli barang dengan harga RM184 dan menjualnya dengan harga RM155. Berapakah rugi yang dialami?',options:['RM34','RM24','RM29','RM39'],correct:'RM29'},
+    {q:'Seorang peniaga membeli barang dengan harga RM174 dan menjualnya dengan harga RM156. Berapakah rugi yang dialami?',options:['RM23','RM18','RM28','RM13'],correct:'RM18'},
+    {q:'Seorang peniaga membeli barang dengan harga RM61 dan menjualnya dengan harga RM23. Berapakah rugi yang dialami?',options:['RM33','RM48','RM38','RM43'],correct:'RM38'},
+    {q:'Seorang peniaga membeli barang dengan harga RM52 dan menjualnya dengan harga RM17. Berapakah rugi yang dialami?',options:['RM40','RM45','RM30','RM35'],correct:'RM35'},
+    {q:'Harga asal sebuah barang ialah RM147. Diskaun 10% diberikan. Harga selepas diskaun ialah?',options:['RM152','RM142','RM132','RM122'],correct:'RM132'},
+    {q:'Harga asal sebuah barang ialah RM386. Diskaun 10% diberikan. Harga selepas diskaun ialah?',options:['RM337','RM367','RM347','RM357'],correct:'RM347'},
+    {q:'Harga asal sebuah barang ialah RM71. Diskaun 50% diberikan. Harga selepas diskaun ialah?',options:['RM35','RM45','RM25','RM55'],correct:'RM35'},
+    {q:'Harga asal sebuah barang ialah RM256. Diskaun 10% diberikan. Harga selepas diskaun ialah?',options:['RM230','RM240','RM220','RM250'],correct:'RM230'},
+    {q:'Harga asal sebuah barang ialah RM443. Diskaun 25% diberikan. Harga selepas diskaun ialah?',options:['RM352','RM342','RM332','RM322'],correct:'RM332'},
+    {q:'Harga asal sebuah barang ialah RM472. Diskaun 10% diberikan. Harga selepas diskaun ialah?',options:['RM434','RM414','RM424','RM444'],correct:'RM424'},
+    {q:'Harga asal sebuah barang ialah RM214. Diskaun 25% diberikan. Harga selepas diskaun ialah?',options:['RM170','RM160','RM150','RM180'],correct:'RM160'},
+    {q:'Harga asal sebuah barang ialah RM492. Diskaun 10% diberikan. Harga selepas diskaun ialah?',options:['RM452','RM442','RM432','RM462'],correct:'RM442'},
+  ],
+  'd5-ruang-isipadu': [
+    {q:'Sebuah bekas mengandungi 7.8 liter air. 5.4 liter air ditambah. Berapakah jumlah air sekarang?',options:['13.2 liter','12.7 liter','14.2 liter','13.7 liter'],correct:'13.2 liter'},
+    {q:'Sebuah bekas mengandungi 4.1 liter air. 5.4 liter air ditambah. Berapakah jumlah air sekarang?',options:['10.0 liter','10.5 liter','9.5 liter','9.0 liter'],correct:'9.5 liter'},
+    {q:'Sebuah bekas mengandungi 7.5 liter air. 8.7 liter air ditambah. Berapakah jumlah air sekarang?',options:['16.7 liter','15.7 liter','17.2 liter','16.2 liter'],correct:'16.2 liter'},
+    {q:'Sebuah bekas mengandungi 4.2 liter air. 9.4 liter air ditambah. Berapakah jumlah air sekarang?',options:['14.1 liter','13.1 liter','14.6 liter','13.6 liter'],correct:'13.6 liter'},
+    {q:'Sebuah bekas mengandungi 2.4 liter air. 8.2 liter air ditambah. Berapakah jumlah air sekarang?',options:['10.6 liter','11.1 liter','11.6 liter','10.1 liter'],correct:'10.6 liter'},
+    {q:'Sebuah bekas mengandungi 5.5 liter air. 3.6 liter air ditambah. Berapakah jumlah air sekarang?',options:['9.1 liter','9.6 liter','10.1 liter','8.6 liter'],correct:'9.1 liter'},
+    {q:'Sebuah tangki mengandungi 14.9 liter air. 9.3 liter digunakan. Berapakah baki air?',options:['6.1 liter','6.6 liter','5.1 liter','5.6 liter'],correct:'5.6 liter'},
+    {q:'Sebuah tangki mengandungi 7.3 liter air. 2.3 liter digunakan. Berapakah baki air?',options:['5.5 liter','6.0 liter','5.0 liter','4.5 liter'],correct:'5.0 liter'},
+    {q:'Sebuah tangki mengandungi 10.4 liter air. 6.1 liter digunakan. Berapakah baki air?',options:['5.3 liter','3.8 liter','4.8 liter','4.3 liter'],correct:'4.3 liter'},
+    {q:'Sebuah tangki mengandungi 13.2 liter air. 3.7 liter digunakan. Berapakah baki air?',options:['9.0 liter','9.5 liter','10.5 liter','10.0 liter'],correct:'9.5 liter'},
+    {q:'Sebuah tangki mengandungi 9.1 liter air. 5.9 liter digunakan. Berapakah baki air?',options:['3.7 liter','3.2 liter','4.2 liter','2.7 liter'],correct:'3.2 liter'},
+    {q:'Sebuah tangki mengandungi 12.8 liter air. 11.0 liter digunakan. Berapakah baki air?',options:['1.3 liter','1.8 liter','2.3 liter','2.8 liter'],correct:'1.8 liter'},
+    {q:'Isipadu sebuah kuboid dengan panjang 9 cm, lebar 6 cm dan tinggi 6 cm ialah?',options:['324 cm³','329 cm³','334 cm³','319 cm³'],correct:'324 cm³'},
+    {q:'Isipadu sebuah kuboid dengan panjang 5 cm, lebar 5 cm dan tinggi 5 cm ialah?',options:['135 cm³','120 cm³','130 cm³','125 cm³'],correct:'125 cm³'},
+    {q:'Isipadu sebuah kuboid dengan panjang 7 cm, lebar 10 cm dan tinggi 4 cm ialah?',options:['275 cm³','285 cm³','290 cm³','280 cm³'],correct:'280 cm³'},
+    {q:'Isipadu sebuah kuboid dengan panjang 10 cm, lebar 5 cm dan tinggi 10 cm ialah?',options:['505 cm³','495 cm³','510 cm³','500 cm³'],correct:'500 cm³'},
+    {q:'Apakah min (purata) bagi 35, 7, 30, 40?',options:['26','31','28','25'],correct:'28'},
+    {q:'Apakah min (purata) bagi 31, 18, 37, 46?',options:['30','31','35','33'],correct:'33'},
+    {q:'Apakah min (purata) bagi 47, 6, 10, 25?',options:['20','22','25','19'],correct:'22'},
+    {q:'Apakah min (purata) bagi 49, 6, 33, 20?',options:['27','24','30','25'],correct:'27'},
+  ],
+  'd5-bentuk-3d-isipadu': [
+    {q:'Isipadu sebuah kubus dengan sisi 2 cm ialah?',options:['28 cm³','18 cm³','8 cm³','-2 cm³'],correct:'8 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 9 cm ialah?',options:['739 cm³','719 cm³','729 cm³','749 cm³'],correct:'729 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 13 cm ialah?',options:['2207 cm³','2217 cm³','2197 cm³','2187 cm³'],correct:'2197 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 12 cm ialah?',options:['1718 cm³','1728 cm³','1738 cm³','1748 cm³'],correct:'1728 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 6 cm ialah?',options:['226 cm³','206 cm³','236 cm³','216 cm³'],correct:'216 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 3 cm ialah?',options:['27 cm³','17 cm³','47 cm³','37 cm³'],correct:'27 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 4 cm ialah?',options:['74 cm³','54 cm³','84 cm³','64 cm³'],correct:'64 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 14 cm ialah?',options:['2734 cm³','2764 cm³','2754 cm³','2744 cm³'],correct:'2744 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 8 cm ialah?',options:['532 cm³','502 cm³','512 cm³','522 cm³'],correct:'512 cm³'},
+    {q:'Isipadu sebuah kubus dengan sisi 7 cm ialah?',options:['333 cm³','363 cm³','343 cm³','353 cm³'],correct:'343 cm³'},
+    {q:'Isipadu sebuah kuboid 4 cm × 11 cm × 6 cm ialah?',options:['284 cm³','264 cm³','274 cm³','254 cm³'],correct:'264 cm³'},
+    {q:'Isipadu sebuah kuboid 5 cm × 3 cm × 10 cm ialah?',options:['170 cm³','160 cm³','140 cm³','150 cm³'],correct:'150 cm³'},
+    {q:'Isipadu sebuah kuboid 12 cm × 9 cm × 7 cm ialah?',options:['776 cm³','756 cm³','766 cm³','746 cm³'],correct:'756 cm³'},
+    {q:'Isipadu sebuah kuboid 4 cm × 11 cm × 5 cm ialah?',options:['220 cm³','230 cm³','210 cm³','240 cm³'],correct:'220 cm³'},
+    {q:'Isipadu sebuah kuboid 3 cm × 4 cm × 5 cm ialah?',options:['50 cm³','70 cm³','80 cm³','60 cm³'],correct:'60 cm³'},
+    {q:'Isipadu sebuah kuboid 2 cm × 3 cm × 4 cm ialah?',options:['44 cm³','34 cm³','14 cm³','24 cm³'],correct:'24 cm³'},
+    {q:'Isipadu sebuah kuboid 2 cm × 5 cm × 3 cm ialah?',options:['50 cm³','20 cm³','30 cm³','40 cm³'],correct:'30 cm³'},
+    {q:'Isipadu sebuah kuboid 2 cm × 6 cm × 7 cm ialah?',options:['74 cm³','84 cm³','94 cm³','104 cm³'],correct:'84 cm³'},
+    {q:'Isipadu sebuah kuboid 3 cm × 11 cm × 2 cm ialah?',options:['86 cm³','56 cm³','66 cm³','76 cm³'],correct:'66 cm³'},
+    {q:'Isipadu sebuah kuboid 10 cm × 10 cm × 4 cm ialah?',options:['390 cm³','400 cm³','420 cm³','410 cm³'],correct:'400 cm³'},
+  ],
+  'd5-data-carta-pai': [
+    {q:'Carta pai digunakan untuk menunjukkan?',options:['Perkadaran data dalam bentuk bulatan','Perubahan data mengikut masa','Bilangan sahaja','Data yang tidak berkaitan'],correct:'Perkadaran data dalam bentuk bulatan'},
+    {q:'Sebuah carta pai mewakili keseluruhan data sebagai?',options:['100% (bulatan penuh)','50%','25%','10%'],correct:'100% (bulatan penuh)'},
+    {q:'Jika sebuah carta pai menunjukkan 50% buah epal dan 50% buah oren daripada 40 buah, berapakah bilangan buah epal?',options:['20','10','30','40'],correct:'20'},
+    {q:'Jika sebuah carta pai menunjukkan 25% murid suka Matematik daripada 80 murid, berapakah bilangan murid yang suka Matematik?',options:['20','10','30','40'],correct:'20'},
+    {q:'Carta palang berbeza dengan carta pai kerana carta palang menggunakan?',options:['Palang untuk membandingkan data','Bulatan untuk membandingkan data','Simbol untuk membandingkan data','Warna sahaja'],correct:'Palang untuk membandingkan data'},
+    {q:'Jika carta pai menunjukkan 75% murid memilih bola sepak daripada 60 murid, berapakah bilangan murid yang memilih bola sepak?',options:['45','30','40','50'],correct:'45'},
+    {q:'Piktograf menggunakan simbol berulang untuk mewakili?',options:['Kuantiti data','Warna data','Bentuk data','Saiz data'],correct:'Kuantiti data'},
+    {q:'Jika satu simbol dalam piktograf mewakili 5 orang dan terdapat 4 simbol, berapakah jumlah orang yang diwakili?',options:['20','15','25','10'],correct:'20'},
+    {q:'Jika satu simbol dalam piktograf mewakili 10 buah kereta dan terdapat 6 simbol, berapakah jumlah kereta yang diwakili?',options:['60','50','70','40'],correct:'60'},
+    {q:'Data yang dikumpul daripada tinjauan biasanya dipaparkan dalam bentuk?',options:['Carta atau graf','Ayat panjang sahaja','Muzik','Lukisan'],correct:'Carta atau graf'},
+    {q:'Jika carta pai menunjukkan 40% murid suka membaca daripada 50 murid, berapakah bilangan murid yang suka membaca?',options:['20','15','25','10'],correct:'20'},
+    {q:'Manakah kegunaan utama carta pai berbanding carta palang?',options:['Menunjukkan perkadaran/peratusan bahagian dalam keseluruhan','Menunjukkan bilangan tepat sahaja','Menunjukkan warna sahaja','Menunjukkan masa sahaja'],correct:'Menunjukkan perkadaran/peratusan bahagian dalam keseluruhan'},
+    {q:'Jika carta pai menunjukkan 10% murid tidak suka sukan daripada 200 murid, berapakah bilangan murid itu?',options:['20','10','30','40'],correct:'20'},
+    {q:'Data mentah perlu disusun sebelum dipaparkan dalam graf supaya?',options:['Lebih mudah difahami dan dianalisis','Lebih sukar difahami','Kelihatan lebih rumit','Tiada sebab khusus'],correct:'Lebih mudah difahami dan dianalisis'},
+    {q:'Jika carta pai menunjukkan 60% murid memilih warna biru daripada 30 murid, berapakah bilangan murid yang memilih warna biru?',options:['18','15','20','12'],correct:'18'},
+    {q:'Manakah jenis graf yang paling sesuai untuk menunjukkan perubahan suhu sepanjang seminggu?',options:['Graf garis','Carta pai','Piktograf','Carta palang sahaja'],correct:'Graf garis'},
+    {q:'Jika carta pai menunjukkan 20% murid memilih makanan segera daripada 45 murid, berapakah bilangan murid itu (anggaran terdekat)?',options:['9','10','8','7'],correct:'9'},
+    {q:'Manakah label yang perlu ada pada setiap graf atau carta?',options:['Tajuk yang jelas','Warna terang sahaja','Muzik latar','Gambar hiasan sahaja'],correct:'Tajuk yang jelas'},
+    {q:'Jika carta pai menunjukkan 30% murid memilih basikal sebagai pengangkutan daripada 100 murid, berapakah bilangan murid itu?',options:['30','20','40','25'],correct:'30'},
+    {q:'Carta pai yang baik perlu mempunyai label peratusan pada setiap bahagian supaya?',options:['Mudah difahami perkadaran setiap bahagian','Kelihatan lebih berwarna sahaja','Lebih rumit untuk difahami','Tiada sebab khusus'],correct:'Mudah difahami perkadaran setiap bahagian'},
+  ],
+  'd6-nombor-10juta': [
+    {q:'Nombor manakah mewakili 4 232 460?',options:['4 232 460','4 132 460','4 332 460','4 242 460'],correct:'4 232 460'},
+    {q:'Nombor manakah mewakili 4 531 437?',options:['4 541 437','4 531 437','4 521 437','4 631 437'],correct:'4 531 437'},
+    {q:'Nombor manakah mewakili 5 019 139?',options:['5 119 139','4 919 139','5 009 139','5 019 139'],correct:'5 019 139'},
+    {q:'Nombor manakah mewakili 7 564 693?',options:['7 574 693','7 554 693','7 664 693','7 564 693'],correct:'7 564 693'},
+    {q:'Nombor manakah mewakili 2 707 945?',options:['2 807 945','2 717 945','2 697 945','2 707 945'],correct:'2 707 945'},
+    {q:'Nombor manakah mewakili 5 148 956?',options:['5 158 956','5 248 956','5 048 956','5 148 956'],correct:'5 148 956'},
+    {q:'Nombor manakah mewakili 6 730 946?',options:['6 730 946','6 720 946','6 630 946','6 740 946'],correct:'6 730 946'},
+    {q:'Nombor manakah mewakili 7 274 143?',options:['7 274 143','7 264 143','7 284 143','7 374 143'],correct:'7 274 143'},
+    {q:'Antara 9 060 868 dan 1 088 555  yang manakah lebih besar?',options:['9 110 868','1 138 555','9 060 868','9 010 868'],correct:'9 060 868'},
+    {q:'Antara 1 559 645 dan 4 308 665  yang manakah lebih besar?',options:['4 308 665','1 609 645','4 258 665','1 509 645'],correct:'4 308 665'},
+    {q:'Antara 1 335 814 dan 4 668 052  yang manakah lebih besar?',options:['1 385 814','4 718 052','4 668 052','1 285 814'],correct:'4 668 052'},
+    {q:'Antara 1 848 462 dan 6 211 898  yang manakah lebih besar?',options:['6 161 898','1 898 462','6 261 898','6 211 898'],correct:'6 211 898'},
+    {q:'Antara 5 568 808 dan 4 956 625  yang manakah lebih besar?',options:['5 006 625','4 906 625','5 568 808','5 518 808'],correct:'5 568 808'},
+    {q:'Antara 7 804 373 dan 6 477 414  yang manakah lebih besar?',options:['6 427 414','6 527 414','7 804 373','7 754 373'],correct:'7 804 373'},
+    {q:'Nilai digit 3 dalam 3 456 789 ialah?',options:['3 100 000','3 000 000','3 010 000','2 990 000'],correct:'3 000 000'},
+    {q:'Nilai digit 9 dalam 8 912 345 ialah?',options:['900 000','910 000','1 000 000','890 000'],correct:'900 000'},
+    {q:'Nilai digit 6 dalam 4 567 891 ialah?',options:['150 000','60 000','40 000','50 000'],correct:'60 000'},
+    {q:'Nilai digit 5 dalam 2 345 678 ialah?',options:['15 000','5 000','-5 000','105 000'],correct:'5 000'},
+    {q:'Nilai digit 0 dalam 6 789 012 ialah?',options:['100','0','50','10'],correct:'0'},
+    {q:'Nilai digit 7 dalam 1 234 567 ialah?',options:['7','-9 993','100 007','10 007'],correct:'7'},
+  ],
+  'd6-pecahan-perpuluhan-peratus': [
+    {q:'1/4 sebagai perpuluhan ialah?',options:['0.25','0.4','0.14','0.5'],correct:'0.25'},
+    {q:'0.6 sebagai pecahan paling ringkas ialah?',options:['3/5','2/3','1/2','6/10'],correct:'3/5'},
+    {q:'3/5 sebagai peratus ialah?',options:['60%','50%','30%','65%'],correct:'60%'},
+    {q:'75% sebagai pecahan paling ringkas ialah?',options:['3/4','1/4','2/3','7/5'],correct:'3/4'},
+    {q:'0.125 sebagai peratus ialah?',options:['12.5%','1.25%','125%','0.125%'],correct:'12.5%'},
+    {q:'1/2 + 3/4 = ?',options:['5/4 (atau 1 1/4)','4/6','2/6','1'],correct:'5/4 (atau 1 1/4)'},
+    {q:'30% daripada 120 = ?',options:['36','30','40','24'],correct:'36'},
+    {q:'2.5 + 3.25 = ?',options:['5.75','5.5','6.0','5.25'],correct:'5.75'},
+    {q:'9/20 sebagai peratus ialah?',options:['45%','40%','50%','90%'],correct:'45%'},
+    {q:'0.4 − 0.35 = ?',options:['0.05','0.5','0.15','0.75'],correct:'0.05'},
+    {q:'40% sebagai pecahan paling ringkas ialah?',options:['2/5','4/5','1/4','2/10'],correct:'2/5'},
+    {q:'3/8 sebagai peratus ialah?',options:['37.5%','38%','30%','35%'],correct:'37.5%'},
+    {q:'0.9 sebagai pecahan paling ringkas ialah?',options:['9/10','9/100','1/9','90/10'],correct:'9/10'},
+    {q:'60% daripada 250 = ?',options:['150','100','120','180'],correct:'150'},
+    {q:'1/8 sebagai perpuluhan ialah?',options:['0.125','0.18','0.8','0.08'],correct:'0.125'},
+    {q:'85% sebagai pecahan (bentuk paling ringkas mungkin sukar, guna /100) ialah?',options:['17/20','85/10','8.5/10','17/2'],correct:'17/20'},
+    {q:'1.5 × 4 = ?',options:['6','5.5','6.5','5'],correct:'6'},
+    {q:'7/10 - 2/5 = ? (samakan penyebut dahulu)',options:['3/10','5/10','1/2','2/5'],correct:'3/10'},
+    {q:'20% daripada 350 = ?',options:['70','60','80','50'],correct:'70'},
+    {q:'0.75 × 2 = ?',options:['1.5','1.75','2.5','1.25'],correct:'1.5'},
+  ],
+  'd6-wang-untung-rugi-diskaun': [
+    {q:'Seorang peniaga membeli barang dengan harga RM184 dan menjualnya dengan harga RM287. Berapakah peratus untung yang diperoleh?',options:['66%','76%','46%','56%'],correct:'56%'},
+    {q:'Seorang peniaga membeli barang dengan harga RM333 dan menjualnya dengan harga RM368. Berapakah peratus untung yang diperoleh?',options:['21%','31%','11%','1%'],correct:'11%'},
+    {q:'Seorang peniaga membeli barang dengan harga RM146 dan menjualnya dengan harga RM229. Berapakah peratus untung yang diperoleh?',options:['47%','67%','77%','57%'],correct:'57%'},
+    {q:'Seorang peniaga membeli barang dengan harga RM192 dan menjualnya dengan harga RM258. Berapakah peratus untung yang diperoleh?',options:['54%','24%','44%','34%'],correct:'34%'},
+    {q:'Seorang peniaga membeli barang dengan harga RM465 dan menjualnya dengan harga RM552. Berapakah peratus untung yang diperoleh?',options:['29%','19%','39%','9%'],correct:'19%'},
+    {q:'Seorang peniaga membeli barang dengan harga RM240 dan menjualnya dengan harga RM340. Berapakah peratus untung yang diperoleh?',options:['42%','32%','52%','62%'],correct:'42%'},
+    {q:'Harga asal sebuah peranti ialah RM194. Diskaun 25% diberikan. Harga selepas diskaun ialah?',options:['RM145','RM125','RM165','RM185'],correct:'RM145'},
+    {q:'Harga asal sebuah peranti ialah RM329. Diskaun 30% diberikan. Harga selepas diskaun ialah?',options:['RM270','RM210','RM230','RM250'],correct:'RM230'},
+    {q:'Harga asal sebuah peranti ialah RM151. Diskaun 15% diberikan. Harga selepas diskaun ialah?',options:['RM128','RM168','RM148','RM108'],correct:'RM128'},
+    {q:'Harga asal sebuah peranti ialah RM783. Diskaun 30% diberikan. Harga selepas diskaun ialah?',options:['RM568','RM588','RM528','RM548'],correct:'RM548'},
+    {q:'Harga asal sebuah peranti ialah RM622. Diskaun 40% diberikan. Harga selepas diskaun ialah?',options:['RM393','RM373','RM413','RM353'],correct:'RM373'},
+    {q:'Harga asal sebuah peranti ialah RM130. Diskaun 25% diberikan. Harga selepas diskaun ialah?',options:['RM77','RM117','RM97','RM137'],correct:'RM97'},
+    {q:'Harga asal sebuah peranti ialah RM102. Diskaun 30% diberikan. Harga selepas diskaun ialah?',options:['RM91','RM111','RM51','RM71'],correct:'RM71'},
+    {q:'Harga asal sebuah peranti ialah RM260. Diskaun 40% diberikan. Harga selepas diskaun ialah?',options:['RM136','RM176','RM156','RM196'],correct:'RM156'},
+    {q:'Seorang peniaga membeli barang dengan harga RM127 dan terpaksa menjualnya dengan harga RM68. Berapakah rugi yang dialami?',options:['RM59','RM79','RM49','RM69'],correct:'RM59'},
+    {q:'Seorang peniaga membeli barang dengan harga RM84 dan terpaksa menjualnya dengan harga RM68. Berapakah rugi yang dialami?',options:['RM6','RM36','RM16','RM26'],correct:'RM16'},
+    {q:'Seorang peniaga membeli barang dengan harga RM261 dan terpaksa menjualnya dengan harga RM229. Berapakah rugi yang dialami?',options:['RM42','RM32','RM22','RM52'],correct:'RM32'},
+    {q:'Seorang peniaga membeli barang dengan harga RM183 dan terpaksa menjualnya dengan harga RM111. Berapakah rugi yang dialami?',options:['RM62','RM92','RM82','RM72'],correct:'RM72'},
+    {q:'Seorang peniaga membeli barang dengan harga RM123 dan terpaksa menjualnya dengan harga RM84. Berapakah rugi yang dialami?',options:['RM39','RM49','RM59','RM29'],correct:'RM39'},
+    {q:'Seorang peniaga membeli barang dengan harga RM175 dan terpaksa menjualnya dengan harga RM162. Berapakah rugi yang dialami?',options:['RM33','RM3','RM23','RM13'],correct:'RM13'},
+  ],
+  'd6-masa-kelajuan': [
+    {q:'Sebuah kereta melalui jarak 80 km dalam masa 2 jam. Berapakah kelajuan purata kereta itu?',options:['30 km/j','50 km/j','60 km/j','40 km/j'],correct:'40 km/j'},
+    {q:'Sebuah kereta melalui jarak 300 km dalam masa 3 jam. Berapakah kelajuan purata kereta itu?',options:['120 km/j','90 km/j','110 km/j','100 km/j'],correct:'100 km/j'},
+    {q:'Sebuah kereta melalui jarak 300 km dalam masa 4 jam. Berapakah kelajuan purata kereta itu?',options:['85 km/j','95 km/j','75 km/j','65 km/j'],correct:'75 km/j'},
+    {q:'Sebuah kereta melalui jarak 60 km dalam masa 4 jam. Berapakah kelajuan purata kereta itu?',options:['5 km/j','35 km/j','25 km/j','15 km/j'],correct:'15 km/j'},
+    {q:'Sebuah kereta melalui jarak 240 km dalam masa 2 jam. Berapakah kelajuan purata kereta itu?',options:['130 km/j','120 km/j','110 km/j','140 km/j'],correct:'120 km/j'},
+    {q:'Sebuah kereta melalui jarak 60 km dalam masa 3 jam. Berapakah kelajuan purata kereta itu?',options:['10 km/j','40 km/j','30 km/j','20 km/j'],correct:'20 km/j'},
+    {q:'Sebuah kereta melalui jarak 150 km dalam masa 3 jam. Berapakah kelajuan purata kereta itu?',options:['60 km/j','50 km/j','70 km/j','40 km/j'],correct:'50 km/j'},
+    {q:'Sebuah bas bergerak dengan kelajuan 70 km/j selama 3 jam. Berapa jauh jarak yang dilalui?',options:['190 km','210 km','230 km','250 km'],correct:'210 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 50 km/j selama 4 jam. Berapa jauh jarak yang dilalui?',options:['220 km','200 km','240 km','180 km'],correct:'200 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 90 km/j selama 7 jam. Berapa jauh jarak yang dilalui?',options:['670 km','650 km','630 km','610 km'],correct:'630 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 40 km/j selama 2 jam. Berapa jauh jarak yang dilalui?',options:['60 km','120 km','80 km','100 km'],correct:'80 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 60 km/j selama 6 jam. Berapa jauh jarak yang dilalui?',options:['360 km','380 km','400 km','340 km'],correct:'360 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 90 km/j selama 4 jam. Berapa jauh jarak yang dilalui?',options:['340 km','380 km','360 km','400 km'],correct:'360 km'},
+    {q:'Sebuah bas bergerak dengan kelajuan 80 km/j selama 3 jam. Berapa jauh jarak yang dilalui?',options:['260 km','240 km','280 km','220 km'],correct:'240 km'},
+    {q:'Jarak 300 km hendak dilalui dengan kelajuan 75 km/j. Berapa lamakah masa yang diperlukan?',options:['5 jam','3 jam','6 jam','4 jam'],correct:'4 jam'},
+    {q:'Jarak 100 km hendak dilalui dengan kelajuan 100 km/j. Berapa lamakah masa yang diperlukan?',options:['0 jam','3 jam','1 jam','2 jam'],correct:'1 jam'},
+    {q:'Jarak 150 km hendak dilalui dengan kelajuan 50 km/j. Berapa lamakah masa yang diperlukan?',options:['3 jam','4 jam','5 jam','2 jam'],correct:'3 jam'},
+    {q:'Jarak 200 km hendak dilalui dengan kelajuan 50 km/j. Berapa lamakah masa yang diperlukan?',options:['3 jam','5 jam','6 jam','4 jam'],correct:'4 jam'},
+    {q:'Jarak 150 km hendak dilalui dengan kelajuan 75 km/j. Berapa lamakah masa yang diperlukan?',options:['1 jam','2 jam','4 jam','3 jam'],correct:'2 jam'},
+    {q:'Jarak 250 km hendak dilalui dengan kelajuan 50 km/j. Berapa lamakah masa yang diperlukan?',options:['4 jam','5 jam','7 jam','6 jam'],correct:'5 jam'},
+  ],
+  'd6-rasio-kadar': [
+    {q:'RM30 dibahagikan antara Ali dan Bakar dengan nisbah 1:2. Berapakah bahagian yang lebih besar?',options:['RM15','RM30','RM20','RM25'],correct:'RM20'},
+    {q:'RM40 dibahagikan antara Ali dan Bakar dengan nisbah 1:3. Berapakah bahagian yang lebih besar?',options:['RM30','RM40','RM25','RM35'],correct:'RM30'},
+    {q:'RM50 dibahagikan antara Ali dan Bakar dengan nisbah 2:3. Berapakah bahagian yang lebih besar?',options:['RM35','RM30','RM25','RM40'],correct:'RM30'},
+    {q:'RM60 dibahagikan antara Ali dan Bakar dengan nisbah 1:5. Berapakah bahagian yang lebih besar?',options:['RM45','RM60','RM50','RM55'],correct:'RM50'},
+    {q:'RM80 dibahagikan antara Ali dan Bakar dengan nisbah 3:5. Berapakah bahagian yang lebih besar?',options:['RM50','RM60','RM45','RM55'],correct:'RM50'},
+    {q:'RM100 dibahagikan antara Ali dan Bakar dengan nisbah 2:3. Berapakah bahagian yang lebih besar?',options:['RM65','RM70','RM60','RM55'],correct:'RM60'},
+    {q:'RM45 dibahagikan antara Ali dan Bakar dengan nisbah 1:2. Berapakah bahagian yang lebih besar?',options:['RM35','RM25','RM30','RM40'],correct:'RM30'},
+    {q:'RM63 dibahagikan antara Ali dan Bakar dengan nisbah 2:5. Berapakah bahagian yang lebih besar?',options:['RM45','RM50','RM40','RM55'],correct:'RM45'},
+    {q:'RM72 dibahagikan antara Ali dan Bakar dengan nisbah 1:3. Berapakah bahagian yang lebih besar?',options:['RM54','RM59','RM64','RM49'],correct:'RM54'},
+    {q:'RM90 dibahagikan antara Ali dan Bakar dengan nisbah 4:5. Berapakah bahagian yang lebih besar?',options:['RM50','RM45','RM55','RM60'],correct:'RM50'},
+    {q:'Nisbah 2:4 boleh dipermudahkan kepada?',options:['1:2','2:1','1:4','4:1'],correct:'1:2'},
+    {q:'Nisbah 6:9 boleh dipermudahkan kepada?',options:['2:3','3:2','1:3','6:9 sudah paling ringkas'],correct:'2:3'},
+    {q:'Jika nisbah lelaki kepada perempuan dalam kelas ialah 3:2 dan jumlah murid ialah 25, berapakah bilangan murid lelaki?',options:['15','10','12','13'],correct:'15'},
+    {q:'Kadar ialah perbandingan antara dua kuantiti dengan unit yang?',options:['Berbeza','Sama','Tiada unit','Tidak penting'],correct:'Berbeza'},
+    {q:'Jika sebuah kereta bergerak 240 km dalam 4 jam, apakah kadar (kelajuan) kereta itu?',options:['60 km/j','50 km/j','70 km/j','80 km/j'],correct:'60 km/j'},
+    {q:'Jika harga 5 biji epal ialah RM10, apakah kadar harga sebiji epal?',options:['RM2','RM1','RM3','RM5'],correct:'RM2'},
+    {q:'Nisbah digunakan untuk membandingkan?',options:['Dua atau lebih kuantiti','Hanya satu kuantiti','Warna sahaja','Bentuk sahaja'],correct:'Dua atau lebih kuantiti'},
+    {q:'Jika nisbah kucing kepada anjing di sebuah rumah ialah 1:3 dan terdapat 12 anjing, berapakah bilangan kucing?',options:['4','3','6','12'],correct:'4'},
+    {q:'Jika nisbah biru kepada merah ialah 3:4 dan jumlah kelereng ialah 35, berapakah bilangan kelereng biru?',options:['15','20','12','18'],correct:'15'},
+    {q:'Jika nisbah tinggi kepada rendah ialah 5:3 dan jumlah murid ialah 40, berapakah bilangan murid tinggi?',options:['25','15','20','30'],correct:'25'},
+  ],
+  'd6-ruang-bulatan': [
+    {q:'Lilitan sebuah bulatan dengan jejari 35 cm ialah? (guna π = 22/7)',options:['220 cm','228 cm','216 cm','224 cm'],correct:'220 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 14 cm ialah? (guna π = 22/7)',options:['92 cm','84 cm','88 cm','96 cm'],correct:'88 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 56 cm ialah? (guna π = 22/7)',options:['356 cm','352 cm','348 cm','360 cm'],correct:'352 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 49 cm ialah? (guna π = 22/7)',options:['308 cm','316 cm','304 cm','312 cm'],correct:'308 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 28 cm ialah? (guna π = 22/7)',options:['184 cm','172 cm','180 cm','176 cm'],correct:'176 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 42 cm ialah? (guna π = 22/7)',options:['260 cm','264 cm','272 cm','268 cm'],correct:'264 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 21 cm ialah? (guna π = 22/7)',options:['132 cm','136 cm','128 cm','140 cm'],correct:'132 cm'},
+    {q:'Lilitan sebuah bulatan dengan jejari 7 cm ialah? (guna π = 22/7)',options:['48 cm','44 cm','40 cm','52 cm'],correct:'44 cm'},
+    {q:'Diameter sebuah bulatan dengan jejari 7 cm ialah?',options:['22 cm','18 cm','14 cm','10 cm'],correct:'14 cm'},
+    {q:'Diameter sebuah bulatan dengan jejari 14 cm ialah?',options:['28 cm','24 cm','36 cm','32 cm'],correct:'28 cm'},
+    {q:'Diameter sebuah bulatan dengan jejari 21 cm ialah?',options:['46 cm','50 cm','42 cm','38 cm'],correct:'42 cm'},
+    {q:'Diameter sebuah bulatan dengan jejari 28 cm ialah?',options:['64 cm','60 cm','56 cm','52 cm'],correct:'56 cm'},
+    {q:'Diameter sebuah bulatan dengan jejari 35 cm ialah?',options:['70 cm','78 cm','66 cm','74 cm'],correct:'70 cm'},
+    {q:'Jejari ialah?',options:['Jarak dari pusat ke tepi bulatan','Jarak keliling bulatan','Dua kali diameter','Luas bulatan'],correct:'Jarak dari pusat ke tepi bulatan'},
+    {q:'Diameter ialah?',options:['Dua kali jejari','Separuh jejari','Lilitan bulatan','Luas bulatan'],correct:'Dua kali jejari'},
+    {q:'Jika jejari sebuah bulatan ialah 10 cm, apakah diameternya?',options:['20 cm','10 cm','5 cm','40 cm'],correct:'20 cm'},
+    {q:'Jika diameter sebuah bulatan ialah 30 cm, apakah jejarinya?',options:['15 cm','30 cm','60 cm','10 cm'],correct:'15 cm'},
+    {q:'Formula lilitan bulatan ialah?',options:['2πr (atau πd)','πr²','2(l+w)','l×w'],correct:'2πr (atau πd)'},
+    {q:'Jika lilitan sebuah bulatan ialah 44 cm (guna π=22/7), apakah jejarinya?',options:['7 cm','14 cm','22 cm','44 cm'],correct:'7 cm'},
+    {q:'Roda basikal berbentuk bulatan dengan jejari 35 cm. Berapakah lilitan roda itu? (guna π=22/7)',options:['220 cm','200 cm','240 cm','180 cm'],correct:'220 cm'},
+  ],
+  'd6-algebra-asas': [
+    {q:'x + 4 = 28. Nilai x ialah?',options:['21','22','26','24'],correct:'24'},
+    {q:'x + 7 = 9. Nilai x ialah?',options:['5','-1','4','2'],correct:'2'},
+    {q:'x + 5 = 14. Nilai x ialah?',options:['12','11','9','6'],correct:'9'},
+    {q:'x + 2 = 25. Nilai x ialah?',options:['25','20','23','21'],correct:'23'},
+    {q:'x + 19 = 47. Nilai x ialah?',options:['28','26','30','31'],correct:'28'},
+    {q:'x + 17 = 36. Nilai x ialah?',options:['19','22','17','21'],correct:'19'},
+    {q:'x + 18 = 29. Nilai x ialah?',options:['8','11','9','14'],correct:'11'},
+    {q:'x + 13 = 26. Nilai x ialah?',options:['10','15','13','11'],correct:'13'},
+    {q:'x + 13 = 16. Nilai x ialah?',options:['3','5','6','1'],correct:'3'},
+    {q:'x + 9 = 12. Nilai x ialah?',options:['3','1','6','0'],correct:'3'},
+    {q:'7x = 91. Nilai x ialah?',options:['14','13','15','11'],correct:'13'},
+    {q:'5x = 60. Nilai x ialah?',options:['13','14','12','11'],correct:'12'},
+    {q:'7x = 70. Nilai x ialah?',options:['8','10','12','9'],correct:'10'},
+    {q:'10x = 140. Nilai x ialah?',options:['13','15','14','12'],correct:'14'},
+    {q:'9x = 162. Nilai x ialah?',options:['19','17','18','20'],correct:'18'},
+    {q:'2x = 8. Nilai x ialah?',options:['3','4','6','2'],correct:'4'},
+    {q:'9x = 135. Nilai x ialah?',options:['16','15','13','17'],correct:'15'},
+    {q:'4x = 52. Nilai x ialah?',options:['12','11','13','14'],correct:'13'},
+    {q:'10x = 130. Nilai x ialah?',options:['15','13','12','14'],correct:'13'},
+    {q:'2x = 10. Nilai x ialah?',options:['3','4','7','5'],correct:'5'},
+  ],
+  'd6-data-statistik': [
+    {q:'Apakah min (purata) bagi 80, 56, 95, 33, 51?',options:['63','68','58','66'],correct:'63'},
+    {q:'Apakah min (purata) bagi 68, 83, 43, 54?',options:['57','67','65','62'],correct:'62'},
+    {q:'Apakah min (purata) bagi 82, 32, 87, 53, 76?',options:['63','69','71','66'],correct:'66'},
+    {q:'Apakah min (purata) bagi 58, 22, 23, 77?',options:['48','42','50','45'],correct:'45'},
+    {q:'Apakah min (purata) bagi 62, 34, 55, 33?',options:['49','43','51','46'],correct:'46'},
+    {q:'Apakah min (purata) bagi 25, 72, 59, 62, 67?',options:['62','54','60','57'],correct:'57'},
+    {q:'Apakah min (purata) bagi 68, 66, 94, 24?',options:['60','68','58','63'],correct:'63'},
+    {q:'Apakah min (purata) bagi 30, 56, 49, 97, 33?',options:['48','53','56','50'],correct:'53'},
+    {q:'Median ialah?',options:['Nilai tengah dalam set data yang telah disusun','Nilai purata','Nilai yang paling kerap muncul','Perbezaan nilai terbesar dan terkecil'],correct:'Nilai tengah dalam set data yang telah disusun'},
+    {q:'Mod ialah?',options:['Nilai yang paling kerap muncul dalam set data','Nilai tengah','Nilai purata','Jumlah semua nilai'],correct:'Nilai yang paling kerap muncul dalam set data'},
+    {q:'Julat ialah?',options:['Perbezaan antara nilai terbesar dan terkecil','Nilai purata','Nilai tengah','Nilai yang paling kerap muncul'],correct:'Perbezaan antara nilai terbesar dan terkecil'},
+    {q:'Data: 3, 5, 7, 9, 11. Apakah median bagi data ini?',options:['7','5','9','6'],correct:'7'},
+    {q:'Data: 2, 4, 4, 6, 8. Apakah mod bagi data ini?',options:['4','2','6','8'],correct:'4'},
+    {q:'Data: 10, 15, 20, 25. Apakah julat bagi data ini?',options:['15','10','20','25'],correct:'15'},
+    {q:'Data: 4, 8, 12. Apakah min bagi data ini?',options:['8','4','12','6'],correct:'8'},
+    {q:'Manakah graf yang paling sesuai untuk menunjukkan trend/perubahan data dari semasa ke semasa?',options:['Graf garis','Carta pai','Piktograf','Carta palang sahaja'],correct:'Graf garis'},
+    {q:'Statistik digunakan untuk?',options:['Mengumpul, menganalisis dan mentafsir data','Hanya mengumpul data tanpa analisis','Mencipta data rekaan','Tiada kegunaan khusus'],correct:'Mengumpul, menganalisis dan mentafsir data'},
+    {q:'Data: 5, 5, 7, 9, 9, 9. Apakah mod bagi data ini?',options:['9','5','7','8'],correct:'9'},
+    {q:'Median berbeza daripada min kerana median?',options:['Merujuk nilai tengah, bukan hasil pembahagian jumlah','Sentiasa sama dengan min','Tidak berkaitan dengan data','Hanya untuk data genap'],correct:'Merujuk nilai tengah, bukan hasil pembahagian jumlah'},
+    {q:'Data: 1, 2, 3, 4, 5, 6. Kerana bilangan data genap, median dikira dengan?',options:['Purata dua nilai tengah','Nilai terbesar sahaja','Nilai terkecil sahaja','Jumlah semua nilai'],correct:'Purata dua nilai tengah'},
+  ],
+};var TOPIC_META = {
+  'd1-nombor-0-100': {title:'Nombor 0-100', darjah:'Darjah 1', emoji:'🔢'},
+  'd1-tambah-tolak-100': {title:'Tambah & Tolak dalam 100', darjah:'Darjah 1', emoji:'➕'},
+  'd1-wang-asas': {title:'Wang Asas', darjah:'Darjah 1', emoji:'💰'},
+  'd1-masa': {title:'Masa (Jam, Hari, Bulan)', darjah:'Darjah 1', emoji:'🕐'},
+  'd1-bentuk-2d-3d': {title:'Bentuk 2D & 3D Asas', darjah:'Darjah 1', emoji:'🔺'},
+  'd1-ukuran-perbandingan': {title:'Ukuran (Perbandingan)', darjah:'Darjah 1', emoji:'📏'},
+  'd2-nombor-1000': {title:'Nombor hingga 1000', darjah:'Darjah 2', emoji:'🔢'},
+  'd2-empat-operasi-asas': {title:'Empat Operasi Asas', darjah:'Darjah 2', emoji:'➗'},
+  'd2-wang-rm100': {title:'Wang hingga RM100', darjah:'Darjah 2', emoji:'💰'},
+  'd2-masa-jadual': {title:'Masa & Jadual Waktu', darjah:'Darjah 2', emoji:'🕐'},
+  'd2-ukuran-piawai': {title:'Ukuran (Unit Piawai)', darjah:'Darjah 2', emoji:'📏'},
+  'd2-bentuk-sifat': {title:'Bentuk 2D & 3D (Sifat)', darjah:'Darjah 2', emoji:'🔺'},
+  'd3-nombor-10000': {title:'Nombor hingga 10 000', darjah:'Darjah 3', emoji:'🔢'},
+  'd3-empat-operasi': {title:'Empat Operasi (Gabungan)', darjah:'Darjah 3', emoji:'➗'},
+  'd3-pecahan-asas': {title:'Pecahan Asas', darjah:'Darjah 3', emoji:'🍕'},
+  'd3-wang-rm1000': {title:'Wang hingga RM1000', darjah:'Darjah 3', emoji:'💰'},
+  'd3-masa-tempoh': {title:'Masa & Tempoh Masa', darjah:'Darjah 3', emoji:'🕐'},
+  'd3-perimeter-asas': {title:'Perimeter Asas', darjah:'Darjah 3', emoji:'📐'},
+  'd4-nombor-100000': {title:'Nombor hingga 100 000', darjah:'Darjah 4', emoji:'🔢'},
+  'd4-operasi-bergabung': {title:'Operasi Bergabung', darjah:'Darjah 4', emoji:'🧮'},
+  'd4-pecahan-operasi': {title:'Pecahan & Operasi', darjah:'Darjah 4', emoji:'🍕'},
+  'd4-perpuluhan-asas': {title:'Perpuluhan Asas', darjah:'Darjah 4', emoji:'🔟'},
+  'd4-wang-pengurusan': {title:'Wang (Pengurusan)', darjah:'Darjah 4', emoji:'💰'},
+  'd4-masa-24jam': {title:'Masa (Format 24 Jam)', darjah:'Darjah 4', emoji:'🕐'},
+  'd4-perimeter-luas': {title:'Perimeter & Luas', darjah:'Darjah 4', emoji:'📐'},
+  'd4-purata-data': {title:'Purata (Min) & Data', darjah:'Darjah 4', emoji:'📊'},
+  'd5-nombor-1juta': {title:'Nombor hingga 1 Juta', darjah:'Darjah 5', emoji:'🔢'},
+  'd5-pecahan-lanjutan': {title:'Pecahan Lanjutan', darjah:'Darjah 5', emoji:'🍕'},
+  'd5-perpuluhan': {title:'Perpuluhan', darjah:'Darjah 5', emoji:'🔟'},
+  'd5-peratus-asas': {title:'Peratus Asas', darjah:'Darjah 5', emoji:'💯'},
+  'd5-wang-untung-rugi': {title:'Wang (Untung/Rugi/Diskaun)', darjah:'Darjah 5', emoji:'💰'},
+  'd5-ruang-isipadu': {title:'Ruang (Isipadu Cecair)', darjah:'Darjah 5', emoji:'🧊'},
+  'd5-bentuk-3d-isipadu': {title:'Bentuk 3D (Isipadu)', darjah:'Darjah 5', emoji:'📦'},
+  'd5-data-carta-pai': {title:'Data & Carta Pai', darjah:'Darjah 5', emoji:'📊'},
+  'd6-nombor-10juta': {title:'Nombor hingga 10 Juta', darjah:'Darjah 6', emoji:'🔢'},
+  'd6-pecahan-perpuluhan-peratus': {title:'Pecahan/Perpuluhan/Peratus', darjah:'Darjah 6', emoji:'🔀'},
+  'd6-wang-untung-rugi-diskaun': {title:'Wang (Untung/Rugi/Diskaun)', darjah:'Darjah 6', emoji:'💰'},
+  'd6-masa-kelajuan': {title:'Masa & Kelajuan', darjah:'Darjah 6', emoji:'🚗'},
+  'd6-ruang-bulatan': {title:'Ruang (Bulatan)', darjah:'Darjah 6', emoji:'⭕'},
+  'd6-rasio-kadar': {title:'Rasio & Kadar', darjah:'Darjah 6', emoji:'⚖️'},
+  'd6-algebra-asas': {title:'Algebra Asas', darjah:'Darjah 6', emoji:'✖️'},
+  'd6-data-statistik': {title:'Data & Statistik', darjah:'Darjah 6', emoji:'📊'},
+};
+
+/* ===================== SOUND ENGINE ===================== */
+let soundOn = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function ensureCtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+function beep({freq=440, dur=0.15, type='sine', gain=0.2, delay=0}){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+function sfxCorrect(){
+  beep({freq:523.25, dur:0.12, type:'triangle', gain:0.22});
+  beep({freq:659.25, dur:0.12, type:'triangle', gain:0.22, delay:0.1});
+  beep({freq:783.99, dur:0.18, type:'triangle', gain:0.24, delay:0.2});
+}
+function sfxWrong(){
+  beep({freq:220, dur:0.18, type:'sawtooth', gain:0.18});
+  beep({freq:164.81, dur:0.25, type:'sawtooth', gain:0.18, delay:0.14});
+}
+function sfxClick(){ beep({freq:600, dur:0.05, type:'square', gain:0.08}); }
+function sfxTick(){ beep({freq:880, dur:0.045, type:'square', gain:0.06}); }
+function sfxTimeUp(){
+  beep({freq:180, dur:0.3, type:'sawtooth', gain:0.2});
+  beep({freq:140, dur:0.4, type:'sawtooth', gain:0.2, delay:0.2});
+}
+function sfxFanfare(){
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep({freq:f,dur:0.22,type:'triangle',gain:0.22,delay:i*0.13}));
+}
+
+/* ===================== LOAD TOPIC ===================== */
+const params = new URLSearchParams(window.location.search);
+const topicId = params.get('topic') || Object.keys(TOPIC_BANKS)[0];
+const meta = TOPIC_META[topicId] || {title:'Latihan Matematik', darjah:'', emoji:'🔬'};
+let QUESTIONS = (TOPIC_BANKS[topicId] || []).slice();
+
+document.getElementById('coverTitle').textContent = meta.emoji + ' ' + meta.title;
+document.getElementById('coverEyebrow').textContent = 'Buku Latihan · ' + meta.darjah;
+document.getElementById('coverSub').textContent = QUESTIONS.length + ' soalan · 30 saat/soalan';
+document.getElementById('coverStamp').innerHTML = meta.darjah.replace('Darjah ','D') + '<br>MATEMATIK';
+document.getElementById('footerText').textContent = meta.title + ' · Matematik · Study Buddy';
+document.title = meta.title + ' — Latihan Matematik';
+
+const LETTERS = ['A','B','C','D'];
+
+/* ===================== STATE ===================== */
+let currentIndex = 0;
+let score = 0;
+let selectedAnswers = [];
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+const TIME_LIMIT = 30;
+
+const startCard = document.getElementById('startCard');
+const startBtn = document.getElementById('startBtn');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+
+const expTag = document.getElementById('expTag');
+const qNum = document.getElementById('qNum');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const scoreVal = document.getElementById('scoreVal');
+const qCounter = document.getElementById('qCounter');
+const progressBar = document.getElementById('progressBar');
+const soundToggle = document.getElementById('soundToggle');
+const timerBox = document.getElementById('timerBox');
+const timerBar = document.getElementById('timerBar');
+const timeVal = document.getElementById('timeVal');
+
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ ensureCtx(); sfxClick(); }
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureCtx();
+  sfxClick();
+  startCard.style.display = 'none';
+  quizArea.style.display = 'block';
+  QUESTIONS = shuffle(QUESTIONS);
+  currentIndex = 0; score = 0; selectedAnswers = [];
+  scoreVal.textContent = 0;
+  loadQuestion();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  timerBox.classList.remove('low');
+  updateTimerUI();
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft <= 5 && timeLeft > 0){ sfxTick(); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      sfxTimeUp();
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimerUI(){
+  timeVal.textContent = timeLeft;
+  const pct = Math.max(0,(timeLeft/TIME_LIMIT)*100);
+  timerBar.style.width = pct + '%';
+  timerBox.classList.toggle('low', timeLeft <= 5);
+}
+
+function loadQuestion(){
+  answered = false;
+  feedback.classList.remove('show','good','bad');
+  nextBtn.classList.remove('show');
+  const q = QUESTIONS[currentIndex];
+
+  expTag.textContent = meta.title;
+  qNum.textContent = 'Soalan ' + (currentIndex+1);
+  qText.textContent = q.q;
+  qCounter.textContent = `${currentIndex+1}/${QUESTIONS.length}`;
+  progressBar.style.width = ((currentIndex)/QUESTIONS.length*100) + '%';
+
+  optionsWrap.innerHTML = '';
+  const order = shuffle(q.options);
+  q._order = order;
+
+  order.forEach((optText, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx] || (idx+1)}</span><span>${optText}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(btn, optText));
+    optionsWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function selectAnswer(btn, chosenText){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+  const q = QUESTIONS[currentIndex];
+  const isCorrect = chosenText === q.correct;
+
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+    else if(el === btn){ el.classList.add('wrong'); }
+  });
+
+  if(isCorrect){
+    score++;
+    scoreVal.textContent = score;
+    sfxCorrect();
+    feedback.classList.add('show','good');
+    feedback.innerHTML = `<b>Betul! 🎉</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  } else {
+    sfxWrong();
+    feedback.classList.add('show','bad');
+    feedback.innerHTML = `<b>Bukan tu.</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  }
+
+  selectedAnswers.push({ q, correct: isCorrect, chosen: chosenText });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  nextBtn.focus();
+}
+
+function handleTimeout(){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+  });
+  feedback.classList.add('show','bad');
+  feedback.innerHTML = `<b>Masa tamat! ⏰</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  selectedAnswers.push({ q, correct:false, chosen: null });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex++;
+  if(currentIndex >= QUESTIONS.length){
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult(){
+  clearInterval(timer);
+  progressBar.style.width = '100%';
+  quizArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  const resultEmoji = document.getElementById('resultEmoji');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMsg = document.getElementById('resultMsg');
+  document.getElementById('resultScore').textContent = score + ' / ' + QUESTIONS.length;
+
+  if(pct >= 80){
+    resultEmoji.textContent = '🏆';
+    resultTitle.textContent = 'Syabas, Faham Betul!';
+    resultMsg.textContent = 'Konsep ' + meta.title + ' demo dah mantap!';
+    sfxFanfare();
+  } else if(pct >= 50){
+    resultEmoji.textContent = '👍';
+    resultTitle.textContent = 'Dah Faham Sikit!';
+    resultMsg.textContent = 'Baca balik jawapan yang salah tadi, lepas tu try lagi sekali.';
+  } else {
+    resultEmoji.textContent = '💪';
+    resultTitle.textContent = 'Jangan Give Up!';
+    resultMsg.textContent = 'Baca balik penjelasan yang salah tadi, lepas tu try lagi sekali.';
+  }
+
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;color:#5a5346;">RINGKASAN JAWAPAN</div>';
+  selectedAnswers.forEach((a,i)=>{
+    const div = document.createElement('div');
+    div.className = 'breakdown-item';
+    const mark = a.correct ? '✅' : '❌';
+    let html = `<div class="row"><span class="mark">${mark}</span><span>${i+1}. ${a.q.q}</span></div>`;
+    if(!a.correct){
+      const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
+      html += `<div class="answer-detail">
+        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="rightans">Jawapan betul:</span> ${a.q.correct}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+    breakdown.appendChild(div);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  sfxClick();
+  resultArea.style.display = 'none';
+  startCard.style.display = 'block';
+});
+document.getElementById('homeBtn').addEventListener('click', ()=>{
+  window.location.href = 'math-latihan-hub.html';
+});
+</script>
+</body>
+</html>

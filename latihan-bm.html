@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Bahasa Melayu — Buku Latihan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sriracha&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#f2ece0;
+    --paper-line:#d0c3a5;
+    --ink:#2a2620;
+    --plum:#5c3d5c;
+    --plum-mid:#8a6a8a;
+    --plum-light:#d3c0d3;
+    --teal:#3a7d6e;
+    --teal-dark:#2a5c50;
+    --amber:#d9932b;
+    --card:#fffdf7;
+    --shadow:rgba(42,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 34px, var(--paper-line) 35px),
+      var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+    padding:26px 14px 60px;
+  }
+  .book{ width:100%; max-width:660px; }
+
+  .back-link{
+    display:inline-block; margin-bottom:12px; font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:13px; color:var(--plum); text-decoration:none;
+  }
+
+  .cover{
+    background:var(--card);
+    border:2px solid var(--ink);
+    border-radius:6px;
+    box-shadow:6px 6px 0 var(--shadow);
+    padding:22px 24px 18px;
+    position:relative;
+    margin-bottom:18px;
+  }
+  .cover::before{
+    content:"";
+    position:absolute; left:16px; top:0; bottom:0; width:2px;
+    background:repeating-linear-gradient(0deg,var(--amber) 0 8px, transparent 8px 16px);
+    opacity:0.5;
+  }
+  .stamp{
+    position:absolute; top:14px; right:18px;
+    width:66px; height:66px;
+    border:3px solid var(--plum);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-12deg);
+    color:var(--plum);
+    font-family:'Sriracha',cursive;
+    font-size:11.5px; text-align:center; line-height:1.15;
+    opacity:0.85;
+  }
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase;
+    font-size:11px; color:var(--teal-dark);
+    margin-left:22px;
+  }
+  h1{
+    font-family:'Sriracha',cursive; font-weight:400;
+    font-size:26px; margin:4px 0 2px 22px; color:var(--plum);
+  }
+  .sub{ margin:0 0 4px 22px; font-size:13.5px; color:#5a5346; }
+
+  .startBtn{
+    margin-top:16px; width:100%; padding:14px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .startBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  /* ===== quiz area ===== */
+  .hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin:0 0 14px;
+  }
+  .hud-box{
+    background:var(--card); border:2px solid var(--ink); border-radius:6px;
+    box-shadow:3px 3px 0 var(--shadow); padding:8px 14px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hud-box .val{ font-size:18px; }
+  #timerBox{
+    position:relative; overflow:hidden;
+    min-width:88px; justify-content:center;
+  }
+  #timerBar{
+    position:absolute; left:0; bottom:0; top:0; width:100%;
+    background:var(--plum-light); z-index:0;
+    transition:width 1s linear, background 0.3s ease;
+  }
+  #timerBox span{ position:relative; z-index:1; }
+  #timerBox.low #timerBar{ background:#e79a8a; }
+  .soundToggle{
+    background:var(--card); border:2px solid var(--ink); border-radius:50%;
+    width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); font-size:16px; user-select:none;
+  }
+  .soundToggle:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .progressWrap{
+    height:8px; background:#e6ddc4; border-radius:20px; overflow:hidden;
+    margin-bottom:16px; border:1.5px solid var(--ink);
+  }
+  .progressBar{
+    height:100%; background:linear-gradient(90deg, var(--plum-mid), var(--plum));
+    width:0%; transition:width 0.4s ease;
+  }
+
+  .card{
+    background:var(--card); border:2px solid var(--ink); border-radius:8px;
+    box-shadow:6px 6px 0 var(--shadow); padding:22px 22px 20px; position:relative;
+  }
+  .expTag{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.05em; background:var(--teal-dark); color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .qnum{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    color:var(--plum); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .qtext{
+    font-size:17px; line-height:1.5; font-weight:600; margin:0 0 16px; color:var(--ink);
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:#fff; border:2px solid #ddd3ba; border-radius:7px;
+    padding:12px 14px; font-size:15px; font-family:'Inter',sans-serif; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    transition:background 0.15s, border-color 0.15s, transform 0.08s;
+  }
+  .opt:hover{ border-color:var(--plum-mid); background:#faf6ec; }
+  .opt:active{ transform:scale(0.99); }
+  .opt .letter{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  }
+  .opt.correct{ background:#e0efe9; border-color:var(--teal-dark); }
+  .opt.correct .letter{ background:var(--teal-dark); color:#fff; }
+  .opt.wrong{ background:#f4e2ea; border-color:var(--plum); }
+  .opt.wrong .letter{ background:var(--plum); color:#fff; }
+  .opt.disabled{ pointer-events:none; opacity:0.75; }
+  .opt.disabled.correct, .opt.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:14px; padding:12px 14px; border-radius:7px;
+    font-size:14px; line-height:1.55; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:#e0efe9; border:1.5px dashed var(--teal-dark); color:var(--teal-dark); }
+  .feedback.bad{ background:#f4e2ea; border:1.5px dashed var(--plum); color:var(--plum); }
+  .feedback b{ display:block; margin-bottom:3px; font-family:'Space Grotesk',sans-serif; }
+
+  .nextBtn{
+    margin-top:16px; width:100%; padding:13px;
+    background:var(--plum); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:0.03em; cursor:pointer; display:none; box-shadow:3px 3px 0 var(--shadow);
+  }
+  .nextBtn.show{ display:block; }
+  .nextBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .result{ text-align:center; padding:10px 6px; }
+  .result .emoji{ font-size:52px; }
+  .result h2{
+    font-family:'Sriracha',cursive; font-weight:400; color:var(--plum);
+    font-size:26px; margin:6px 0 2px;
+  }
+  .result .scoreLine{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin:8px 0 4px; }
+  .result p{ color:#5a5346; font-size:14px; margin:6px 0 18px; }
+  .restartBtn, .homeBtn{
+    padding:13px 22px; background:var(--amber); color:#fff; border:none; border-radius:7px;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:3px 3px 0 var(--shadow); margin:4px;
+  }
+  .homeBtn{ background:var(--plum); }
+  .restartBtn:active, .homeBtn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--shadow); }
+
+  .breakdown{ text-align:left; margin-top:18px; border-top:1.5px dashed var(--paper-line); padding-top:14px; }
+  .breakdown-item{
+    display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:6px 0;
+    border-bottom:1px dotted #e6ddc4;
+  }
+  .breakdown-item .mark{ flex:0 0 auto; font-size:16px; }
+  .breakdown-item{ flex-direction:column; }
+  .breakdown-item .row{ display:flex; gap:8px; align-items:flex-start; width:100%; }
+  .breakdown-item .answer-detail{
+    margin:6px 0 2px 24px; font-size:12.5px; line-height:1.5;
+    background:#FBEAEA; border-left:3px solid #D9534F; border-radius:4px;
+    padding:6px 10px;
+  }
+  .breakdown-item .answer-detail .yourans{ color:#B93A2E; }
+  .breakdown-item .answer-detail .rightans{ color:#2F7A4F; font-weight:600; }
+
+  footer{ text-align:center; font-size:11.5px; color:#8a8371; margin-top:20px; }
+
+  @media (max-width:420px){
+    h1{ font-size:20px; }
+    .qtext{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+
+  <a class="back-link" href="bm-latihan-hub.html">← Kembali ke senarai topik</a>
+
+  <div class="cover">
+    <div class="stamp" id="coverStamp">BM</div>
+    <div class="eyebrow" id="coverEyebrow">Buku Latihan</div>
+    <h1 id="coverTitle">Latihan Bahasa Melayu</h1>
+    <p class="sub" id="coverSub">Sedia menanti...</p>
+  </div>
+
+  <div class="cover" id="startCard">
+    <button class="startBtn" id="startBtn">Mula Latihan →</button>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quizArea" style="display:none;">
+    <div class="hud">
+      <div class="hud-box">⭐ <span class="val" id="scoreVal">0</span></div>
+      <div class="hud-box" id="timerBox"><div id="timerBar"></div><span>⏱ <span id="timeVal">30</span>s</span></div>
+      <div class="hud-box">📋 <span class="val" id="qCounter">1/12</span></div>
+      <div class="soundToggle" id="soundToggle" title="Bunyi hidup/mati">🔊</div>
+    </div>
+
+    <div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+
+    <div class="card" id="quizCard">
+      <span class="expTag" id="expTag">Soalan</span>
+      <div class="qnum" id="qNum">&nbsp;</div>
+      <p class="qtext" id="qText">...</p>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="nextBtn" id="nextBtn">Seterusnya →</button>
+    </div>
+  </div>
+
+  <div class="card result" id="resultArea" style="display:none;">
+    <div class="emoji" id="resultEmoji">🎉</div>
+    <h2 id="resultTitle">Syabas!</h2>
+    <div class="scoreLine" id="resultScore">0 / 12</div>
+    <p id="resultMsg">Cuba lagi untuk skor lebih tinggi!</p>
+    <button class="restartBtn" id="restartBtn">Ulang Latihan</button>
+    <button class="homeBtn" id="homeBtn">🏠 Senarai Topik</button>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <footer id="footerText">Latihan Bahasa Melayu · Study Buddy</footer>
+</div>
+
+<script>
+var TOPIC_BANKS = {
+  'd1-kata-nama': [
+    {q:'Yang manakah kata nama khas?',options:['kucing','Ali','meja','buku'],correct:'Ali'},
+    {q:'Yang manakah tergolong dalam kata nama khas?',options:['sungai','bandar','Kuala Lumpur','sekolah'],correct:'Kuala Lumpur'},
+    {q:'Yang manakah kata nama am?',options:['Malaysia','Ahmad','guru','Selangor'],correct:'guru'},
+    {q:'Yang manakah tergolong dalam kata nama am?',options:['Perak','kereta','Hassan','Ogos'],correct:'kereta'},
+    {q:'Pilih perkataan yang tergolong dalam kata nama khas.',options:['ayam','Sungai Perak','rumah','pokok'],correct:'Sungai Perak'},
+    {q:'Pilih perkataan yang tergolong dalam kata nama am.',options:['Aminah','kucing','Johor','Isnin'],correct:'kucing'},
+    {q:'Kata nama khas bagi nama negeri di Malaysia ialah?',options:['Selangor','bandar','negeri','tempat'],correct:'Selangor'},
+    {q:'Kata nama khas bagi nama hari ialah?',options:['Ahad','hari','minggu','masa'],correct:'Ahad'},
+    {q:'Kata nama khas bagi nama bulan ialah?',options:['Januari','bulan','tahun','masa'],correct:'Januari'},
+    {q:'Kata nama am bagi haiwan ialah?',options:['ayam','Comel (nama kucing)','Milo (nama anjing)','Rajoo'],correct:'ayam'},
+    {q:'Yang manakah pasangan kata nama khas yang betul?',options:['Malaysia, Ahmad','negara, budak','bandar, orang','tempat, manusia'],correct:'Malaysia, Ahmad'},
+    {q:'Kata nama khas hendaklah ditulis dengan huruf?',options:['Besar pada huruf pertama','Kecil semua','Besar semua','Tiada peraturan khusus'],correct:'Besar pada huruf pertama'},
+    {q:'\'Buku itu kepunyaan Aminah.\' Kata nama khas dalam ayat ini ialah?',options:['Aminah','buku','itu','kepunyaan'],correct:'Aminah'},
+    {q:'\'Kucing itu bermain di taman.\' Kata nama am dalam ayat ini ialah?',options:['kucing','itu','di','bermain'],correct:'kucing'},
+    {q:'Yang manakah kata nama khas bagi nama sekolah?',options:['SK Bukit Bintang','sekolah','tempat belajar','bangunan'],correct:'SK Bukit Bintang'},
+    {q:'Antara pilihan berikut, yang manakah kata nama am?',options:['meja','Putrajaya','Disember','Kelantan'],correct:'meja'},
+    {q:'Antara pilihan berikut, yang manakah kata nama khas?',options:['Petronas Twin Towers','bangunan','menara','tempat'],correct:'Petronas Twin Towers'},
+    {q:'\'Ali dan Abu bermain bola di padang.\' Berapakah kata nama khas dalam ayat ini?',options:['2 (Ali, Abu)','1','3','4'],correct:'2 (Ali, Abu)'},
+    {q:'Kata nama am boleh merujuk kepada?',options:['Benda, orang atau tempat secara umum','Nama khusus sahaja','Nama negara sahaja','Nama orang sahaja'],correct:'Benda, orang atau tempat secara umum'},
+    {q:'Yang manakah BUKAN kata nama khas?',options:['budak','Malaysia','Ahmad','Khamis'],correct:'budak'},
+  ],
+  'd1-ayat-tunggal': [
+    {q:'Ali sedang ___ buku di perpustakaan.',options:['membaca','berlari','tidur','makan'],correct:'membaca'},
+    {q:'Kucing itu ___ di atas bumbung rumah.',options:['berenang','memasak','duduk','menulis'],correct:'duduk'},
+    {q:'Emak sedang ___ nasi di dapur.',options:['memasak','melukis','menyanyi','tidur'],correct:'memasak'},
+    {q:'Abang ___ bola di padang.',options:['membaca','bermain','memasak','menulis'],correct:'bermain'},
+    {q:'Adik sedang ___ air di dalam gelas.',options:['minum','berlari','tidur','melukis'],correct:'minum'},
+    {q:'Ayat tunggal ialah ayat yang mempunyai?',options:['Satu subjek dan satu predikat','Dua subjek','Dua predikat','Tiada subjek'],correct:'Satu subjek dan satu predikat'},
+    {q:'Yang manakah contoh ayat tunggal yang betul?',options:['Ali makan nasi.','Ali makan dan Abu minum.','Ali makan, Abu minum.','Ali makan kerana lapar dan dia gembira.'],correct:'Ali makan nasi.'},
+    {q:'\'Burung itu terbang tinggi.\' Subjek dalam ayat ini ialah?',options:['Burung itu','terbang','tinggi','itu'],correct:'Burung itu'},
+    {q:'\'Murid-murid belajar dengan tekun.\' Predikat dalam ayat ini ialah?',options:['belajar dengan tekun','Murid-murid','dengan','tekun'],correct:'belajar dengan tekun'},
+    {q:'Guru itu ___ di hadapan kelas.',options:['berdiri','tidur','berenang','memandu'],correct:'berdiri'},
+    {q:'Nelayan itu ___ ikan di laut.',options:['menangkap','memasak sahaja','membaca','melukis'],correct:'menangkap'},
+    {q:'Susun perkataan berikut menjadi ayat yang betul: \'nasi / makan / Ali / sedang\'',options:['Ali sedang makan nasi.','Nasi Ali sedang makan.','Makan Ali sedang nasi.','Sedang nasi Ali makan.'],correct:'Ali sedang makan nasi.'},
+    {q:'Doktor itu ___ pesakit di klinik.',options:['merawat','menari','menyanyi','melukis'],correct:'merawat'},
+    {q:'Ayat \'Dia sangat gembira.\' merupakan ayat tunggal jenis?',options:['Ayat penyata','Ayat tanya','Ayat perintah','Ayat seruan'],correct:'Ayat penyata'},
+    {q:'Ayat \'Tutup pintu itu!\' merupakan ayat jenis?',options:['Ayat perintah','Ayat penyata','Ayat tanya','Ayat seruan'],correct:'Ayat perintah'},
+    {q:'Ayat \'Wah, cantiknya bunga ini!\' merupakan ayat jenis?',options:['Ayat seruan','Ayat penyata','Ayat perintah','Ayat tanya'],correct:'Ayat seruan'},
+    {q:'Ayat \'Adakah kamu sudah makan?\' merupakan ayat jenis?',options:['Ayat tanya','Ayat penyata','Ayat perintah','Ayat seruan'],correct:'Ayat tanya'},
+    {q:'Petani itu ___ padi di sawah.',options:['menanam','memandu','menyanyi','melukis'],correct:'menanam'},
+    {q:'\'Buku itu di atas meja.\' Predikat dalam ayat ini ialah?',options:['di atas meja','Buku itu','meja','atas'],correct:'di atas meja'},
+    {q:'Yang manakah ayat yang gramatis?',options:['Dia pergi ke sekolah setiap hari.','Dia sekolah ke pergi setiap hari.','Ke sekolah dia pergi setiap hari itu.','Setiap hari sekolah dia pergi ke.'],correct:'Dia pergi ke sekolah setiap hari.'},
+  ],
+  'd1-imbuhan-awalan': [
+    {q:'Bentuk kata kerja yang betul bagi \'tulis\' + imbuhan me- ialah?',options:['menulis','bertulis','tulisan','menulisi'],correct:'menulis'},
+    {q:'Bentuk kata kerja yang betul bagi \'jalan\' + imbuhan ber- ialah?',options:['menjalan','berjalan','jalanan','perjalanan'],correct:'berjalan'},
+    {q:'Bentuk kata kerja yang betul bagi \'lari\' + imbuhan ber- ialah?',options:['berlari','melari','larian','pelari'],correct:'berlari'},
+    {q:'Bentuk kata kerja yang betul bagi \'main\' + imbuhan ber- ialah?',options:['memain','bermain','mainan','permainan'],correct:'bermain'},
+    {q:'Bentuk kata kerja yang betul bagi \'nyanyi\' + imbuhan me- ialah?',options:['menyanyi','bernyanyi','nyanyian','penyanyi'],correct:'menyanyi'},
+    {q:'Bentuk kata kerja yang betul bagi \'baca\' + imbuhan me- ialah?',options:['membaca','berbaca','bacaan','pembaca'],correct:'membaca'},
+    {q:'Bentuk kata kerja yang betul bagi \'renang\' + imbuhan ber- ialah?',options:['berenang','merenang','renangan','perenang'],correct:'berenang'},
+    {q:'Bentuk kata kerja yang betul bagi \'tolong\' + imbuhan me- ialah?',options:['menolong','bertolong','tolongan','penolong'],correct:'menolong'},
+    {q:'Bentuk kata kerja yang betul bagi \'kerja\' + imbuhan be- ialah?',options:['bekerja','mekerja','kerjaan','pekerja'],correct:'bekerja'},
+    {q:'Bentuk kata kerja yang betul bagi \'pandu\' + imbuhan me- ialah?',options:['memandu','berpandu','panduan','pemandu'],correct:'memandu'},
+    {q:'Imbuhan \'me-\' biasa digunakan untuk membentuk kata kerja yang menunjukkan?',options:['Perbuatan aktif','Keadaan','Kata nama','Kata adjektif'],correct:'Perbuatan aktif'},
+    {q:'Imbuhan \'ber-\' biasa digunakan untuk menunjukkan?',options:['Perbuatan atau keadaan','Kata nama sahaja','Kata bilangan','Kata sendi nama'],correct:'Perbuatan atau keadaan'},
+    {q:'Bentuk kata kerja yang betul bagi \'basuh\' + imbuhan me- ialah?',options:['membasuh','berbasuh','basuhan','pembasuh'],correct:'membasuh'},
+    {q:'Bentuk kata kerja yang betul bagi \'cakap\' + imbuhan ber- ialah?',options:['bercakap','mencakap','cakapan','pencakap'],correct:'bercakap'},
+    {q:'Bentuk kata kerja yang betul bagi \'lompat\' + imbuhan me- ialah?',options:['melompat','berlompat','lompatan','pelompat'],correct:'melompat'},
+    {q:'Bentuk kata kerja yang betul bagi \'tidur\' + imbuhan ber- ialah?',options:['bertidur','menidur','tidurkan','peniduran'],correct:'bertidur'},
+    {q:'Bentuk kata kerja yang betul bagi \'jual\' + imbuhan men- ialah?',options:['menjual','berjual','jualan','penjual'],correct:'menjual'},
+    {q:'Bentuk kata kerja yang betul bagi \'sapu\' + imbuhan me- ialah?',options:['menyapu','bersapu','sapuan','penyapu'],correct:'menyapu'},
+    {q:'Bentuk kata kerja yang betul bagi \'senam\' + imbuhan ber- ialah?',options:['bersenam','menyenam','senaman','penyenam'],correct:'bersenam'},
+    {q:'\'Ali sedang ___ (basuh) kereta ayahnya.\' Lengkapkan dengan imbuhan yang betul.',options:['membasuh','berbasuh','basuhan','pembasuh'],correct:'membasuh'},
+  ],
+  'd1-kefahaman': [
+    {q:'\'Ali pergi ke sekolah setiap pagi.\' Bilakah Ali pergi ke sekolah?',options:['Setiap pagi','Setiap petang','Setiap malam','Sekali seminggu'],correct:'Setiap pagi'},
+    {q:'\'Kucing itu suka makan ikan.\' Apakah makanan kegemaran kucing itu?',options:['Ikan','Nasi','Roti','Sayur'],correct:'Ikan'},
+    {q:'\'Aminah membeli buku di kedai.\' Di manakah Aminah membeli buku?',options:['Di kedai','Di sekolah','Di rumah','Di taman'],correct:'Di kedai'},
+    {q:'\'Hujan turun dengan lebat pada petang tadi.\' Bagaimanakah keadaan hujan itu?',options:['Lebat','Renyai-renyai','Tiada hujan','Ringan'],correct:'Lebat'},
+    {q:'\'Adik menangis kerana kehilangan mainannya.\' Kenapakah adik menangis?',options:['Kehilangan mainan','Terjatuh','Lapar','Mengantuk'],correct:'Kehilangan mainan'},
+    {q:'\'Burung itu terbang tinggi di langit.\' Di manakah burung itu terbang?',options:['Di langit','Di dalam air','Di dalam tanah','Di dalam rumah'],correct:'Di langit'},
+    {q:'\'Emak memasak nasi lemak untuk sarapan.\' Apakah yang dimasak oleh emak?',options:['Nasi lemak','Mi goreng','Roti canai','Bubur'],correct:'Nasi lemak'},
+    {q:'\'Murid-murid berbaris dengan kemas sebelum masuk ke kelas.\' Bagaimanakah murid-murid berbaris?',options:['Dengan kemas','Dengan bising','Dengan tergesa-gesa','Tidak teratur'],correct:'Dengan kemas'},
+    {q:'\'Ayah memandu kereta ke pejabat setiap hari.\' Ke manakah ayah memandu kereta?',options:['Ke pejabat','Ke pasar','Ke sekolah','Ke kedai'],correct:'Ke pejabat'},
+    {q:'\'Nenek menanam bunga di halaman rumah.\' Apakah yang ditanam oleh nenek?',options:['Bunga','Sayur','Pokok buah','Rumput'],correct:'Bunga'},
+    {q:'\'Budak itu bermain bola di padang selepas sekolah.\' Bilakah budak itu bermain bola?',options:['Selepas sekolah','Sebelum sekolah','Semasa sekolah','Pada waktu malam'],correct:'Selepas sekolah'},
+    {q:'\'Kakak menolong ibu membasuh pinggan.\' Siapakah yang ditolong oleh kakak?',options:['Ibu','Ayah','Adik','Nenek'],correct:'Ibu'},
+    {q:'\'Kereta itu berhenti di hadapan lampu isyarat merah.\' Kenapakah kereta itu berhenti?',options:['Lampu isyarat merah','Jalan sesak','Kerosakan enjin','Kehabisan minyak'],correct:'Lampu isyarat merah'},
+    {q:'\'Ikan-ikan berenang dengan riang di dalam akuarium.\' Di manakah ikan-ikan itu berenang?',options:['Di dalam akuarium','Di dalam sungai','Di dalam kolam','Di dalam laut'],correct:'Di dalam akuarium'},
+    {q:'\'Guru itu mengajar dengan penuh sabar setiap hari.\' Bagaimanakah cara guru itu mengajar?',options:['Dengan penuh sabar','Dengan marah','Dengan tergesa-gesa','Dengan malas'],correct:'Dengan penuh sabar'},
+    {q:'\'Semut-semut berbaris membawa makanan ke sarang.\' Ke manakah semut-semut membawa makanan?',options:['Ke sarang','Ke pokok','Ke rumah','Ke sungai'],correct:'Ke sarang'},
+    {q:'\'Pokok kelapa itu tumbuh tinggi di tepi pantai.\' Di manakah pokok kelapa itu tumbuh?',options:['Di tepi pantai','Di dalam hutan','Di atas bukit','Di tepi sungai'],correct:'Di tepi pantai'},
+    {q:'\'Abang membaiki basikal yang rosak di halaman rumah.\' Apakah yang dibaiki oleh abang?',options:['Basikal','Kereta','Motosikal','Kipas'],correct:'Basikal'},
+    {q:'\'Kanak-kanak itu ketawa gembira semasa bermain buaian.\' Bagaimanakah perasaan kanak-kanak itu?',options:['Gembira','Sedih','Marah','Takut'],correct:'Gembira'},
+    {q:'\'Pak cik menjual sayur-sayuran segar di pasar pagi.\' Apakah yang dijual oleh pak cik?',options:['Sayur-sayuran segar','Buah-buahan','Ikan','Daging'],correct:'Sayur-sayuran segar'},
+  ],
+  'd1-karangan-gambar': [
+    {q:'Karangan gambar tunggal ditulis berdasarkan?',options:['Satu gambar sahaja','Banyak gambar','Cerita tanpa gambar','Nombor sahaja'],correct:'Satu gambar sahaja'},
+    {q:'Sebelum menulis karangan gambar, kita perlu?',options:['Melihat gambar dengan teliti','Terus menulis tanpa melihat gambar','Menutup mata','Menconteng gambar'],correct:'Melihat gambar dengan teliti'},
+    {q:'Karangan gambar perlu menerangkan tentang?',options:['Apa yang ada dalam gambar','Perkara yang tiada dalam gambar','Gambar lain yang berbeza','Warna kertas sahaja'],correct:'Apa yang ada dalam gambar'},
+    {q:'Jika gambar menunjukkan seorang budak bermain bola, ayat yang sesuai ialah?',options:['Budak itu sedang bermain bola.','Budak itu sedang tidur.','Budak itu sedang membaca.','Budak itu sedang makan.'],correct:'Budak itu sedang bermain bola.'},
+    {q:'Karangan gambar perlu ditulis dalam bentuk?',options:['Ayat yang lengkap','Perkataan tunggal sahaja','Nombor','Simbol'],correct:'Ayat yang lengkap'},
+    {q:'Jika gambar menunjukkan hujan turun, ayat yang sesuai ialah?',options:['Hujan sedang turun dengan lebat.','Matahari sedang bersinar.','Salji sedang turun.','Angin bertiup kencang.'],correct:'Hujan sedang turun dengan lebat.'},
+    {q:'Warna dalam gambar boleh diterangkan menggunakan?',options:['Kata adjektif','Kata kerja','Kata hubung','Kata bilangan'],correct:'Kata adjektif'},
+    {q:'Jika gambar menunjukkan seekor kucing tidur, ayat yang sesuai ialah?',options:['Kucing itu sedang tidur.','Kucing itu sedang berlari.','Kucing itu sedang makan.','Kucing itu sedang menyanyi.'],correct:'Kucing itu sedang tidur.'},
+    {q:'Karangan gambar yang baik menggunakan ayat yang?',options:['Jelas dan mudah difahami','Sukar difahami','Terlalu panjang','Tiada makna'],correct:'Jelas dan mudah difahami'},
+    {q:'Jika gambar menunjukkan keluarga makan bersama, ayat yang sesuai ialah?',options:['Keluarga itu sedang makan bersama-sama.','Keluarga itu sedang tidur.','Keluarga itu sedang bermain.','Keluarga itu sedang membaca.'],correct:'Keluarga itu sedang makan bersama-sama.'},
+    {q:'Bilangan ayat dalam karangan gambar untuk Darjah 1 biasanya?',options:['Beberapa ayat pendek yang mudah','Satu ayat sahaja sentiasa','Lebih 20 ayat','Tiada had'],correct:'Beberapa ayat pendek yang mudah'},
+    {q:'Jika gambar menunjukkan burung terbang di langit, ayat yang sesuai ialah?',options:['Burung itu sedang terbang di langit.','Burung itu sedang berenang.','Burung itu sedang tidur.','Burung itu sedang menangis.'],correct:'Burung itu sedang terbang di langit.'},
+    {q:'Karangan gambar perlu mengelakkan?',options:['Ayat yang tidak berkaitan dengan gambar','Ayat yang jelas','Ayat pendek','Kata adjektif'],correct:'Ayat yang tidak berkaitan dengan gambar'},
+    {q:'Jika gambar menunjukkan murid membaca buku di perpustakaan, ayat yang sesuai ialah?',options:['Murid itu sedang membaca buku di perpustakaan.','Murid itu sedang bermain bola.','Murid itu sedang makan.','Murid itu sedang tidur.'],correct:'Murid itu sedang membaca buku di perpustakaan.'},
+    {q:'Kata kerja digunakan dalam karangan gambar untuk menerangkan?',options:['Perbuatan yang berlaku dalam gambar','Warna gambar','Bilangan objek','Tempat gambar diambil'],correct:'Perbuatan yang berlaku dalam gambar'},
+    {q:'Jika gambar menunjukkan anak ayam mengikut ibunya, ayat yang sesuai ialah?',options:['Anak ayam itu mengikut ibunya.','Anak ayam itu sedang tidur.','Anak ayam itu sedang berenang.','Anak ayam itu sedang menyanyi.'],correct:'Anak ayam itu mengikut ibunya.'},
+    {q:'Manakah tajuk yang sesuai untuk karangan gambar tentang budak bermain di taman?',options:['Bermain di Taman','Karangan Saya','Gambar Ini','Cerita Pendek'],correct:'Bermain di Taman'},
+    {q:'Karangan gambar Darjah 1 sesuai ditulis dalam bentuk?',options:['Ayat mudah dan pendek','Ayat majmuk yang kompleks','Peribahasa','Pantun'],correct:'Ayat mudah dan pendek'},
+    {q:'Jika gambar menunjukkan seorang budak menangis, ayat yang sesuai ialah?',options:['Budak itu sedang menangis.','Budak itu sedang ketawa.','Budak itu sedang menyanyi.','Budak itu sedang berlari.'],correct:'Budak itu sedang menangis.'},
+    {q:'Sebelum menulis, murid perlu memikirkan?',options:['Siapa, di mana dan apa yang berlaku dalam gambar','Warna kertas yang digunakan','Jenis pensel yang digunakan','Saiz buku latihan'],correct:'Siapa, di mana dan apa yang berlaku dalam gambar'},
+  ],
+  'd2-kata-kerja-adjektif': [
+    {q:'Yang manakah tergolong dalam kata kerja?',options:['cantik','berlari','meja','tiga'],correct:'berlari'},
+    {q:'Pilih perkataan yang tergolong dalam kata kerja.',options:['gembira','menyanyi','kereta','besar'],correct:'menyanyi'},
+    {q:'Yang manakah kata adjektif?',options:['makan','cantik','buku','berjalan'],correct:'cantik'},
+    {q:'Pilih perkataan yang tergolong dalam kata adjektif.',options:['tidur','tinggi','minum','sekolah'],correct:'tinggi'},
+    {q:'Antara pilihan berikut, yang manakah kata adjektif?',options:['memasak','kecil','bermain','menulis'],correct:'kecil'},
+    {q:'Baju itu sangat ___ (warna cerah, indah dipandang).',options:['cantik','lari','makan','tulis'],correct:'cantik'},
+    {q:'Gajah ialah haiwan yang ___ (saiz sangat besar).',options:['kecil','besar','pendek','nipis'],correct:'besar'},
+    {q:'Rumah itu ___ (bukan tinggi, dekat dengan tanah).',options:['rendah','tinggi','luas','gelap'],correct:'rendah'},
+    {q:'Kata kerja ialah perkataan yang menunjukkan?',options:['Perbuatan atau tindakan','Sifat atau keadaan','Nama orang atau benda','Bilangan'],correct:'Perbuatan atau tindakan'},
+    {q:'Kata adjektif ialah perkataan yang menerangkan?',options:['Sifat atau keadaan sesuatu','Perbuatan','Nama tempat','Bilangan'],correct:'Sifat atau keadaan sesuatu'},
+    {q:'\'Dia berlari dengan pantas.\' Kata kerja dalam ayat ini ialah?',options:['berlari','dengan','pantas','dia'],correct:'berlari'},
+    {q:'\'Bunga itu sangat harum.\' Kata adjektif dalam ayat ini ialah?',options:['harum','bunga','itu','sangat'],correct:'harum'},
+    {q:'Air di dalam kolam itu ___ (bersih dan tidak keruh).',options:['jernih','kotor','panas','masin'],correct:'jernih'},
+    {q:'Kucing itu berlari dengan ___ (kelajuan tinggi).',options:['laju','perlahan','malas','tenang'],correct:'laju'},
+    {q:'Ayat manakah yang gramatis?',options:['Dia sangat pandai budak itu.','Budak itu sangat pandai.','Pandai budak itu sangat.','Sangat budak itu pandai.'],correct:'Budak itu sangat pandai.'},
+    {q:'Yang manakah kata kerja aktif?',options:['memasak','masakan','pemasak','dimasak'],correct:'memasak'},
+    {q:'Ais itu terasa sangat ___ (suhu rendah).',options:['sejuk','panas','hangat','suam'],correct:'sejuk'},
+    {q:'Guru itu sedang ___ di hadapan kelas. (kata kerja)',options:['mengajar','pandai','rajin','baik'],correct:'mengajar'},
+    {q:'Buah durian itu berbau sangat ___.',options:['kuat','cantik','besar','tinggi'],correct:'kuat'},
+    {q:'\'Ali pandai dan rajin belajar.\' Kata adjektif dalam ayat ini ialah?',options:['pandai dan rajin','belajar','Ali','dan'],correct:'pandai dan rajin'},
+  ],
+  'd2-ayat-majmuk-asas': [
+    {q:'Ayat majmuk ialah ayat yang terdiri daripada?',options:['Dua atau lebih ayat tunggal yang digabungkan','Satu ayat tunggal sahaja','Tiada subjek','Tiada predikat'],correct:'Dua atau lebih ayat tunggal yang digabungkan'},
+    {q:'Yang manakah contoh ayat majmuk?',options:['Ali makan nasi dan Abu minum air.','Ali makan nasi.','Abu minum air.','Nasi itu enak.'],correct:'Ali makan nasi dan Abu minum air.'},
+    {q:'Kata hubung yang biasa digunakan untuk menggabungkan dua ayat tunggal ialah?',options:['dan','di','ke','pada'],correct:'dan'},
+    {q:'Gabungkan: \'Ali suka membaca.\' + \'Abu suka bermain.\' menggunakan kata hubung \'dan\'.',options:['Ali suka membaca dan Abu suka bermain.','Ali suka membaca, Abu suka bermain dan.','Dan Ali suka membaca Abu suka bermain.','Ali dan Abu suka membaca bermain.'],correct:'Ali suka membaca dan Abu suka bermain.'},
+    {q:'Yang manakah ayat tunggal (bukan ayat majmuk)?',options:['Kucing itu tidur.','Kucing itu tidur dan anjing itu berjaga.','Kucing tidur tetapi anjing berjaga.','Kucing itu tidur, anjing itu berjaga.'],correct:'Kucing itu tidur.'},
+    {q:'\'Emak memasak dan ayah membaca surat khabar.\' Berapa ayat tunggal digabungkan dalam ayat majmuk ini?',options:['2','1','3','4'],correct:'2'},
+    {q:'Kata hubung \'atau\' digunakan untuk menunjukkan?',options:['Pilihan','Sebab','Masa','Tempat'],correct:'Pilihan'},
+    {q:'\'Kamu mahu makan nasi atau mi?\' Ayat ini menggunakan kata hubung?',options:['atau','dan','tetapi','kerana'],correct:'atau'},
+    {q:'Gabungkan: \'Dia rajin.\' + \'Dia pandai.\' menjadi ayat majmuk yang betul.',options:['Dia rajin dan pandai.','Dia rajin, dia pandai dan.','Rajin dan pandai dia.','Dan dia rajin pandai.'],correct:'Dia rajin dan pandai.'},
+    {q:'Ayat majmuk membolehkan penulis?',options:['Menggabungkan dua idea dalam satu ayat','Menulis ayat lebih pendek','Mengelakkan kata hubung','Menulis tanpa subjek'],correct:'Menggabungkan dua idea dalam satu ayat'},
+    {q:'\'Ibu memasak sup dan menggoreng ikan.\' Ayat ini ialah ayat?',options:['Majmuk','Tunggal','Seruan','Tanya'],correct:'Majmuk'},
+    {q:'Yang manakah ayat majmuk yang gramatis?',options:['Ali menyanyi dan Abu menari.','Ali menyanyi Abu dan menari.','Menyanyi Ali dan Abu menari.','Ali dan menyanyi Abu menari.'],correct:'Ali menyanyi dan Abu menari.'},
+    {q:'\'Saya suka makan epal dan pisang.\' Ayat ini menggabungkan?',options:['Dua jenis buah dalam satu ayat','Dua subjek','Dua tempat','Dua masa'],correct:'Dua jenis buah dalam satu ayat'},
+    {q:'Ayat tunggal \'Dia menangis.\' boleh digabungkan dengan \'Dia gembira.\' untuk membentuk ayat majmuk yang?',options:['Bertentangan makna (guna \'tetapi\')','Sama makna','Tiada kaitan','Tidak boleh digabungkan'],correct:'Bertentangan makna (guna \'tetapi\')'},
+    {q:'\'Dia menangis tetapi dia gembira.\' menunjukkan penggunaan kata hubung?',options:['tetapi','dan','atau','kerana'],correct:'tetapi'},
+    {q:'Ayat majmuk biasanya lebih ___ berbanding ayat tunggal.',options:['Panjang','Pendek','Ringkas','Ringkas dan pendek'],correct:'Panjang'},
+    {q:'\'Murid itu belajar dan berlatih setiap hari.\' Ayat ini ialah ayat majmuk kerana?',options:['Menggabungkan dua perbuatan dengan kata hubung \'dan\'','Hanya ada satu perbuatan','Tiada kata hubung','Terlalu pendek'],correct:'Menggabungkan dua perbuatan dengan kata hubung \'dan\''},
+    {q:'Yang manakah PALING sesuai untuk menggabungkan \'Hujan turun.\' dan \'Kami tetap keluar.\'',options:['Hujan turun tetapi kami tetap keluar.','Hujan turun dan kami tetap keluar.','Hujan turun atau kami tetap keluar.','Hujan turun kerana kami tetap keluar.'],correct:'Hujan turun tetapi kami tetap keluar.'},
+    {q:'Ayat majmuk yang menggunakan \'dan\' menunjukkan hubungan?',options:['Penambahan/gabungan idea','Pilihan','Pertentangan','Sebab-akibat'],correct:'Penambahan/gabungan idea'},
+    {q:'\'Adik menangis kerana lapar.\' Ayat ini menggunakan kata hubung yang menunjukkan?',options:['Sebab','Pilihan','Pertentangan','Masa'],correct:'Sebab'},
+  ],
+  'd2-imbuhan-akhiran': [
+    {q:'Bentuk kata kerja betul bagi \'letak\' + imbuhan -kan ialah?',options:['letakan','letakkan','meletak','peletak'],correct:'letakkan'},
+    {q:'Bentuk kata kerja betul bagi \'hantar\' + imbuhan -kan ialah?',options:['hantarkan','hantari','menghantar','hantaran'],correct:'hantarkan'},
+    {q:'Bentuk kata kerja betul bagi \'temu\' + imbuhan -i ialah?',options:['temukan','temui','menemu','pertemu'],correct:'temui'},
+    {q:'Bentuk kata kerja betul bagi \'jauh\' + imbuhan -i ialah?',options:['jauhkan','jauhi','menjauh','kejauhan'],correct:'jauhi'},
+    {q:'Bentuk kata kerja betul bagi \'dekat\' + imbuhan -kan ialah?',options:['dekati','dekatkan','mendekat','kedekatan'],correct:'dekatkan'},
+    {q:'Bentuk kata kerja betul bagi \'tunjuk\' + imbuhan -kan ialah?',options:['tunjukkan','tunjuki','menunjuk','penunjuk'],correct:'tunjukkan'},
+    {q:'Bentuk kata kerja betul bagi \'ikut\' + imbuhan -i ialah?',options:['ikuti','ikutkan','mengikut','pengikut'],correct:'ikuti'},
+    {q:'Bentuk kata kerja betul bagi \'sedia\' + imbuhan -kan ialah?',options:['sediakan','sediai','menyedia','kesediaan'],correct:'sediakan'},
+    {q:'Bentuk kata kerja betul bagi \'lawan\' + imbuhan -i ialah?',options:['lawani','lawankan','melawan','perlawanan'],correct:'lawani'},
+    {q:'Bentuk kata kerja betul bagi \'ganti\' + imbuhan -kan ialah?',options:['gantikan','ganti-i','mengganti','pengganti'],correct:'gantikan'},
+    {q:'Imbuhan \'-kan\' biasanya digunakan untuk menunjukkan?',options:['Perbuatan yang dikenakan kepada objek','Tempat','Bilangan','Warna'],correct:'Perbuatan yang dikenakan kepada objek'},
+    {q:'Imbuhan \'-i\' biasanya digunakan untuk menunjukkan?',options:['Perbuatan berulang pada objek','Kata nama','Kata bilangan','Kata sendi nama'],correct:'Perbuatan berulang pada objek'},
+    {q:'\'Ali ___ (letak) buku di atas meja.\' Lengkapkan dengan imbuhan yang betul.',options:['meletakkan','meletaki','peletak','letakan'],correct:'meletakkan'},
+    {q:'\'Kami akan ___ (temu) guru besar esok.\' Lengkapkan dengan imbuhan yang betul.',options:['menemui','menemukan','pertemu','temuan'],correct:'menemui'},
+    {q:'Bentuk kata kerja betul bagi \'baik\' + imbuhan -i ialah?',options:['baiki','baikkan','membaik','kebaikan'],correct:'baiki'},
+    {q:'Bentuk kata kerja betul bagi \'siram\' + imbuhan -kan ialah?',options:['siramkan','sirami','menyiram','siraman'],correct:'siramkan'},
+    {q:'Bentuk kata kerja betul bagi \'nasihat\' + imbuhan -i ialah?',options:['nasihati','nasihatkan','menasihat','penasihat'],correct:'nasihati'},
+    {q:'\'Guru itu ___ (nasihat) murid-murid supaya belajar bersungguh-sungguh.\' Lengkapkan dengan imbuhan yang betul.',options:['menasihati','menasihatkan','dinasihat','nasihatan'],correct:'menasihati'},
+    {q:'Bentuk kata kerja betul bagi \'jual\' + imbuhan -kan ialah?',options:['jualkan','juali','menjual','penjualan'],correct:'jualkan'},
+    {q:'\'Tolong ___ (beri) buku ini kepada Aminah.\' Lengkapkan dengan imbuhan yang betul.',options:['berikan','beri-i','memberi','pemberi'],correct:'berikan'},
+  ],
+  'd2-kefahaman-petikan': [
+    {q:'\'Setiap pagi, Ahmad bangun awal untuk solat Subuh. Selepas itu, dia bersiap ke sekolah.\' Apakah yang dilakukan Ahmad selepas bangun?',options:['Solat Subuh','Terus ke sekolah','Tidur semula','Makan dahulu'],correct:'Solat Subuh'},
+    {q:'\'Kucing peliharaan Siti bernama Milo. Milo suka bermain dengan bola benang.\' Apakah nama kucing Siti?',options:['Milo','Siti','Bola','Benang'],correct:'Milo'},
+    {q:'\'Pada hari Sabtu, keluarga Amir pergi berkelah di tepi sungai. Mereka membawa banyak makanan.\' Ke manakah keluarga Amir pergi berkelah?',options:['Tepi sungai','Pantai','Taman permainan','Bandar'],correct:'Tepi sungai'},
+    {q:'\'Cikgu Aminah mengajar mata pelajaran Sains di sekolah. Dia sangat sabar mengajar murid-muridnya.\' Apakah mata pelajaran yang diajar oleh Cikgu Aminah?',options:['Sains','Matematik','Bahasa Melayu','Sejarah'],correct:'Sains'},
+    {q:'\'Hujan turun dengan lebat sepanjang petang. Ramai orang terpaksa berteduh di kedai.\' Mengapakah orang ramai berteduh di kedai?',options:['Kerana hujan lebat','Kerana panas terik','Kerana ingin membeli barang','Kerana penat'],correct:'Kerana hujan lebat'},
+    {q:'\'Encik Razak seorang peniaga yang berjaya. Dia menjual pakaian di sebuah kedai di bandar.\' Apakah yang dijual oleh Encik Razak?',options:['Pakaian','Makanan','Buku','Perabot'],correct:'Pakaian'},
+    {q:'\'Along menjaga adik-adiknya dengan penuh kasih sayang semasa ibu bapa mereka bekerja.\' Siapakah yang dijaga oleh Along?',options:['Adik-adiknya','Ibu bapanya','Kawan-kawannya','Jirannya'],correct:'Adik-adiknya'},
+    {q:'\'Burung merpati itu terbang pulang ke sangkarnya sebelum matahari terbenam.\' Bilakah burung merpati itu pulang?',options:['Sebelum matahari terbenam','Selepas matahari terbenam','Pada waktu tengah hari','Pada waktu subuh'],correct:'Sebelum matahari terbenam'},
+    {q:'\'Pasukan bola sepak sekolah itu berlatih dengan bersungguh-sungguh setiap petang untuk pertandingan akan datang.\' Untuk apakah pasukan itu berlatih?',options:['Pertandingan akan datang','Ujian sekolah','Perhimpunan sekolah','Cuti sekolah'],correct:'Pertandingan akan datang'},
+    {q:'\'Doktor Aina bekerja di sebuah klinik kecil di kampung. Dia sering merawat pesakit dengan penuh kesabaran.\' Di manakah Doktor Aina bekerja?',options:['Klinik kecil di kampung','Hospital besar di bandar','Sekolah','Kedai'],correct:'Klinik kecil di kampung'},
+    {q:'\'Nenek suka bercerita kisah dongeng kepada cucu-cucunya sebelum mereka tidur.\' Bilakah nenek bercerita?',options:['Sebelum cucu-cucunya tidur','Selepas makan tengah hari','Pada waktu pagi','Semasa hujan'],correct:'Sebelum cucu-cucunya tidur'},
+    {q:'\'Sungai di kampung itu kini bersih selepas program gotong-royong dijalankan oleh penduduk.\' Kenapakah sungai itu kini bersih?',options:['Selepas gotong-royong dijalankan','Kerana hujan lebat','Kerana tiada orang di kampung','Secara semula jadi'],correct:'Selepas gotong-royong dijalankan'},
+    {q:'\'Amirul suka melukis pemandangan alam semula jadi seperti gunung dan sungai.\' Apakah yang suka dilukis oleh Amirul?',options:['Pemandangan alam semula jadi','Kereta','Bangunan','Haiwan peliharaan'],correct:'Pemandangan alam semula jadi'},
+    {q:'\'Bas sekolah itu sampai lewat kerana jalan raya sesak dengan kenderaan.\' Kenapakah bas sekolah itu lewat?',options:['Jalan raya sesak','Bas rosak','Pemandu sakit','Cuaca buruk'],correct:'Jalan raya sesak'},
+    {q:'\'Kedai buku itu menjual pelbagai jenis buku, daripada buku cerita hingga buku rujukan.\' Apakah jenis buku yang dijual di kedai itu?',options:['Pelbagai jenis buku','Buku cerita sahaja','Buku rujukan sahaja','Majalah sahaja'],correct:'Pelbagai jenis buku'},
+    {q:'\'Pak Ali menternak ayam dan itik di ladangnya. Dia menjual telur setiap hari ke pasar.\' Apakah yang dijual oleh Pak Ali ke pasar?',options:['Telur','Ayam hidup','Itik hidup','Daging'],correct:'Telur'},
+    {q:'\'Zulaikha rajin mengulang kaji pelajaran setiap malam sebelum tidur.\' Bilakah Zulaikha mengulang kaji pelajaran?',options:['Setiap malam sebelum tidur','Setiap pagi','Semasa waktu sekolah','Hanya semasa peperiksaan'],correct:'Setiap malam sebelum tidur'},
+    {q:'\'Taman rekreasi itu ramai dikunjungi keluarga pada hujung minggu untuk bersenam dan berehat.\' Bilakah taman itu ramai dikunjungi?',options:['Hujung minggu','Hari bekerja','Waktu malam sahaja','Musim hujan sahaja'],correct:'Hujung minggu'},
+    {q:'\'Adik kecil itu menangis kerana terjatuh semasa bermain buaian di taman.\' Kenapakah adik kecil itu menangis?',options:['Terjatuh semasa bermain buaian','Lapar','Mengantuk','Ditinggalkan sendirian'],correct:'Terjatuh semasa bermain buaian'},
+    {q:'\'Encik Samad seorang pemandu teksi yang mesra dan sering membantu penumpangnya.\' Apakah pekerjaan Encik Samad?',options:['Pemandu teksi','Doktor','Guru','Peniaga'],correct:'Pemandu teksi'},
+  ],
+  'd2-karangan-gambar': [
+    {q:'Karangan gambar tunggal Darjah 2 perlu mempunyai?',options:['Beberapa ayat yang berkaitan antara satu sama lain','Satu perkataan sahaja','Ayat yang tidak berkaitan','Nombor sahaja'],correct:'Beberapa ayat yang berkaitan antara satu sama lain'},
+    {q:'Jika gambar menunjukkan seorang budak menolong nenek menyeberang jalan, ayat yang sesuai ialah?',options:['Budak itu menolong nenek menyeberang jalan.','Budak itu bermain bola.','Budak itu makan aiskrim.','Budak itu tidur di rumah.'],correct:'Budak itu menolong nenek menyeberang jalan.'},
+    {q:'Karangan gambar perlu menggunakan kata adjektif untuk?',options:['Menghidupkan penerangan gambar','Memendekkan ayat','Mengelirukan pembaca','Tiada kegunaan'],correct:'Menghidupkan penerangan gambar'},
+    {q:'Jika gambar menunjukkan hari yang cerah dan ramai orang di taman, ayat yang sesuai ialah?',options:['Pada suatu hari yang cerah, ramai orang berkelah di taman.','Hari itu hujan lebat.','Taman itu kosong.','Ramai orang tidur di rumah.'],correct:'Pada suatu hari yang cerah, ramai orang berkelah di taman.'},
+    {q:'Ayat pertama dalam karangan gambar Darjah 2 biasanya menerangkan?',options:['Latar tempat atau masa','Kesimpulan cerita','Nama penulis','Tajuk sahaja'],correct:'Latar tempat atau masa'},
+    {q:'Jika gambar menunjukkan budak-budak bergotong-royong membersihkan kelas, ayat yang sesuai ialah?',options:['Murid-murid bergotong-royong membersihkan kelas mereka.','Murid-murid bermain di padang.','Murid-murid tidur di kelas.','Murid-murid makan di kantin.'],correct:'Murid-murid bergotong-royong membersihkan kelas mereka.'},
+    {q:'Karangan gambar Darjah 2 perlu mengelakkan?',options:['Pengulangan ayat yang sama berkali-kali','Kata adjektif','Ayat yang jelas','Ayat penutup'],correct:'Pengulangan ayat yang sama berkali-kali'},
+    {q:'Jika gambar menunjukkan ibu memasak di dapur sambil anak membantu, ayat yang sesuai ialah?',options:['Ibu memasak di dapur dibantu oleh anaknya.','Ibu tidur di bilik.','Anak bermain sendirian.','Ibu membaca buku.'],correct:'Ibu memasak di dapur dibantu oleh anaknya.'},
+    {q:'Manakah ayat penutup yang sesuai untuk karangan gambar tentang aktiviti kelas membersihkan taman sekolah?',options:['Selepas selesai membersihkan, taman sekolah kelihatan bersih dan indah.','Taman itu kotor semula.','Murid-murid berhenti membersihkan.','Tiada apa berlaku selepas itu.'],correct:'Selepas selesai membersihkan, taman sekolah kelihatan bersih dan indah.'},
+    {q:'Kata hubung yang sesuai untuk menyambung dua peristiwa dalam karangan gambar ialah?',options:['Selepas itu','Walaupun begitu','Sebaliknya','Sekiranya'],correct:'Selepas itu'},
+    {q:'Jika gambar menunjukkan seekor anjing mengejar bola, ayat yang sesuai ialah?',options:['Anjing itu mengejar bola dengan pantas.','Anjing itu sedang tidur.','Anjing itu makan tulang.','Anjing itu berenang di kolam.'],correct:'Anjing itu mengejar bola dengan pantas.'},
+    {q:'Manakah ayat yang menunjukkan perasaan watak dalam gambar?',options:['Dia berasa sangat gembira apabila menerima hadiah itu.','Dia ada di sana.','Gambar itu berwarna biru.','Dia memakai baju.'],correct:'Dia berasa sangat gembira apabila menerima hadiah itu.'},
+    {q:'Karangan gambar Darjah 2 sesuai ditulis dengan bilangan ayat?',options:['Lebih banyak berbanding Darjah 1 tetapi masih ringkas','Kurang daripada Darjah 1','Sama seperti karangan Darjah 6','Hanya satu ayat'],correct:'Lebih banyak berbanding Darjah 1 tetapi masih ringkas'},
+    {q:'Jika gambar menunjukkan seorang guru mengajar di hadapan kelas, ayat yang sesuai ialah?',options:['Guru itu sedang mengajar murid-murid di hadapan kelas.','Guru itu sedang tidur.','Guru itu sedang bermain.','Guru itu sedang makan.'],correct:'Guru itu sedang mengajar murid-murid di hadapan kelas.'},
+    {q:'Manakah tajuk yang sesuai untuk karangan gambar tentang aktiviti riadah keluarga di pantai?',options:['Riadah Keluarga di Pantai','Karangan Ini','Gambar Pantai','Cerita Saya'],correct:'Riadah Keluarga di Pantai'},
+    {q:'Kata nama am digunakan dalam karangan gambar untuk merujuk kepada?',options:['Objek atau orang secara umum dalam gambar','Nama khas sahaja','Warna sahaja','Bunyi sahaja'],correct:'Objek atau orang secara umum dalam gambar'},
+    {q:'Jika gambar menunjukkan seorang budak jatuh dari basikal, ayat yang sesuai ialah?',options:['Budak itu terjatuh dari basikalnya.','Budak itu menang perlumbaan.','Budak itu sedang tidur.','Budak itu membaca buku.'],correct:'Budak itu terjatuh dari basikalnya.'},
+    {q:'Karangan gambar yang baik memerlukan ayat yang?',options:['Berkaitan antara satu sama lain membentuk cerita yang jelas','Berselerak tanpa kaitan','Sangat pendek tanpa makna','Diulang berkali-kali'],correct:'Berkaitan antara satu sama lain membentuk cerita yang jelas'},
+    {q:'Jika gambar menunjukkan murid-murid berbaris sebelum masuk ke kelas, ayat yang sesuai ialah?',options:['Murid-murid berbaris dengan kemas sebelum masuk ke kelas.','Murid-murid berlari-lari di padang.','Murid-murid duduk di kantin.','Murid-murid bermain bola.'],correct:'Murid-murid berbaris dengan kemas sebelum masuk ke kelas.'},
+    {q:'Selepas menulis karangan gambar, murid perlu?',options:['Menyemak semula ejaan dan tatabahasa','Terus menghantar tanpa semakan','Mengabaikan kesilapan','Menconteng semula gambar'],correct:'Menyemak semula ejaan dan tatabahasa'},
+  ],
+  'd3-ganti-sendi-nama': [
+    {q:'Yang manakah kata ganti nama diri pertama?',options:['dia','saya','mereka','awak'],correct:'saya'},
+    {q:'Yang manakah kata ganti nama diri kedua?',options:['kami','awak','ia','mereka'],correct:'awak'},
+    {q:'Yang manakah kata ganti nama diri ketiga?',options:['saya','kita','mereka','kamu'],correct:'mereka'},
+    {q:'\'___ pergi ke pasar bersama-sama.\' Isi tempat kosong dengan kata ganti nama yang sesuai.',options:['Kita','Dia','Mereka','Ia'],correct:'Kita'},
+    {q:'\'Buku itu kepunyaan ___.\' (merujuk seorang lelaki yang telah disebut)',options:['saya','kami','dia','kita'],correct:'dia'},
+    {q:'Kucing itu duduk ___ atas kerusi.',options:['di','ke','dari','akan'],correct:'di'},
+    {q:'Ali pergi ___ sekolah setiap pagi.',options:['di','ke','pada','dengan'],correct:'ke'},
+    {q:'Surat ini ditulis ___ Encik Ahmad.',options:['oleh','untuk','dengan','akan'],correct:'oleh'},
+    {q:'Hadiah ini ___ untuk adik saya.',options:['di','ke','dari','untuk'],correct:'untuk'},
+    {q:'Kami akan bertemu ___ pukul tiga petang.',options:['pada','dari','dengan','oleh'],correct:'pada'},
+    {q:'Mereka pulang ___ sekolah pada pukul satu.',options:['dari','ke','di','untuk'],correct:'dari'},
+    {q:'\'___\' digunakan untuk merujuk kepada diri sendiri secara formal.',options:['Saya','Aku','Kau','Ia'],correct:'Saya'},
+    {q:'Kata ganti nama diri ketiga jamak ialah?',options:['mereka','kami','kita','awak'],correct:'mereka'},
+    {q:'\'Buku ___ tertinggal di rumah.\' (merujuk kepada diri sendiri)',options:['saya','dia','mereka','kamu'],correct:'saya'},
+    {q:'Adik duduk ___ bawah pokok rendang itu.',options:['di','ke','dari','pada'],correct:'di'},
+    {q:'Kad jemputan itu dihantar ___ semua saudara-mara.',options:['kepada','daripada','dengan','oleh'],correct:'kepada'},
+    {q:'Kereta itu diletakkan ___ tepi jalan.',options:['di','ke','dari','untuk'],correct:'di'},
+    {q:'Basikal itu milik ___. (merujuk kepada seorang budak lelaki)',options:['dia','saya','kami','kita'],correct:'dia'},
+    {q:'Guru berjalan ___ arah pejabat.',options:['ke','di','dari','dengan'],correct:'ke'},
+    {q:'Hadiah itu diberikan ___ ayah kepada anaknya.',options:['oleh','untuk','kepada','dengan'],correct:'oleh'},
+  ],
+  'd3-imbuhan-apitan': [
+    {q:'Bentuk kata kerja betul bagi \'besar\' + imbuhan pe-...-an ialah?',options:['pembesar','pembesaran','kebesaran','memperbesar'],correct:'pembesaran'},
+    {q:'Bentuk kata kerja betul bagi \'main\' + imbuhan per-...-an ialah?',options:['permainan','pemain','bermain','mainan'],correct:'permainan'},
+    {q:'Bentuk kata kerja betul bagi \'ajar\' + imbuhan pel-...-an ialah?',options:['pengajar','pelajaran','ajaran','pembelajaran'],correct:'pelajaran'},
+    {q:'Bentuk kata nama betul bagi \'tinggi\' + imbuhan ke-...-an ialah?',options:['ketinggian','peninggian','meninggi','tertinggi'],correct:'ketinggian'},
+    {q:'Bentuk kata nama betul bagi \'sihat\' + imbuhan ke-...-an ialah?',options:['kesihatan','pesihat','menyihat','sihatan'],correct:'kesihatan'},
+    {q:'Bentuk kata nama betul bagi \'indah\' + imbuhan ke-...-an ialah?',options:['keindahan','pengindah','mengindah','indahan'],correct:'keindahan'},
+    {q:'Bentuk kata nama betul bagi \'pandai\' + imbuhan ke-...-an ialah?',options:['kepandaian','pemandai','memandai','pandaian'],correct:'kepandaian'},
+    {q:'Imbuhan apitan \'ke-...-an\' biasanya membentuk kata jenis?',options:['Kata nama','Kata kerja','Kata sendi nama','Kata hubung'],correct:'Kata nama'},
+    {q:'Bentuk kata nama betul bagi \'jual\' + imbuhan pen-...-an ialah?',options:['penjualan','pembeli','jualan','dijual'],correct:'penjualan'},
+    {q:'Bentuk kata nama betul bagi \'didik\' + imbuhan pen-...-an ialah?',options:['pendidikan','pendidik','dididik','mendidik'],correct:'pendidikan'},
+    {q:'\'Kerajaan mengadakan ___ (besar) bandar itu.\' Lengkapkan dengan imbuhan yang betul.',options:['pembesaran','kebesaran','pembesar','memperbesar'],correct:'pembesaran'},
+    {q:'\'___ (Sihat) badan sangat penting bagi semua orang.\' Lengkapkan dengan imbuhan yang betul.',options:['Kesihatan','Menyihat','Pesihat','Sihatan'],correct:'Kesihatan'},
+    {q:'Bentuk kata nama betul bagi \'lancar\' + imbuhan ke-...-an ialah?',options:['kelancaran','pelancar','melancar','lancaran'],correct:'kelancaran'},
+    {q:'Bentuk kata nama betul bagi \'bersih\' + imbuhan ke-...-an ialah?',options:['kebersihan','pembersih','membersih','bersihan'],correct:'kebersihan'},
+    {q:'Bentuk kata nama betul bagi \'susah\' + imbuhan ke-...-an ialah?',options:['kesusahan','penyusah','menyusah','susahan'],correct:'kesusahan'},
+    {q:'Imbuhan apitan \'pen-...-an\' biasa digunakan untuk membentuk kata nama yang bermaksud?',options:['Proses atau perbuatan','Sifat','Tempat sahaja','Bilangan'],correct:'Proses atau perbuatan'},
+    {q:'Bentuk kata nama betul bagi \'bina\' + imbuhan pem-...-an ialah?',options:['pembinaan','pembina','dibina','membina'],correct:'pembinaan'},
+    {q:'Bentuk kata nama betul bagi \'sedia\' + imbuhan per-...-an ialah?',options:['persediaan','penyedia','disediakan','menyediakan'],correct:'persediaan'},
+    {q:'\'Kami membuat ___ (sedia) sebelum peperiksaan.\' Lengkapkan dengan imbuhan yang betul.',options:['persediaan','penyedia','sediaan','kesediaan'],correct:'persediaan'},
+    {q:'Bentuk kata nama betul bagi \'cantik\' + imbuhan ke-...-an ialah?',options:['kecantikan','pencantik','mencantik','cantikan'],correct:'kecantikan'},
+  ],
+  'd3-ayat-majmuk-gabungan': [
+    {q:'Ayat majmuk gabungan menggunakan kata hubung untuk?',options:['Menggabungkan dua ayat tunggal setara','Membentuk ayat tanya','Membentuk ayat seruan','Memendekkan ayat'],correct:'Menggabungkan dua ayat tunggal setara'},
+    {q:'Gabungkan ayat: \'Ali suka bola sepak.\' + \'Abu suka badminton.\' menggunakan \'manakala\'.',options:['Ali suka bola sepak manakala Abu suka badminton.','Ali suka bola sepak dan manakala Abu suka badminton.','Manakala Ali suka bola sepak Abu suka badminton.','Ali dan Abu suka bola sepak manakala badminton.'],correct:'Ali suka bola sepak manakala Abu suka badminton.'},
+    {q:'Kata hubung \'manakala\' digunakan untuk menunjukkan?',options:['Perbandingan antara dua perkara','Sebab','Masa','Tempat'],correct:'Perbandingan antara dua perkara'},
+    {q:'Yang manakah ayat majmuk gabungan yang gramatis?',options:['Dia rajin dan pandai.','Dia rajin pandai dan.','Dan dia rajin pandai.','Rajin dia dan pandai.'],correct:'Dia rajin dan pandai.'},
+    {q:'Gabungkan: \'Hujan turun.\' + \'Ribut bertiup kencang.\' menggunakan \'dan\'.',options:['Hujan turun dan ribut bertiup kencang.','Hujan dan turun ribut bertiup kencang.','Dan hujan turun ribut bertiup kencang.','Hujan turun ribut dan bertiup kencang.'],correct:'Hujan turun dan ribut bertiup kencang.'},
+    {q:'\'Kamu boleh pilih nasi goreng atau mi goreng.\' Ayat ini menunjukkan kata hubung yang membawa maksud?',options:['Pilihan','Sebab','Perbandingan','Masa'],correct:'Pilihan'},
+    {q:'Gabungkan: \'Emak memasak.\' + \'Ayah membaca surat khabar.\' menggunakan kata hubung yang sesuai.',options:['Emak memasak manakala ayah membaca surat khabar.','Emak memasak ayah membaca surat khabar.','Manakala emak memasak dan ayah membaca surat khabar.','Emak dan ayah memasak membaca surat khabar.'],correct:'Emak memasak manakala ayah membaca surat khabar.'},
+    {q:'Ayat majmuk gabungan terbentuk daripada ayat-ayat tunggal yang mempunyai?',options:['Kedudukan setara (tiada satu bergantung kepada yang lain)','Satu ayat utama dan satu ayat sampingan','Tiada subjek','Tiada kata hubung'],correct:'Kedudukan setara (tiada satu bergantung kepada yang lain)'},
+    {q:'\'Saya suka membaca dan menulis.\' Ayat ini menggabungkan dua?',options:['Aktiviti kegemaran','Subjek','Tempat','Masa'],correct:'Aktiviti kegemaran'},
+    {q:'Kata hubung yang sesuai untuk ayat: \'Dia bijak ___ dia juga rajin.\'',options:['dan','atau','manakala','kerana'],correct:'dan'},
+    {q:'Gabungkan: \'Ahmad ke sekolah dengan basikal.\' + \'Ali ke sekolah dengan bas.\' menggunakan \'manakala\'.',options:['Ahmad ke sekolah dengan basikal manakala Ali ke sekolah dengan bas.','Ahmad dan Ali ke sekolah dengan basikal bas.','Manakala Ahmad ke sekolah Ali dengan bas.','Ahmad ke sekolah manakala basikal Ali bas.'],correct:'Ahmad ke sekolah dengan basikal manakala Ali ke sekolah dengan bas.'},
+    {q:'\'Kita boleh pergi berjalan-jalan atau menonton wayang.\' Kata hubung \'atau\' menunjukkan?',options:['Pilihan antara dua aktiviti','Perbandingan','Sebab-akibat','Masa'],correct:'Pilihan antara dua aktiviti'},
+    {q:'Yang manakah ayat majmuk gabungan yang betul strukturnya?',options:['Kucing itu comel dan anjing itu garang.','Kucing comel itu dan anjing garang itu.','Dan kucing itu comel anjing itu garang.','Kucing itu dan comel anjing garang itu.'],correct:'Kucing itu comel dan anjing itu garang.'},
+    {q:'Gabungkan: \'Dia pandai bermain muzik.\' + \'Dia juga pandai melukis.\' menjadi ayat majmuk yang ringkas.',options:['Dia pandai bermain muzik dan melukis.','Dia pandai bermain muzik dia pandai melukis.','Pandai bermain muzik dan melukis dia.','Dia dan pandai bermain muzik melukis.'],correct:'Dia pandai bermain muzik dan melukis.'},
+    {q:'Ayat majmuk gabungan berbeza dengan ayat majmuk pancangan kerana?',options:['Ayat-ayat yang digabungkan mempunyai kedudukan setara','Ia menggunakan kata hubung \'bahawa\'','Ia hanya untuk ayat tanya','Ia tidak menggunakan kata hubung'],correct:'Ayat-ayat yang digabungkan mempunyai kedudukan setara'},
+    {q:'\'Murid lelaki bermain bola manakala murid perempuan bermain congkak.\' Ayat ini membandingkan aktiviti?',options:['Murid lelaki dan murid perempuan','Dua orang guru','Dua jenis permainan sahaja tanpa subjek','Dua waktu berbeza'],correct:'Murid lelaki dan murid perempuan'},
+    {q:'Gabungkan: \'Saya suka warna biru.\' + \'Kakak suka warna merah.\' menggunakan \'manakala\'.',options:['Saya suka warna biru manakala kakak suka warna merah.','Saya dan kakak suka warna biru merah.','Manakala saya suka warna biru kakak merah.','Saya suka warna biru kakak suka manakala merah.'],correct:'Saya suka warna biru manakala kakak suka warna merah.'},
+    {q:'\'Kita perlu belajar bersungguh-sungguh dan berdoa untuk berjaya.\' Ayat ini menggabungkan dua tindakan yang?',options:['Saling melengkapi untuk mencapai kejayaan','Bertentangan antara satu sama lain','Tidak berkaitan','Berlaku pada masa berbeza'],correct:'Saling melengkapi untuk mencapai kejayaan'},
+    {q:'Yang manakah PALING sesuai untuk menggabungkan \'Ali suka makan pedas.\' dan \'Abu tidak suka makan pedas.\'',options:['Ali suka makan pedas manakala Abu tidak suka makan pedas.','Ali dan Abu suka tidak suka makan pedas.','Manakala Ali suka Abu tidak makan pedas.','Ali suka makan pedas dan Abu makan pedas.'],correct:'Ali suka makan pedas manakala Abu tidak suka makan pedas.'},
+    {q:'Kata hubung gabungan yang paling kerap digunakan dalam ayat majmuk ialah?',options:['dan','bahawa','yang','supaya'],correct:'dan'},
+  ],
+  'd3-kefahaman-sederhana': [
+    {q:'\'Kampung Sungai Ara terkenal dengan hasil pertanian seperti padi dan sayur-sayuran. Penduduknya kebanyakan bekerja sebagai petani.\' Apakah pekerjaan utama penduduk kampung itu?',options:['Petani','Peniaga','Guru','Doktor'],correct:'Petani'},
+    {q:'\'Setiap tahun, sekolah mengadakan Hari Sukan untuk menggalakkan murid bersukan. Semua murid digalakkan menyertai sekurang-kurangnya satu acara.\' Apakah tujuan Hari Sukan diadakan?',options:['Menggalakkan murid bersukan','Memberi cuti kepada murid','Menguji kecerdasan murid','Menghukum murid yang malas'],correct:'Menggalakkan murid bersukan'},
+    {q:'\'Sungai yang dahulunya bersih kini tercemar akibat pembuangan sampah oleh sesetengah penduduk yang tidak bertanggungjawab.\' Apakah punca pencemaran sungai itu?',options:['Pembuangan sampah oleh penduduk','Hujan lebat','Pembinaan jambatan','Aktiviti memancing'],correct:'Pembuangan sampah oleh penduduk'},
+    {q:'\'Puan Rohana seorang usahawan yang berjaya menjual kuih tradisional secara dalam talian. Perniagaannya berkembang pesat dalam masa dua tahun.\' Bagaimanakah Puan Rohana menjual kuihnya?',options:['Secara dalam talian','Di gerai tepi jalan','Di pasar malam sahaja','Melalui rakan sahaja'],correct:'Secara dalam talian'},
+    {q:'\'Ribut yang melanda kawasan pantai timur menyebabkan banyak pokok tumbang dan bekalan elektrik terputus.\' Apakah kesan ribut itu terhadap bekalan elektrik?',options:['Bekalan elektrik terputus','Bekalan elektrik bertambah','Tiada kesan','Bekalan elektrik menjadi lebih stabil'],correct:'Bekalan elektrik terputus'},
+    {q:'\'Program kitar semula yang dianjurkan oleh pihak sekolah mendapat sambutan yang menggalakkan daripada murid dan ibu bapa.\' Siapakah yang menyambut baik program itu?',options:['Murid dan ibu bapa','Guru sahaja','Kerajaan sahaja','Penduduk luar kampung'],correct:'Murid dan ibu bapa'},
+    {q:'\'Selepas bekerja keras selama setahun, keluarga itu akhirnya mampu membeli sebuah rumah baharu.\' Apakah yang berjaya dibeli oleh keluarga itu?',options:['Rumah baharu','Kereta baharu','Kedai baharu','Tanah pertanian'],correct:'Rumah baharu'},
+    {q:'\'Perpustakaan desa itu menyediakan pelbagai bahan bacaan percuma untuk penduduk kampung, terutamanya kanak-kanak.\' Siapakah yang paling diutamakan oleh perpustakaan itu?',options:['Kanak-kanak','Orang tua','Pelancong','Pekerja kilang'],correct:'Kanak-kanak'},
+    {q:'\'Doktor haiwan itu bekerja tanpa jemu merawat haiwan-haiwan terbiar yang cedera akibat kemalangan jalan raya.\' Apakah punca kecederaan haiwan-haiwan itu?',options:['Kemalangan jalan raya','Penyakit','Kekurangan makanan','Cuaca panas'],correct:'Kemalangan jalan raya'},
+    {q:'\'Kerajaan telah melancarkan kempen menjimatkan air susulan kemarau yang melanda negara sejak sebulan lalu.\' Mengapakah kempen menjimatkan air dilancarkan?',options:['Kerana kemarau','Kerana banjir','Kerana ribut','Kerana gempa bumi'],correct:'Kerana kemarau'},
+    {q:'\'Bengkel motosikal milik Encik Zaidi sering dikunjungi pelanggan kerana harga yang berpatutan dan kerja yang berkualiti.\' Mengapakah bengkel Encik Zaidi popular?',options:['Harga berpatutan dan kerja berkualiti','Lokasi yang strategik sahaja','Bengkel yang besar','Banyak pekerja'],correct:'Harga berpatutan dan kerja berkualiti'},
+    {q:'\'Sekumpulan pelajar universiti menganjurkan program membaca untuk kanak-kanak di kawasan pedalaman yang kurang mendapat pendedahan buku.\' Kepada siapakah program itu ditujukan?',options:['Kanak-kanak di kawasan pedalaman','Pelajar universiti sendiri','Guru-guru sekolah','Ibu bapa di bandar'],correct:'Kanak-kanak di kawasan pedalaman'},
+    {q:'\'Selepas kejadian kebakaran hutan, pihak berkuasa mengambil tindakan tegas terhadap mereka yang membakar secara terbuka.\' Apakah tindakan pihak berkuasa selepas kebakaran hutan?',options:['Mengambil tindakan tegas terhadap pembakar terbuka','Membiarkan sahaja','Memberi ganjaran','Tiada tindakan diambil'],correct:'Mengambil tindakan tegas terhadap pembakar terbuka'},
+    {q:'\'Restoran itu terkenal dengan hidangan tradisional yang diwarisi turun-temurun daripada nenek moyang pemiliknya.\' Dari manakah resipi restoran itu diperoleh?',options:['Diwarisi turun-temurun daripada nenek moyang','Dicipta sendiri oleh pemilik','Diambil daripada internet','Dibeli daripada restoran lain'],correct:'Diwarisi turun-temurun daripada nenek moyang'},
+    {q:'\'Pihak sekolah mengadakan kempen kesihatan mental bagi membantu murid menguruskan tekanan peperiksaan dengan lebih baik.\' Apakah tujuan kempen itu diadakan?',options:['Membantu murid menguruskan tekanan peperiksaan','Menambah cuti sekolah','Mengurangkan bilangan murid','Menggalakkan sukan'],correct:'Membantu murid menguruskan tekanan peperiksaan'},
+    {q:'\'Nelayan-nelayan di kampung itu terpaksa menangguhkan aktiviti menangkap ikan kerana cuaca laut yang buruk.\' Kenapakah nelayan menangguhkan aktiviti mereka?',options:['Cuaca laut yang buruk','Kekurangan bot','Harga ikan yang rendah','Musim perayaan'],correct:'Cuaca laut yang buruk'},
+    {q:'\'Syarikat teknologi itu berjaya mencipta aplikasi yang membantu petani memantau kesihatan tanaman menggunakan telefon pintar.\' Apakah fungsi aplikasi yang dicipta itu?',options:['Membantu petani memantau kesihatan tanaman','Membantu petani menjual hasil tanaman','Menggantikan pekerjaan petani','Membantu petani membeli baja'],correct:'Membantu petani memantau kesihatan tanaman'},
+    {q:'\'Selepas bertahun-tahun berlatih, atlet muda itu akhirnya berjaya memenangi pingat emas dalam sukan negara.\' Apakah yang dimenangi oleh atlet itu?',options:['Pingat emas','Pingat perak','Wang tunai sahaja','Piala sahaja'],correct:'Pingat emas'},
+    {q:'\'Kilang tekstil itu mengamalkan sistem kitar semula air untuk mengurangkan pembaziran sumber semula jadi.\' Apakah tujuan sistem kitar semula air itu diamalkan?',options:['Mengurangkan pembaziran sumber semula jadi','Menambah pengeluaran kain','Mengurangkan pekerja','Menambah keuntungan sahaja'],correct:'Mengurangkan pembaziran sumber semula jadi'},
+    {q:'\'Sukarelawan bencana itu bekerja tanpa henti membantu mangsa banjir mendapatkan makanan dan tempat perlindungan.\' Apakah bantuan yang diberikan oleh sukarelawan itu?',options:['Makanan dan tempat perlindungan','Wang tunai sahaja','Ubat-ubatan sahaja','Pakaian sahaja'],correct:'Makanan dan tempat perlindungan'},
+  ],
+  'd3-karangan-gambar-bersiri': [
+    {q:'Karangan gambar bersiri ditulis berdasarkan?',options:['Beberapa gambar yang membentuk satu jalan cerita','Satu gambar sahaja','Tiada gambar','Gambar rawak yang tidak berkaitan'],correct:'Beberapa gambar yang membentuk satu jalan cerita'},
+    {q:'Bilakah karangan gambar bersiri patut ditulis mengikut susunan gambar?',options:['Mengikut urutan gambar yang diberikan','Secara rawak','Bermula dengan gambar terakhir','Tidak perlu mengikut urutan'],correct:'Mengikut urutan gambar yang diberikan'},
+    {q:'Ayat pertama dalam karangan gambar bersiri biasanya menerangkan?',options:['Latar tempat dan watak dalam gambar pertama','Kesimpulan cerita','Gambar terakhir','Pendapat penulis'],correct:'Latar tempat dan watak dalam gambar pertama'},
+    {q:'Manakah kata hubung yang sesuai untuk menyambung peristiwa dari satu gambar ke gambar seterusnya?',options:['Selepas itu','Walaupun','Sekiranya','Sebaliknya'],correct:'Selepas itu'},
+    {q:'Karangan gambar bersiri perlu ditulis dalam bentuk?',options:['Perenggan yang berkaitan antara satu sama lain','Senarai tanpa ayat penuh','Jadual','Poin-poin pendek sahaja'],correct:'Perenggan yang berkaitan antara satu sama lain'},
+    {q:'Manakah contoh ayat pembuka yang sesuai untuk karangan gambar bersiri?',options:['Pada suatu pagi yang cerah, Ali dan kawan-kawannya pergi ke taman.','Karangan ini tentang gambar.','Saya tidak tahu apa yang berlaku.','Gambar pertama menunjukkan sesuatu.'],correct:'Pada suatu pagi yang cerah, Ali dan kawan-kawannya pergi ke taman.'},
+    {q:'Ayat penutup karangan gambar bersiri sepatutnya?',options:['Merumuskan pengajaran atau kesudahan cerita','Memulakan cerita baharu','Tidak berkaitan dengan cerita','Diletakkan di awal karangan'],correct:'Merumuskan pengajaran atau kesudahan cerita'},
+    {q:'Manakah kata hubung masa yang sesuai untuk menunjukkan peristiwa berlaku serentak?',options:['Semasa','Kerana','Supaya','Walaupun'],correct:'Semasa'},
+    {q:'Untuk menghasilkan karangan yang menarik, penulis perlu memberi perhatian kepada?',options:['Perincian watak, tempat dan peristiwa dalam setiap gambar','Panjang ayat sahaja','Warna gambar','Bilangan perkataan sahaja'],correct:'Perincian watak, tempat dan peristiwa dalam setiap gambar'},
+    {q:'Kata hubung \'kemudian\' digunakan untuk menunjukkan?',options:['Peristiwa yang berlaku selepas peristiwa sebelumnya','Peristiwa yang berlaku serentak','Sebab sesuatu berlaku','Perbandingan dua peristiwa'],correct:'Peristiwa yang berlaku selepas peristiwa sebelumnya'},
+    {q:'Bilangan perenggan dalam karangan gambar bersiri biasanya bergantung kepada?',options:['Bilangan gambar yang diberikan','Sentiasa 5 perenggan','Sentiasa 1 perenggan sahaja','Tiada had tertentu'],correct:'Bilangan gambar yang diberikan'},
+    {q:'Manakah ayat yang sesuai untuk menggambarkan perasaan watak dalam gambar?',options:['Ali berasa sangat gembira apabila memenangi hadiah itu.','Ali ada di sana.','Gambar itu berwarna biru.','Ali memakai baju.'],correct:'Ali berasa sangat gembira apabila memenangi hadiah itu.'},
+    {q:'Karangan gambar bersiri perlu mengelakkan?',options:['Ayat yang tidak berkaitan dengan gambar','Kata hubung masa','Ayat penutup','Perenggan baharu'],correct:'Ayat yang tidak berkaitan dengan gambar'},
+    {q:'Apakah fungsi kata hubung \'akhirnya\' dalam karangan gambar bersiri?',options:['Menunjukkan kesudahan atau peristiwa terakhir','Menunjukkan permulaan cerita','Menunjukkan sebab','Menunjukkan pilihan'],correct:'Menunjukkan kesudahan atau peristiwa terakhir'},
+    {q:'Sebelum menulis karangan gambar bersiri, langkah pertama yang perlu dilakukan ialah?',options:['Memerhati dan memahami setiap gambar dengan teliti','Terus menulis tanpa memerhati gambar','Menulis kesimpulan dahulu','Menyalin karangan lain'],correct:'Memerhati dan memahami setiap gambar dengan teliti'},
+    {q:'Manakah contoh penggunaan kata ganti nama yang betul dalam karangan gambar bersiri?',options:['Ali pergi ke kedai. Dia membeli buku.','Ali pergi ke kedai. Ali membeli buku setiap ayat.','Dia pergi ke kedai. Ali membeli buku.','Pergi ke kedai. Membeli buku.'],correct:'Ali pergi ke kedai. Dia membeli buku.'},
+    {q:'Pengajaran yang boleh disertakan pada akhir karangan gambar bersiri bertujuan untuk?',options:['Memberi nilai murni kepada pembaca','Memanjangkan karangan sahaja','Mengelirukan pembaca','Tiada tujuan khusus'],correct:'Memberi nilai murni kepada pembaca'},
+    {q:'Manakah kata hubung yang sesuai untuk menunjukkan peristiwa yang berlaku secara tiba-tiba?',options:['Tiba-tiba','Sebelum itu','Oleh itu','Manakala'],correct:'Tiba-tiba'},
+    {q:'Karangan gambar bersiri yang baik perlu mempunyai?',options:['Permulaan, perkembangan dan kesudahan cerita yang jelas','Hanya permulaan cerita','Hanya kesudahan cerita','Ayat berulang sahaja'],correct:'Permulaan, perkembangan dan kesudahan cerita yang jelas'},
+    {q:'Manakah tajuk yang sesuai untuk karangan gambar bersiri tentang aktiviti gotong-royong?',options:['Gotong-Royong di Kampung Saya','Karangan Ini','Gambar Bersiri','Cerita Saya'],correct:'Gotong-Royong di Kampung Saya'},
+  ],
+  'd4-kata-hubung-imbuhan': [
+    {q:'\'Saya suka makan nasi lemak ___ saya suka makan roti canai juga.\'',options:['dan','tetapi','kerana','supaya'],correct:'dan'},
+    {q:'\'Dia rajin belajar ___ dia mahu berjaya dalam peperiksaan.\'',options:['dan','atau','supaya','tetapi'],correct:'supaya'},
+    {q:'\'Ali sudah penat, ___ dia masih meneruskan latihannya.\'',options:['dan','walaupun','kerana','supaya'],correct:'walaupun'},
+    {q:'\'Basuh tangan anda ___ makan.\'',options:['sebelum','selepas','dan','atau'],correct:'sebelum'},
+    {q:'\'Dia berehat sebentar ___ menyambung kerja rumahnya.\'',options:['sebelum','selepas','tetapi','supaya'],correct:'selepas'},
+    {q:'Bentuk kata kerja betul bagi \'besar\' + imbuhan memper-...-kan ialah?',options:['memperbesar','memperbesarkan','pembesaran','kebesaran'],correct:'memperbesarkan'},
+    {q:'Bentuk kata kerja betul bagi \'ingat\' + imbuhan memper-...-kan ialah?',options:['memperingatkan','peringatan','mengingat','teringat'],correct:'memperingatkan'},
+    {q:'Bentuk kata kerja betul bagi \'lengkap\' + imbuhan me-...-kan ialah?',options:['melengkap','melengkapkan','pelengkap','kelengkapan'],correct:'melengkapkan'},
+    {q:'\'Dia ___ pintu itu supaya tidak terbuka.\' (kunci + kan)',options:['mengunci','menguncikan','dikuncikan','kuncikan'],correct:'mengunci'},
+    {q:'\'Kami akan ___ (baik) mutu perkhidmatan kami tahun depan.\' (imbuhan memper-...-kan)',options:['memperbaikkan','membaiki','kebaikan','baikkan'],correct:'memperbaikkan'},
+    {q:'Kata hubung \'sebelum\' dan \'selepas\' menunjukkan hubungan?',options:['Masa','Sebab','Pilihan','Perbandingan'],correct:'Masa'},
+    {q:'\'Murid itu tidak hadir ke sekolah ___ dia demam.\'',options:['kerana','supaya','walaupun','dan'],correct:'kerana'},
+    {q:'Bentuk kata kerja betul bagi \'jelas\' + imbuhan memper-...-kan ialah?',options:['memperjelaskan','penjelasan','menjelas','jelaskan'],correct:'memperjelaskan'},
+    {q:'\'Cikgu ___ (lengkap) jawapan murid itu dengan penjelasan tambahan.\'',options:['melengkapkan','kelengkapan','pelengkap','lengkapan'],correct:'melengkapkan'},
+    {q:'\'Dia bekerja bersungguh-sungguh ___ keluarganya boleh hidup selesa.\'',options:['supaya','tetapi','walaupun','dan'],correct:'supaya'},
+    {q:'Bentuk kata kerja betul bagi \'kuat\' + imbuhan memper-...-kan ialah?',options:['memperkuatkan','kekuatan','menguat','kuatkan'],correct:'memperkuatkan'},
+    {q:'\'Kita perlu ___ (kemas) bilik sebelum tetamu datang.\' (imbuhan me-...-kan)',options:['mengemaskan','kemasan','pengemas','kemaskan'],correct:'mengemaskan'},
+    {q:'\'___ dia miskin, dia tetap gembira dan bersyukur.\'',options:['Walaupun','Supaya','Kerana','Dan'],correct:'Walaupun'},
+    {q:'Bentuk kata kerja betul bagi \'mudah\' + imbuhan memper-...-kan ialah?',options:['mempermudahkan','kemudahan','memudah','mudahkan'],correct:'mempermudahkan'},
+    {q:'\'Guru itu ___ (jelas) konsep matematik itu kepada murid-murid.\'',options:['menjelaskan','kejelasan','penjelas','jelaskan'],correct:'menjelaskan'},
+  ],
+  'd4-ayat-majmuk-pancangan': [
+    {q:'Ayat majmuk pancangan yang betul ialah?',options:['Saya tahu bahawa dia sudah pulang.','Saya tahu dan dia sudah pulang.','Saya tahu, dia sudah pulang.','Saya tahu dia telah pulang dan makan.'],correct:'Saya tahu bahawa dia sudah pulang.'},
+    {q:'Cam pasti kata hubung pancangan yang betul dalam ayat: \'Guru itu berkata ___ murid-murid mesti hadir awal.\'',options:['bahawa','dan','tetapi','atau'],correct:'bahawa'},
+    {q:'Ayat manakah menggunakan kata hubung pancangan relatif \'yang\' dengan betul?',options:['Buku yang saya beli itu sangat menarik.','Buku dan saya beli itu sangat menarik.','Buku itu saya beli yang menarik sangat.','Yang buku saya beli itu menarik.'],correct:'Buku yang saya beli itu sangat menarik.'},
+    {q:'Ayat majmuk pancangan berbeza daripada ayat majmuk gabungan kerana?',options:['Terdapat ayat utama dan ayat kecil yang bergantung kepadanya','Kedua-dua ayat setara','Tiada kata hubung digunakan','Ia lebih pendek'],correct:'Terdapat ayat utama dan ayat kecil yang bergantung kepadanya'},
+    {q:'\'Rumah yang besar itu milik Datuk Razak.\' Kata hubung dalam ayat ini ialah?',options:['yang','itu','milik','besar'],correct:'yang'},
+    {q:'Ayat pancangan relatif menggunakan kata hubung?',options:['yang','dan','atau','tetapi'],correct:'yang'},
+    {q:'\'Saya percaya ___ dia akan berjaya dalam peperiksaan.\'',options:['bahawa','yang','dan','atau'],correct:'bahawa'},
+    {q:'Yang manakah contoh ayat pancangan komplemen (menggunakan \'bahawa\')?',options:['Dia menyatakan bahawa projek itu telah siap.','Dia dan projek itu telah siap.','Projek itu, dia menyatakan siap.','Menyatakan projek itu siap dia.'],correct:'Dia menyatakan bahawa projek itu telah siap.'},
+    {q:'\'Murid yang rajin selalu mendapat markah yang tinggi.\' Berapa kali kata hubung \'yang\' digunakan dalam ayat ini?',options:['2','1','3','0'],correct:'2'},
+    {q:'Ayat pancangan keterangan menggunakan kata hubung seperti?',options:['kerana, supaya, walaupun','dan, atau','yang','bahawa'],correct:'kerana, supaya, walaupun'},
+    {q:'\'Dia belajar bersungguh-sungguh kerana dia mahu berjaya.\' Ayat ini merupakan ayat majmuk pancangan jenis?',options:['Pancangan keterangan','Pancangan relatif','Pancangan komplemen','Ayat tunggal'],correct:'Pancangan keterangan'},
+    {q:'Gabungkan menjadi ayat pancangan komplemen: \'Saya tahu.\' + \'Dia sudah pulang.\'',options:['Saya tahu bahawa dia sudah pulang.','Saya tahu dan dia sudah pulang.','Saya tahu, dia sudah pulang.','Bahawa saya tahu dia sudah pulang.'],correct:'Saya tahu bahawa dia sudah pulang.'},
+    {q:'\'Kereta yang berwarna merah itu kepunyaan ayah saya.\' Ayat kecil dalam ayat pancangan ini ialah?',options:['yang berwarna merah','kereta itu','kepunyaan ayah saya','ayah saya'],correct:'yang berwarna merah'},
+    {q:'Manakah ayat majmuk pancangan yang gramatis?',options:['Buku yang saya baca itu menarik.','Buku saya baca yang itu menarik.','Yang buku saya baca itu menarik.','Buku itu yang menarik saya baca.'],correct:'Buku yang saya baca itu menarik.'},
+    {q:'Kata hubung pancangan \'supaya\' menunjukkan hubungan?',options:['Tujuan','Sebab','Masa','Pertentangan'],correct:'Tujuan'},
+    {q:'\'Dia belajar bersungguh-sungguh supaya dia dapat lulus dengan cemerlang.\' Apakah tujuan dia belajar bersungguh-sungguh?',options:['Supaya dapat lulus dengan cemerlang','Kerana suruhan guru','Kerana terpaksa','Tanpa sebab khusus'],correct:'Supaya dapat lulus dengan cemerlang'},
+    {q:'Ayat pancangan relatif digunakan untuk?',options:['Menerangkan lebih lanjut tentang kata nama sebelumnya','Menggabungkan dua ayat setara','Membentuk ayat tanya','Membentuk ayat seruan'],correct:'Menerangkan lebih lanjut tentang kata nama sebelumnya'},
+    {q:'\'Kucing yang comel itu suka bermain dengan bola.\' Frasa \'yang comel itu\' menerangkan tentang?',options:['Kucing','Bola','Bermain','Suka'],correct:'Kucing'},
+    {q:'Manakah ayat yang menggunakan kata hubung pancangan dengan betul?',options:['Dia gembira kerana dia berjaya.','Dia gembira dan dia berjaya.','Dia gembira, dia berjaya.','Kerana dia gembira dia berjaya.'],correct:'Dia gembira kerana dia berjaya.'},
+    {q:'Ayat majmuk pancangan komplemen biasanya digunakan selepas kata kerja seperti?',options:['berkata, tahu, percaya','dan, atau, tetapi','yang, itu, ini','di, ke, dari'],correct:'berkata, tahu, percaya'},
+  ],
+  'd4-peribahasa-asas': [
+    {q:'\'Ringan tulang\' bermaksud?',options:['kurus','rajin dan suka menolong','sakit tulang','malas bekerja'],correct:'rajin dan suka menolong'},
+    {q:'\'Kaki ayam\' bermaksud?',options:['berjalan tanpa kasut','penakut','pandai memasak','suka berlari'],correct:'berjalan tanpa kasut'},
+    {q:'\'Buah tangan\' bermaksud?',options:['buah-buahan','cenderahati atau hadiah','tangan yang sakit','hasil kraf tangan'],correct:'cenderahati atau hadiah'},
+    {q:'\'Bagai aur dengan tebing\' bermaksud?',options:['dua orang yang bermusuhan','hubungan yang saling bantu-membantu','tumbuhan di tepi sungai','perkara yang sukar dipisahkan secara fizikal'],correct:'hubungan yang saling bantu-membantu'},
+    {q:'\'Berat sama dipikul, ringan sama dijinjing\' bermaksud?',options:['kerja berat sahaja dikongsi','bekerjasama dan berkongsi susah senang bersama-sama','tidak mahu bekerjasama','hanya memikul beban sendiri'],correct:'bekerjasama dan berkongsi susah senang bersama-sama'},
+    {q:'\'Kepala angin\' bermaksud?',options:['degil dan suka mengikut kehendak sendiri','pandai','penakut','rajin'],correct:'degil dan suka mengikut kehendak sendiri'},
+    {q:'\'Tangan besi\' bermaksud?',options:['kejam dan tegas','tangan yang kuat mengangkat besi','lemah','pemurah'],correct:'kejam dan tegas'},
+    {q:'\'Bulat air kerana pembetung, bulat manusia kerana muafakat\' bermaksud?',options:['kejayaan dicapai melalui persetujuan bersama','air sentiasa bulat','manusia perlu bersendirian','tiada kaitan dengan kerjasama'],correct:'kejayaan dicapai melalui persetujuan bersama'},
+    {q:'\'Kepala batu\' bermaksud?',options:['degil','pandai','kuat','lemah'],correct:'degil'},
+    {q:'\'Panjang akal\' bermaksud?',options:['bijak dan banyak akal','pemalas','penakut','pelupa'],correct:'bijak dan banyak akal'},
+    {q:'\'Ada hati\' bermaksud?',options:['berani atau sanggup melakukan sesuatu','baik hati','sedih','gembira'],correct:'berani atau sanggup melakukan sesuatu'},
+    {q:'\'Murah hati\' bermaksud?',options:['pemurah','kedekut','garang','sombong'],correct:'pemurah'},
+    {q:'\'Besar kepala\' bermaksud?',options:['sombong atau bangga diri','pandai','rendah diri','pemalu'],correct:'sombong atau bangga diri'},
+    {q:'\'Buah fikiran\' bermaksud?',options:['idea atau pendapat','buah-buahan','hasil kerja tangan','masalah'],correct:'idea atau pendapat'},
+    {q:'\'Tinggi hati\' bermaksud?',options:['sombong','rendah diri','pemalu','gembira'],correct:'sombong'},
+    {q:'\'Buah mulut\' bermaksud?',options:['perkara yang sering diperkatakan orang','hadiah','buah-buahan segar','hasil kerja'],correct:'perkara yang sering diperkatakan orang'},
+    {q:'\'Ringan mulut\' bermaksud?',options:['suka menyapa atau bertegur sapa','pendiam','suka berdusta','garang'],correct:'suka menyapa atau bertegur sapa'},
+    {q:'\'Tebal muka\' bermaksud?',options:['tidak malu','pemalu','comel','garang'],correct:'tidak malu'},
+    {q:'\'Air tangan\' bermaksud?',options:['masakan seseorang','air minuman','hasil tulisan','hadiah'],correct:'masakan seseorang'},
+    {q:'\'Naik angin\' bermaksud?',options:['marah','gembira','sedih','takut'],correct:'marah'},
+  ],
+  'd4-kefahaman-jawapan-berayat': [
+    {q:'Jawapan berayat perlu ditulis dalam bentuk?',options:['Ayat yang lengkap dengan subjek dan predikat','Perkataan tunggal sahaja','Frasa pendek tanpa subjek','Nombor sahaja'],correct:'Ayat yang lengkap dengan subjek dan predikat'},
+    {q:'\'Mengapakah Ali tidak hadir ke sekolah?\' Jawapan berayat yang sesuai ialah?',options:['Ali tidak hadir ke sekolah kerana dia demam.','Demam.','Sebab demam.','Ali demam.'],correct:'Ali tidak hadir ke sekolah kerana dia demam.'},
+    {q:'Ketika menjawab soalan kefahaman, murid perlu?',options:['Menggunakan ayat sendiri berdasarkan petikan','Menyalin keseluruhan petikan','Menjawab dengan satu perkataan sahaja','Mengabaikan petikan'],correct:'Menggunakan ayat sendiri berdasarkan petikan'},
+    {q:'\'Di manakah Siti membeli buku itu?\' Jawapan berayat yang sesuai ialah?',options:['Siti membeli buku itu di kedai buku.','Kedai buku.','Di kedai.','Buku itu di kedai.'],correct:'Siti membeli buku itu di kedai buku.'},
+    {q:'Jawapan yang baik untuk soalan kefahaman perlu?',options:['Tepat dan berdasarkan maklumat dalam petikan','Panjang tanpa had','Mengandungi pendapat peribadi sahaja','Tidak berkaitan dengan petikan'],correct:'Tepat dan berdasarkan maklumat dalam petikan'},
+    {q:'\'Bagaimanakah cuaca pada hari itu?\' Jawapan berayat yang sesuai ialah?',options:['Cuaca pada hari itu sangat panas dan cerah.','Panas.','Cerah sahaja.','Cuaca panas.'],correct:'Cuaca pada hari itu sangat panas dan cerah.'},
+    {q:'Manakah jawapan berayat yang PALING lengkap untuk soalan \'Apakah hobi Ahmad?\'',options:['Hobi Ahmad ialah membaca buku dan bermain bola sepak.','Membaca.','Bola sepak.','Ahmad suka.'],correct:'Hobi Ahmad ialah membaca buku dan bermain bola sepak.'},
+    {q:'Soalan kefahaman jenis \'Mengapakah\' biasanya memerlukan jawapan yang menerangkan?',options:['Sebab','Tempat','Masa','Cara'],correct:'Sebab'},
+    {q:'Soalan kefahaman jenis \'Bagaimanakah\' biasanya memerlukan jawapan yang menerangkan?',options:['Cara atau keadaan','Sebab','Tempat','Masa'],correct:'Cara atau keadaan'},
+    {q:'\'Siapakah yang menulis surat itu?\' Jawapan berayat yang sesuai ialah?',options:['Surat itu ditulis oleh Encik Karim.','Encik Karim.','Menulis surat.','Surat itu.'],correct:'Surat itu ditulis oleh Encik Karim.'},
+    {q:'Kesalahan biasa murid semasa menjawab soalan kefahaman ialah?',options:['Menyalin keseluruhan ayat daripada petikan tanpa diubah','Menjawab dengan tepat','Menggunakan ayat sendiri','Membaca petikan dengan teliti'],correct:'Menyalin keseluruhan ayat daripada petikan tanpa diubah'},
+    {q:'Sebelum menjawab soalan kefahaman, murid perlu?',options:['Membaca petikan dengan teliti terlebih dahulu','Terus menulis jawapan tanpa membaca','Menjawab mengikut tekaan sahaja','Mengabaikan soalan'],correct:'Membaca petikan dengan teliti terlebih dahulu'},
+    {q:'\'Bilakah Aminah pergi ke pasar?\' Jawapan berayat yang sesuai ialah?',options:['Aminah pergi ke pasar pada waktu pagi.','Pagi.','Waktu pagi sahaja.','Aminah pagi.'],correct:'Aminah pergi ke pasar pada waktu pagi.'},
+    {q:'Jawapan berayat yang tidak lengkap boleh menyebabkan?',options:['Kehilangan markah','Markah penuh diberikan','Tiada kesan','Markah tambahan'],correct:'Kehilangan markah'},
+    {q:'Manakah ayat jawapan yang gramatis dan lengkap untuk soalan \'Apakah yang dilakukan oleh Encik Ali?\'',options:['Encik Ali menanam pokok buah-buahan di kebunnya.','Menanam pokok.','Pokok buah-buahan.','Encik Ali kebun.'],correct:'Encik Ali menanam pokok buah-buahan di kebunnya.'},
+    {q:'Soalan kefahaman jenis \'Berapakah\' memerlukan jawapan berbentuk?',options:['Bilangan atau kuantiti','Sebab','Tempat','Perasaan'],correct:'Bilangan atau kuantiti'},
+    {q:'\'Berapakah harga buku itu?\' Jawapan berayat yang sesuai ialah?',options:['Harga buku itu ialah RM15.','RM15.','Lima belas.','Buku RM15.'],correct:'Harga buku itu ialah RM15.'},
+    {q:'Ejaan dan tanda baca dalam jawapan berayat perlu?',options:['Betul dan tepat','Diabaikan','Tidak penting','Bebas mengikut kehendak murid'],correct:'Betul dan tepat'},
+    {q:'\'Apakah perasaan Aminah selepas memenangi pertandingan itu?\' Jawapan berayat yang sesuai ialah?',options:['Aminah berasa sangat gembira selepas memenangi pertandingan itu.','Gembira.','Sangat gembira sahaja.','Perasaan gembira.'],correct:'Aminah berasa sangat gembira selepas memenangi pertandingan itu.'},
+    {q:'Jawapan berayat yang baik hendaklah mengandungi maklumat yang?',options:['Relevan dan menjawab soalan dengan tepat','Panjang tetapi tidak relevan','Berdasarkan tekaan','Diambil daripada karangan lain'],correct:'Relevan dan menjawab soalan dengan tepat'},
+  ],
+  'd4-karangan-gambar': [
+    {q:'Karangan gambar tunggal ditulis berdasarkan?',options:['Satu gambar sahaja','Beberapa gambar berurutan','Tiada gambar','Gambar rawak'],correct:'Satu gambar sahaja'},
+    {q:'Langkah pertama menulis karangan gambar ialah?',options:['Memerhati gambar dengan teliti','Terus menulis ayat penutup','Menyalin karangan lain','Menulis tajuk sahaja'],correct:'Memerhati gambar dengan teliti'},
+    {q:'Karangan gambar perlu menerangkan?',options:['Watak, tempat, aktiviti dan suasana dalam gambar','Hanya warna gambar','Bilangan objek dalam gambar sahaja','Harga gambar'],correct:'Watak, tempat, aktiviti dan suasana dalam gambar'},
+    {q:'Perenggan pertama karangan gambar biasanya menerangkan?',options:['Latar tempat dan pengenalan watak','Kesimpulan cerita','Pengajaran sahaja','Nama penulis'],correct:'Latar tempat dan pengenalan watak'},
+    {q:'Manakah ayat yang sesuai untuk menerangkan suasana dalam gambar taman yang ceria?',options:['Taman itu dipenuhi kanak-kanak yang bermain dengan riang.','Taman itu ada pokok.','Gambar itu berwarna hijau.','Taman itu kosong.'],correct:'Taman itu dipenuhi kanak-kanak yang bermain dengan riang.'},
+    {q:'Karangan gambar yang baik perlu mengelakkan?',options:['Ayat yang tidak berkaitan dengan gambar','Perincian watak','Ayat penutup','Kata adjektif'],correct:'Ayat yang tidak berkaitan dengan gambar'},
+    {q:'Manakah tajuk yang sesuai untuk karangan gambar yang menunjukkan aktiviti gotong-royong?',options:['Gotong-Royong Membersihkan Kawasan','Karangan Saya','Gambar Ini','Aktiviti'],correct:'Gotong-Royong Membersihkan Kawasan'},
+    {q:'Kata adjektif digunakan dalam karangan untuk?',options:['Menghidupkan penerangan tentang gambar','Memendekkan ayat','Mengelakkan kesilapan tatabahasa','Tiada kegunaan khusus'],correct:'Menghidupkan penerangan tentang gambar'},
+    {q:'Ayat penutup karangan gambar biasanya mengandungi?',options:['Pengajaran atau kesimpulan daripada gambar','Permulaan cerita baharu','Tajuk karangan','Nama penulis'],correct:'Pengajaran atau kesimpulan daripada gambar'},
+    {q:'Manakah ayat yang menunjukkan penggunaan pancaindera dengan baik dalam karangan gambar?',options:['Bau harum bunga-bunga itu menyegarkan seluruh taman.','Ada bunga dalam gambar.','Bunga itu cantik.','Taman ada bunga.'],correct:'Bau harum bunga-bunga itu menyegarkan seluruh taman.'},
+    {q:'Karangan gambar sepatutnya ditulis dalam kata kerja?',options:['Kata kerja aktif yang jelas','Kata kerja pasif sahaja','Tanpa kata kerja','Kata kerja masa depan sahaja'],correct:'Kata kerja aktif yang jelas'},
+    {q:'Untuk karangan gambar yang menunjukkan kemalangan jalan raya, nada penulisan yang sesuai ialah?',options:['Serius dan prihatin','Gembira dan riang','Lucu','Tidak peduli'],correct:'Serius dan prihatin'},
+    {q:'Manakah contoh ayat pembuka yang menarik untuk karangan gambar?',options:['Pada suatu petang yang indah, keluarga Amir menghabiskan masa di pantai.','Gambar ini menunjukkan pantai.','Ini adalah karangan tentang pantai.','Saya akan menulis tentang pantai.'],correct:'Pada suatu petang yang indah, keluarga Amir menghabiskan masa di pantai.'},
+    {q:'Karangan gambar perlu ditulis dalam bilangan perenggan yang?',options:['Sesuai dan tidak terlalu pendek atau panjang','Hanya satu perenggan','Lebih daripada 10 perenggan','Tiada had yang ditetapkan'],correct:'Sesuai dan tidak terlalu pendek atau panjang'},
+    {q:'Manakah kata hubung yang sesuai untuk menyambung dua peristiwa dalam karangan gambar?',options:['Selepas itu','Walaupun begitu','Sekiranya','Sebaliknya'],correct:'Selepas itu'},
+    {q:'Karangan gambar yang baik memerlukan penggunaan?',options:['Perbendaharaan kata yang pelbagai dan tepat','Perkataan yang sama berulang kali','Ayat yang terlalu pendek','Bahasa pasar'],correct:'Perbendaharaan kata yang pelbagai dan tepat'},
+    {q:'Jika gambar menunjukkan seorang murid membantu rakan yang jatuh, nilai murni yang boleh diselitkan dalam karangan ialah?',options:['Sifat prihatin dan suka menolong','Sifat sombong','Sifat malas','Sifat pentingkan diri'],correct:'Sifat prihatin dan suka menolong'},
+    {q:'Manakah cara terbaik untuk mengelakkan karangan gambar daripada kelihatan pendek dan tidak lengkap?',options:['Memberi huraian lanjut tentang setiap aspek gambar','Menulis ayat pendek sahaja','Mengulang ayat yang sama','Mengabaikan sebahagian gambar'],correct:'Memberi huraian lanjut tentang setiap aspek gambar'},
+    {q:'Karangan gambar perlu ditulis dalam kala (tense) yang?',options:['Konsisten sepanjang karangan','Berubah-ubah tanpa sebab','Masa hadapan sahaja','Tiada kala tertentu'],correct:'Konsisten sepanjang karangan'},
+    {q:'Manakah ayat yang paling terperinci untuk menggambarkan seorang budak lelaki yang sedang membaca?',options:['Budak lelaki berbaju biru itu leka membaca buku cerita kegemarannya di bawah pokok rendang.','Budak itu membaca buku.','Ada budak baca buku.','Budak lelaki ada buku.'],correct:'Budak lelaki berbaju biru itu leka membaca buku cerita kegemarannya di bawah pokok rendang.'},
+  ],
+  'd4-surat-tidak-rasmi': [
+    {q:'Surat kiriman tidak rasmi biasanya ditulis kepada?',options:['Ahli keluarga atau kawan rapat','Ketua jabatan kerajaan','Pengetua sekolah secara rasmi','Syarikat perniagaan'],correct:'Ahli keluarga atau kawan rapat'},
+    {q:'Bahagian pertama surat kiriman tidak rasmi ialah?',options:['Alamat penulis dan tarikh','Tandatangan','Penutup surat','Isi surat'],correct:'Alamat penulis dan tarikh'},
+    {q:'Kata sapaan yang sesuai untuk memulakan surat kepada ibu ialah?',options:['Ibu yang dikasihi,','Tuan yang dihormati,','Kepada sesiapa yang berkenaan,','Yang berbahagia,'],correct:'Ibu yang dikasihi,'},
+    {q:'Bahasa yang digunakan dalam surat kiriman tidak rasmi ialah?',options:['Bahasa mesra dan santai','Bahasa rasmi dan formal','Bahasa perundangan','Bahasa iklan'],correct:'Bahasa mesra dan santai'},
+    {q:'Penutup surat kiriman tidak rasmi biasanya menggunakan frasa?',options:['Sekian, surat daripada saya.','Sekian, terima kasih.','Yang benar,','Yang menjalankan tugas,'],correct:'Sekian, surat daripada saya.'},
+    {q:'Di manakah alamat penerima surat kiriman tidak rasmi biasanya ditulis?',options:['Tidak perlu ditulis dalam surat tidak rasmi','Di bahagian atas surat','Di bahagian bawah surat','Di tengah-tengah surat'],correct:'Tidak perlu ditulis dalam surat tidak rasmi'},
+    {q:'Salam penutup yang sesuai untuk surat kepada kawan ialah?',options:['Sahabatmu,','Yang benar,','Yang ikhlas berkhidmat,','Wassalam Datuk,'],correct:'Sahabatmu,'},
+    {q:'Isi surat kiriman tidak rasmi biasanya mengandungi?',options:['Berita atau perkongsian peribadi','Aduan rasmi','Permohonan jawatan','Laporan kewangan syarikat'],correct:'Berita atau perkongsian peribadi'},
+    {q:'Tarikh dalam surat kiriman tidak rasmi ditulis di?',options:['Bahagian atas, sebelah kanan surat','Bahagian bawah surat','Tengah-tengah surat','Tidak perlu ditulis'],correct:'Bahagian atas, sebelah kanan surat'},
+    {q:'Manakah kata sapaan yang TIDAK sesuai untuk surat tidak rasmi kepada rakan?',options:['Tuan yang dihormati,','Sahabatku,','Kawan baikku,','Rasyid yang dikasihi,'],correct:'Tuan yang dihormati,'},
+    {q:'Surat kiriman tidak rasmi boleh digunakan untuk?',options:['Berkongsi cerita tentang cuti sekolah','Memohon pekerjaan rasmi','Membuat aduan kepada kerajaan','Menulis laporan syarikat'],correct:'Berkongsi cerita tentang cuti sekolah'},
+    {q:'Manakah ayat pembuka yang sesuai untuk surat tidak rasmi kepada sahabat?',options:['Apa khabar? Semoga kamu sihat sentiasa.','Dengan hormatnya saya merujuk perkara di atas.','Sukacita dimaklumkan bahawa...','Tuan diminta hadir pada...'],correct:'Apa khabar? Semoga kamu sihat sentiasa.'},
+    {q:'Nama penulis dalam surat kiriman tidak rasmi ditulis di?',options:['Bahagian bawah, selepas salam penutup','Bahagian atas surat','Tengah-tengah surat','Tidak perlu ditulis'],correct:'Bahagian bawah, selepas salam penutup'},
+    {q:'Surat kiriman tidak rasmi berbeza daripada surat rasmi kerana?',options:['Menggunakan bahasa yang lebih santai dan peribadi','Perlu menggunakan format rasmi','Perlu ada rujukan fail','Perlu dihantar melalui pos berdaftar'],correct:'Menggunakan bahasa yang lebih santai dan peribadi'},
+    {q:'Manakah contoh isi surat yang sesuai untuk surat kepada sepupu tentang cuti sekolah?',options:['Cuti sekolah kali ini, saya menghabiskan masa bersama keluarga di kampung.','Sukacita dimaklumkan bahawa cuti sekolah bermula esok.','Tuan diminta mengambil cuti mulai esok.','Dengan hormatnya, cuti sekolah bermula esok.'],correct:'Cuti sekolah kali ini, saya menghabiskan masa bersama keluarga di kampung.'},
+    {q:'Format surat kiriman tidak rasmi biasanya mengandungi berapa bahagian utama?',options:['5 (alamat & tarikh, sapaan, isi, penutup, nama)','2','10','3 sahaja'],correct:'5 (alamat & tarikh, sapaan, isi, penutup, nama)'},
+    {q:'Manakah kesalahan biasa yang perlu dielakkan dalam surat kiriman tidak rasmi?',options:['Menggunakan bahasa yang terlalu formal seperti surat rasmi','Menggunakan bahasa mesra','Menulis tarikh','Menulis nama penulis'],correct:'Menggunakan bahasa yang terlalu formal seperti surat rasmi'},
+    {q:'Surat kiriman tidak rasmi sesuai ditulis untuk tujuan?',options:['Mengucapkan tahniah kepada kawan','Memohon pertukaran sekolah secara rasmi','Membuat aduan kepada pihak berkuasa','Memohon biasiswa'],correct:'Mengucapkan tahniah kepada kawan'},
+    {q:'Manakah salam pembuka yang sesuai untuk surat kepada datuk atau nenek?',options:['Datuk yang dikasihi,','Kepada Yang Berhormat,','Tuan yang dihormati,','Pengurus yang dihormati,'],correct:'Datuk yang dikasihi,'},
+    {q:'Perenggan akhir dalam isi surat kiriman tidak rasmi biasanya?',options:['Merumuskan harapan atau ajakan untuk berhubung lagi','Memulakan topik baharu','Mengandungi maklumat teknikal','Tidak diperlukan langsung'],correct:'Merumuskan harapan atau ajakan untuk berhubung lagi'},
+  ],
+  'd5-golongan-kata-lanjutan': [
+    {q:'Golongan kata bagi perkataan \'kecantikan\' ialah?',options:['kata nama','kata kerja','kata adjektif','kata sendi nama'],correct:'kata nama'},
+    {q:'Golongan kata bagi perkataan \'mempercepat\' ialah?',options:['kata nama','kata kerja','kata adjektif','kata bilangan'],correct:'kata kerja'},
+    {q:'Golongan kata bagi perkataan \'segenap\' ialah?',options:['kata nama','kata kerja','kata bilangan','kata adjektif'],correct:'kata bilangan'},
+    {q:'Golongan kata bagi perkataan \'sesungguhnya\' ialah?',options:['kata nama','kata keterangan','kata kerja','kata sendi nama'],correct:'kata keterangan'},
+    {q:'Golongan kata bagi perkataan \'walaupun\' ialah?',options:['kata hubung','kata nama','kata kerja','kata adjektif'],correct:'kata hubung'},
+    {q:'Golongan kata bagi perkataan \'seorang\' ialah?',options:['kata bilangan','kata nama','kata kerja','kata adjektif'],correct:'kata bilangan'},
+    {q:'Golongan kata bagi perkataan \'perlahan-lahan\' ialah?',options:['kata keterangan','kata nama','kata kerja','kata hubung'],correct:'kata keterangan'},
+    {q:'Golongan kata bagi perkataan \'kegembiraan\' ialah?',options:['kata nama','kata kerja','kata adjektif','kata bilangan'],correct:'kata nama'},
+    {q:'Golongan kata bagi perkataan \'memandangkan\' ialah?',options:['kata hubung','kata nama','kata adjektif','kata bilangan'],correct:'kata hubung'},
+    {q:'Golongan kata bagi perkataan \'terbaik\' ialah?',options:['kata adjektif','kata nama','kata kerja','kata hubung'],correct:'kata adjektif'},
+    {q:'Golongan kata bagi perkataan \'daripada\' ialah?',options:['kata sendi nama','kata nama','kata kerja','kata hubung'],correct:'kata sendi nama'},
+    {q:'Golongan kata bagi perkataan \'kesemua\' ialah?',options:['kata bilangan','kata nama','kata kerja','kata adjektif'],correct:'kata bilangan'},
+    {q:'Golongan kata bagi perkataan \'kejayaan\' ialah?',options:['kata nama','kata kerja','kata adjektif','kata hubung'],correct:'kata nama'},
+    {q:'Golongan kata bagi perkataan \'diperkenalkan\' ialah?',options:['kata kerja','kata nama','kata adjektif','kata hubung'],correct:'kata kerja'},
+    {q:'Golongan kata bagi perkataan \'agaknya\' ialah?',options:['kata keterangan','kata nama','kata kerja','kata sendi nama'],correct:'kata keterangan'},
+    {q:'Golongan kata bagi perkataan \'kedua-dua\' ialah?',options:['kata bilangan','kata nama','kata kerja','kata adjektif'],correct:'kata bilangan'},
+    {q:'Golongan kata bagi perkataan \'termasyhur\' ialah?',options:['kata adjektif','kata nama','kata kerja','kata bilangan'],correct:'kata adjektif'},
+    {q:'Golongan kata bagi perkataan \'sekiranya\' ialah?',options:['kata hubung','kata nama','kata kerja','kata keterangan'],correct:'kata hubung'},
+    {q:'Golongan kata bagi perkataan \'perpaduan\' ialah?',options:['kata nama','kata kerja','kata adjektif','kata hubung'],correct:'kata nama'},
+    {q:'Golongan kata bagi perkataan \'antara\' dalam ayat \'Buku itu diletakkan antara dua bekas\' ialah?',options:['kata sendi nama','kata nama','kata kerja','kata bilangan'],correct:'kata sendi nama'},
+  ],
+  'd5-ayat-aktif-pasif': [
+    {q:'Ayat pasif bagi \'Ali memakan nasi lemak itu\' ialah?',options:['Nasi lemak itu dimakan oleh Ali.','Ali makan nasi lemak.','Nasi lemak itu Ali makan.','Ali dimakan nasi lemak.'],correct:'Nasi lemak itu dimakan oleh Ali.'},
+    {q:'Ayat pasif bagi \'Guru itu mengajar murid-murid\' ialah?',options:['Murid-murid diajar oleh guru itu.','Guru itu diajar murid-murid.','Murid-murid mengajar guru itu.','Guru itu mengajar oleh murid-murid.'],correct:'Murid-murid diajar oleh guru itu.'},
+    {q:'Ayat aktif bagi \'Surat itu ditulis oleh Ahmad\' ialah?',options:['Ahmad menulis surat itu.','Surat itu menulis Ahmad.','Ahmad ditulis surat itu.','Surat itu Ahmad tulis olehnya.'],correct:'Ahmad menulis surat itu.'},
+    {q:'Ayat aktif bagi \'Kek itu dibuat oleh emak\' ialah?',options:['Emak membuat kek itu.','Kek itu membuat emak.','Emak dibuat kek itu.','Kek itu emak buat dibuatnya.'],correct:'Emak membuat kek itu.'},
+    {q:'Ayat aktif menggunakan kata kerja berimbuhan?',options:['me-','di-','ter-','ke-'],correct:'me-'},
+    {q:'Ayat pasif menggunakan kata kerja berimbuhan?',options:['di-','me-','ber-','pe-'],correct:'di-'},
+    {q:'Ayat pasif bagi \'Pekerja itu membina rumah baharu\' ialah?',options:['Rumah baharu itu dibina oleh pekerja itu.','Pekerja itu dibina rumah baharu.','Rumah baharu membina pekerja itu.','Dibina rumah baharu oleh pekerja.'],correct:'Rumah baharu itu dibina oleh pekerja itu.'},
+    {q:'Ayat aktif bagi \'Buku itu dibaca oleh Aminah setiap malam\' ialah?',options:['Aminah membaca buku itu setiap malam.','Buku itu membaca Aminah setiap malam.','Aminah dibaca buku itu.','Setiap malam Aminah dibaca buku.'],correct:'Aminah membaca buku itu setiap malam.'},
+    {q:'Dalam ayat pasif, subjek asal ayat aktif menjadi?',options:['Pelaku yang diperkenalkan dengan \'oleh\'','Objek utama','Kata hubung','Kata adjektif'],correct:'Pelaku yang diperkenalkan dengan \'oleh\''},
+    {q:'Ayat pasif bagi \'Petani menanam padi di sawah\' ialah?',options:['Padi ditanam oleh petani di sawah.','Sawah ditanam oleh petani padi.','Petani ditanam padi di sawah.','Padi menanam petani di sawah.'],correct:'Padi ditanam oleh petani di sawah.'},
+    {q:'Ayat aktif bagi \'Kereta itu dipandu oleh Encik Karim\' ialah?',options:['Encik Karim memandu kereta itu.','Kereta itu memandu Encik Karim.','Encik Karim dipandu kereta itu.','Kereta itu Encik Karim dipandu.'],correct:'Encik Karim memandu kereta itu.'},
+    {q:'Ayat pasif digunakan apabila penulis ingin menekankan?',options:['Objek atau perkara yang dikenakan tindakan','Pelaku tindakan','Kata hubung','Kata adjektif'],correct:'Objek atau perkara yang dikenakan tindakan'},
+    {q:'Ayat pasif bagi \'Doktor merawat pesakit itu\' ialah?',options:['Pesakit itu dirawat oleh doktor.','Doktor dirawat pesakit itu.','Pesakit merawat doktor itu.','Dirawat doktor oleh pesakit.'],correct:'Pesakit itu dirawat oleh doktor.'},
+    {q:'Ayat aktif bagi \'Bunga itu disiram oleh tukang kebun setiap pagi\' ialah?',options:['Tukang kebun menyiram bunga itu setiap pagi.','Bunga itu menyiram tukang kebun.','Tukang kebun disiram bunga itu.','Setiap pagi bunga disiram tukang kebun.'],correct:'Tukang kebun menyiram bunga itu setiap pagi.'},
+    {q:'Ayat pasif bagi \'Nelayan menangkap ikan di laut\' ialah?',options:['Ikan ditangkap oleh nelayan di laut.','Laut ditangkap oleh nelayan ikan.','Nelayan ditangkap ikan di laut.','Ikan menangkap nelayan di laut.'],correct:'Ikan ditangkap oleh nelayan di laut.'},
+    {q:'Yang manakah contoh ayat aktif?',options:['Ali menulis surat.','Surat ditulis oleh Ali.','Surat itu Ali punya.','Ditulis oleh Ali surat itu.'],correct:'Ali menulis surat.'},
+    {q:'Yang manakah contoh ayat pasif?',options:['Rumah itu dibina oleh kontraktor.','Kontraktor membina rumah itu.','Kontraktor bina rumah.','Rumah kontraktor bina.'],correct:'Rumah itu dibina oleh kontraktor.'},
+    {q:'Ayat aktif bagi \'Laporan itu disiapkan oleh setiausaha\' ialah?',options:['Setiausaha menyiapkan laporan itu.','Laporan itu menyiapkan setiausaha.','Setiausaha disiapkan laporan itu.','Laporan disiapkan setiausaha itu.'],correct:'Setiausaha menyiapkan laporan itu.'},
+    {q:'Ayat pasif bagi \'Peniaga menjual barangan di gerai\' ialah?',options:['Barangan dijual oleh peniaga di gerai.','Gerai dijual oleh peniaga barangan.','Peniaga dijual barangan di gerai.','Barangan menjual peniaga di gerai.'],correct:'Barangan dijual oleh peniaga di gerai.'},
+    {q:'Perkataan \'oleh\' dalam ayat pasif berfungsi untuk?',options:['Memperkenalkan pelaku tindakan','Menunjukkan tempat','Menunjukkan masa','Menunjukkan sebab'],correct:'Memperkenalkan pelaku tindakan'},
+  ],
+  'd5-peribahasa-simpulan': [
+    {q:'\'Bagai kacang lupakan kulit\' bermaksud?',options:['orang yang suka makan kacang','orang yang lupa asal usul atau budi orang lain','orang yang sangat pelupa','kacang yang tiada kulit'],correct:'orang yang lupa asal usul atau budi orang lain'},
+    {q:'\'Panjang tangan\' bermaksud?',options:['tangan yang besar','suka mencuri','rajin bekerja','pandai memasak'],correct:'suka mencuri'},
+    {q:'\'Tangan ringan\' bermaksud?',options:['cepat memukul orang','suka menolong tanpa diminta','tangan yang kecil','penat bekerja'],correct:'cepat memukul orang'},
+    {q:'\'Bagai anak ayam kehilangan induk\' bermaksud?',options:['kumpulan yang teratur','keadaan yang kucar-kacir tanpa pemimpin','ayam yang hilang','anak yang nakal'],correct:'keadaan yang kucar-kacir tanpa pemimpin'},
+    {q:'\'Ada gula ada semut\' bermaksud?',options:['tempat yang manis pasti ada gula','di tempat yang menguntungkan pasti ramai orang datang','semut suka gula','gula menarik semut'],correct:'di tempat yang menguntungkan pasti ramai orang datang'},
+    {q:'\'Hangat-hangat tahi ayam\' bermaksud?',options:['sesuatu yang panas','semangat yang kuat pada mulanya sahaja lalu kendur','perkara yang menjijikkan','cuaca yang panas'],correct:'semangat yang kuat pada mulanya sahaja lalu kendur'},
+    {q:'\'Kaki bangku\' bermaksud?',options:['orang yang tidak mahir dalam sesuatu bidang (contohnya sukan)','orang yang duduk di bangku','kaki yang sakit','bangku yang rosak'],correct:'orang yang tidak mahir dalam sesuatu bidang (contohnya sukan)'},
+    {q:'\'Bulan madu\' bermaksud?',options:['tempoh bahagia selepas perkahwinan','bulan yang manis','cuaca yang indah','hari lahir'],correct:'tempoh bahagia selepas perkahwinan'},
+    {q:'\'Mulut manis\' bermaksud?',options:['suka bercakap perkara yang baik dan menyenangkan','suka makan gula-gula','mulut yang sakit','suka berdiam diri'],correct:'suka bercakap perkara yang baik dan menyenangkan'},
+    {q:'\'Panjang tapak tangan\' bermaksud?',options:['pemalas','rajin bekerja','tangan yang besar','suka menolong'],correct:'pemalas'},
+    {q:'\'Ringan tangan\' bermaksud?',options:['rajin membantu atau bekerja','suka memukul','tangan yang kecil','lemah'],correct:'rajin membantu atau bekerja'},
+    {q:'\'Bermuka dua\' bermaksud?',options:['tidak jujur atau berpura-pura','mempunyai dua wajah','pemalu','jujur'],correct:'tidak jujur atau berpura-pura'},
+    {q:'\'Air liur meleleh\' bermaksud?',options:['sangat berminat atau tergiur pada sesuatu','haus','sakit gigi','gembira'],correct:'sangat berminat atau tergiur pada sesuatu'},
+    {q:'\'Berat mulut\' bermaksud?',options:['pendiam atau tidak suka bercakap','banyak bercakap','suka makan','mulut yang sakit'],correct:'pendiam atau tidak suka bercakap'},
+    {q:'\'Bagai pinang dibelah dua\' bermaksud?',options:['sangat serupa atau mirip antara satu sama lain','pinang yang dibelah','dua benda berbeza','buah yang manis'],correct:'sangat serupa atau mirip antara satu sama lain'},
+    {q:'\'Cakar ayam\' bermaksud?',options:['tulisan yang tidak kemas','suka bergaduh','kaki yang sakit','ayam yang garang'],correct:'tulisan yang tidak kemas'},
+    {q:'\'Buah hati\' bermaksud?',options:['orang yang amat disayangi','buah kegemaran','hati yang sakit','masalah besar'],correct:'orang yang amat disayangi'},
+    {q:'\'Bagai enau dalam belukar, melepaskan pucuk masing-masing\' bermaksud?',options:['bekerjasama dengan baik','mementingkan diri sendiri tanpa hirau orang lain','tumbuhan di hutan','suka bercucuk tanam'],correct:'mementingkan diri sendiri tanpa hirau orang lain'},
+    {q:'\'Darah muda\' bermaksud?',options:['sifat berani dan bersemangat tanpa berfikir panjang (belia)','darah yang segar','orang muda sahaja','penyakit darah'],correct:'sifat berani dan bersemangat tanpa berfikir panjang (belia)'},
+    {q:'\'Bagai anjing dengan kucing\' bermaksud?',options:['dua binatang peliharaan','hubungan yang sentiasa bermusuhan','haiwan kesayangan','persahabatan erat'],correct:'hubungan yang sentiasa bermusuhan'},
+  ],
+  'd5-kefahaman-panjang': [
+    {q:'\'Program Rakan Muda telah dilancarkan oleh Kementerian Belia dan Sukan bertujuan menggalakkan penglibatan belia dalam aktiviti sukarelawan. Sejak dilancarkan lima tahun lalu, program ini telah menarik penyertaan lebih 50,000 belia di seluruh negara.\' Berapa lamakah program ini telah dilancarkan?',options:['Lima tahun','Sepuluh tahun','Setahun','Dua tahun'],correct:'Lima tahun'},
+    {q:'Berdasarkan petikan di atas, siapakah yang melancarkan Program Rakan Muda?',options:['Kementerian Belia dan Sukan','Kementerian Pendidikan','Kerajaan negeri','Pertubuhan bukan kerajaan'],correct:'Kementerian Belia dan Sukan'},
+    {q:'\'Sistem pengangkutan awam di bandar-bandar besar semakin diperbaiki bagi mengurangkan kesesakan lalu lintas. Kerajaan telah melabur berbilion ringgit dalam pembinaan jalur tren berkelajuan tinggi.\' Mengapakah kerajaan melabur dalam pembinaan jalur tren?',options:['Untuk mengurangkan kesesakan lalu lintas','Untuk menambah cukai','Untuk mengurangkan bilangan penduduk','Untuk menambah pelancong'],correct:'Untuk mengurangkan kesesakan lalu lintas'},
+    {q:'Berdasarkan petikan di atas, apakah yang dilaburkan oleh kerajaan?',options:['Berbilion ringgit','Beribu ringgit sahaja','Tiada pelaburan','Sejuta ringgit'],correct:'Berbilion ringgit'},
+    {q:'\'Pertanian organik semakin popular dalam kalangan petani muda kerana kaedah ini dianggap lebih mesra alam dan menghasilkan produk yang lebih sihat. Walau bagaimanapun, kos pengeluaran pertanian organik agak tinggi berbanding pertanian konvensional.\' Apakah kelebihan pertanian organik yang dinyatakan dalam petikan?',options:['Lebih mesra alam dan menghasilkan produk lebih sihat','Kos pengeluaran rendah','Lebih cepat menghasilkan tuaian','Tidak memerlukan tanah subur'],correct:'Lebih mesra alam dan menghasilkan produk lebih sihat'},
+    {q:'Berdasarkan petikan di atas, apakah kelemahan pertanian organik?',options:['Kos pengeluaran yang tinggi','Tidak mesra alam','Produk tidak sihat','Tiada kelemahan'],correct:'Kos pengeluaran yang tinggi'},
+    {q:'\'Kempen membaca yang dianjurkan oleh perpustakaan negara berjaya meningkatkan minat membaca dalam kalangan kanak-kanak. Pelbagai aktiviti menarik seperti pertandingan mendongeng dan pameran buku diadakan sepanjang kempen ini.\' Apakah kesan kempen membaca terhadap kanak-kanak?',options:['Meningkatkan minat membaca','Mengurangkan minat membaca','Tiada kesan langsung','Menambah beban sekolah'],correct:'Meningkatkan minat membaca'},
+    {q:'Berdasarkan petikan di atas, apakah contoh aktiviti yang diadakan sepanjang kempen?',options:['Pertandingan mendongeng dan pameran buku','Pertandingan sukan','Konsert muzik','Pameran kereta'],correct:'Pertandingan mendongeng dan pameran buku'},
+    {q:'\'Perubahan iklim global menyebabkan peningkatan suhu bumi secara mendadak dalam beberapa dekad kebelakangan ini. Fenomena ini turut menyumbang kepada peningkatan aras air laut serta kekerapan bencana alam seperti banjir dan kemarau.\' Apakah kesan perubahan iklim yang dinyatakan?',options:['Peningkatan aras air laut dan bencana alam','Pengurangan suhu bumi','Peningkatan hasil pertanian','Pengurangan bencana alam'],correct:'Peningkatan aras air laut dan bencana alam'},
+    {q:'Berdasarkan petikan di atas, apakah punca utama perubahan iklim yang dibincangkan?',options:['Peningkatan suhu bumi secara mendadak','Peningkatan hujan','Pengurangan penduduk','Peningkatan tumbuhan'],correct:'Peningkatan suhu bumi secara mendadak'},
+    {q:'\'Industri pelancongan negara mengalami kemerosotan ketara akibat pandemik yang melanda dunia. Namun begitu, sektor ini kini pulih secara beransur-ansur dengan pembukaan semula sempadan antarabangsa.\' Apakah punca kemerosotan industri pelancongan?',options:['Pandemik yang melanda dunia','Peningkatan harga tiket','Kekurangan tempat pelancongan','Cuaca buruk'],correct:'Pandemik yang melanda dunia'},
+    {q:'Berdasarkan petikan di atas, bagaimanakah keadaan sektor pelancongan kini?',options:['Pulih secara beransur-ansur','Terus merosot','Tidak berubah','Ditutup sepenuhnya'],correct:'Pulih secara beransur-ansur'},
+    {q:'\'Pembangunan bandar pintar (smart city) semakin giat dilaksanakan di beberapa negeri di Malaysia. Konsep ini menggabungkan teknologi digital dengan infrastruktur bandar untuk meningkatkan kualiti hidup penduduk.\' Apakah tujuan pembangunan bandar pintar?',options:['Meningkatkan kualiti hidup penduduk','Mengurangkan bilangan penduduk','Menghapuskan teknologi digital','Mengurangkan infrastruktur'],correct:'Meningkatkan kualiti hidup penduduk'},
+    {q:'Berdasarkan petikan di atas, apakah yang digabungkan dalam konsep bandar pintar?',options:['Teknologi digital dengan infrastruktur bandar','Pertanian dengan perindustrian','Sukan dengan pendidikan','Kesihatan dengan pelancongan'],correct:'Teknologi digital dengan infrastruktur bandar'},
+    {q:'\'Sukan tradisional seperti sepak takraw dan silat semakin dipromosikan di peringkat sekolah bagi memelihara warisan budaya bangsa. Pelbagai pertandingan peringkat kebangsaan turut dianjurkan setiap tahun.\' Mengapakah sukan tradisional dipromosikan di sekolah?',options:['Untuk memelihara warisan budaya bangsa','Untuk menggantikan sukan moden','Untuk mengurangkan bilangan murid bersukan','Tiada sebab khusus'],correct:'Untuk memelihara warisan budaya bangsa'},
+    {q:'Berdasarkan petikan di atas, apakah contoh sukan tradisional yang disebut?',options:['Sepak takraw dan silat','Bola sepak dan badminton','Ping pong dan tenis','Renang dan olahraga'],correct:'Sepak takraw dan silat'},
+    {q:'\'Penggunaan tenaga boleh diperbaharui seperti tenaga suria dan angin semakin digalakkan bagi mengurangkan pergantungan kepada bahan api fosil. Kerajaan turut menyediakan insentif kepada syarikat yang melabur dalam teknologi hijau.\' Mengapakah tenaga boleh diperbaharui digalakkan?',options:['Untuk mengurangkan pergantungan kepada bahan api fosil','Untuk menambah penggunaan bahan api fosil','Untuk mengurangkan kos elektrik sahaja','Tiada sebab khusus'],correct:'Untuk mengurangkan pergantungan kepada bahan api fosil'},
+    {q:'Berdasarkan petikan di atas, apakah yang disediakan oleh kerajaan kepada syarikat teknologi hijau?',options:['Insentif','Cukai tambahan','Sekatan','Denda'],correct:'Insentif'},
+    {q:'\'Penyakit tidak berjangkit seperti diabetes dan penyakit jantung semakin membimbangkan dalam kalangan masyarakat Malaysia akibat gaya hidup tidak sihat. Kementerian Kesihatan menggalakkan rakyat mengamalkan pemakanan seimbang dan bersenam secara berkala.\' Apakah punca peningkatan penyakit tidak berjangkit?',options:['Gaya hidup tidak sihat','Cuaca panas','Kekurangan hospital','Peningkatan kos perubatan'],correct:'Gaya hidup tidak sihat'},
+    {q:'Berdasarkan petikan di atas, apakah yang digalakkan oleh Kementerian Kesihatan?',options:['Pemakanan seimbang dan bersenam secara berkala','Mengurangkan waktu tidur','Menambah penggunaan gula','Mengurangkan aktiviti fizikal'],correct:'Pemakanan seimbang dan bersenam secara berkala'},
+  ],
+  'd5-karangan-naratif-deskriptif': [
+    {q:'Karangan naratif ialah karangan yang?',options:['Menceritakan sesuatu peristiwa atau kisah','Menerangkan cara membuat sesuatu','Membincangkan pendapat sahaja','Menyenaraikan fakta tanpa cerita'],correct:'Menceritakan sesuatu peristiwa atau kisah'},
+    {q:'Karangan deskriptif ialah karangan yang?',options:['Menggambarkan sesuatu secara terperinci menggunakan pancaindera','Menceritakan urutan peristiwa','Membuat kesimpulan sahaja','Menyenaraikan langkah-langkah'],correct:'Menggambarkan sesuatu secara terperinci menggunakan pancaindera'},
+    {q:'Karangan naratif biasanya mempunyai struktur?',options:['Permulaan, perkembangan (konflik) dan kesudahan','Hanya permulaan','Hanya kesudahan','Senarai fakta'],correct:'Permulaan, perkembangan (konflik) dan kesudahan'},
+    {q:'Manakah ayat pembuka yang sesuai untuk karangan naratif?',options:['Pada suatu hari yang cerah, aku dan keluargaku merancang untuk berkelah.','Karangan ini tentang berkelah.','Saya akan menulis tentang berkelah.','Ini adalah cerita berkelah.'],correct:'Pada suatu hari yang cerah, aku dan keluargaku merancang untuk berkelah.'},
+    {q:'Karangan deskriptif yang baik menggunakan banyak?',options:['Kata adjektif dan kata keterangan yang hidup','Kata bilangan sahaja','Kata hubung sahaja','Ayat pendek tanpa perincian'],correct:'Kata adjektif dan kata keterangan yang hidup'},
+    {q:'Unsur konflik dalam karangan naratif berfungsi untuk?',options:['Menjadikan cerita lebih menarik dan bermakna','Memanjangkan karangan tanpa tujuan','Mengelirukan pembaca','Tiada fungsi khusus'],correct:'Menjadikan cerita lebih menarik dan bermakna'},
+    {q:'Manakah contoh ayat deskriptif yang menggunakan deria penglihatan?',options:['Langit petang itu berwarna jingga keemasan yang indah.','Saya pergi ke pantai.','Pantai itu ada di sana.','Cerita ini tentang pantai.'],correct:'Langit petang itu berwarna jingga keemasan yang indah.'},
+    {q:'Karangan naratif perlu ditulis mengikut susunan?',options:['Kronologi (mengikut urutan masa)','Rawak','Terbalik sepenuhnya','Tiada susunan tertentu'],correct:'Kronologi (mengikut urutan masa)'},
+    {q:'Manakah contoh ayat deskriptif yang menggunakan deria bau?',options:['Bau harum masakan ibu menyerbak ke seluruh rumah.','Ibu memasak di dapur.','Rumah itu ada dapur.','Ibu ada di rumah.'],correct:'Bau harum masakan ibu menyerbak ke seluruh rumah.'},
+    {q:'Penutup karangan naratif biasanya mengandungi?',options:['Kesudahan cerita dan pengajaran','Permulaan cerita baharu','Fakta tambahan','Tiada penutup diperlukan'],correct:'Kesudahan cerita dan pengajaran'},
+    {q:'Watak utama dalam karangan naratif berfungsi untuk?',options:['Menggerakkan jalan cerita','Menghalang jalan cerita','Tiada fungsi khusus','Hanya sebagai hiasan'],correct:'Menggerakkan jalan cerita'},
+    {q:'Manakah teknik yang sesuai untuk menghidupkan karangan deskriptif?',options:['Menggunakan perbandingan atau metafora','Menggunakan ayat pendek sahaja','Mengelakkan kata adjektif','Menulis dalam bentuk senarai'],correct:'Menggunakan perbandingan atau metafora'},
+    {q:'\'Ombak berdebur menghempas pantai dengan kuat, seolah-olah marah kepada sesuatu.\' Ayat ini menggunakan teknik?',options:['Personifikasi (memberi sifat manusia kepada benda)','Senarai fakta','Ayat tunggal pendek','Ayat tanya'],correct:'Personifikasi (memberi sifat manusia kepada benda)'},
+    {q:'Karangan naratif yang baik perlu mempunyai?',options:['Klimaks atau puncak cerita yang jelas','Hanya fakta tanpa emosi','Tiada watak','Ayat berulang sahaja'],correct:'Klimaks atau puncak cerita yang jelas'},
+    {q:'Manakah contoh ayat deskriptif yang menggunakan deria pendengaran?',options:['Bunyi ombak yang berdebur menenangkan hati.','Saya berada di pantai.','Pantai itu cantik.','Ombak ada di pantai.'],correct:'Bunyi ombak yang berdebur menenangkan hati.'},
+    {q:'Karangan naratif tentang pengalaman peribadi biasanya ditulis dalam?',options:['Kata ganti nama diri pertama (saya/aku)','Kata ganti nama diri ketiga sahaja','Bentuk pasif sepenuhnya','Bentuk senarai'],correct:'Kata ganti nama diri pertama (saya/aku)'},
+    {q:'Manakah ayat yang paling deskriptif untuk menggambarkan seekor kucing?',options:['Bulunya yang putih lembut berkilau ditimpa cahaya matahari pagi.','Kucing itu putih.','Ada kucing di sana.','Kucing itu comel.'],correct:'Bulunya yang putih lembut berkilau ditimpa cahaya matahari pagi.'},
+    {q:'Karangan naratif perlu mengelakkan?',options:['Peristiwa yang tidak berkaitan dengan jalan cerita utama','Watak utama','Konflik','Kesudahan cerita'],correct:'Peristiwa yang tidak berkaitan dengan jalan cerita utama'},
+    {q:'Tujuan utama karangan deskriptif ialah untuk?',options:['Membolehkan pembaca membayangkan sesuatu dengan jelas','Memberikan arahan langkah demi langkah','Membincangkan pendapat','Menyenaraikan fakta sejarah'],correct:'Membolehkan pembaca membayangkan sesuatu dengan jelas'},
+    {q:'Manakah tajuk yang sesuai untuk karangan naratif tentang pengalaman tersesat di hutan?',options:['Pengalaman Ngeri Tersesat di Hutan','Karangan Saya','Cerita Hutan','Pengalaman Saya'],correct:'Pengalaman Ngeri Tersesat di Hutan'},
+  ],
+  'd5-surat-rasmi': [
+    {q:'Surat kiriman rasmi biasanya ditulis kepada?',options:['Pihak berkuasa atau organisasi secara formal','Kawan rapat','Ahli keluarga','Sahabat pena'],correct:'Pihak berkuasa atau organisasi secara formal'},
+    {q:'Kata sapaan yang sesuai untuk memulakan surat rasmi ialah?',options:['Tuan/Puan,','Sayang,','Kawanku,','Hai,'],correct:'Tuan/Puan,'},
+    {q:'Penutup surat kiriman rasmi biasanya menggunakan frasa?',options:['Yang benar,','Sahabatmu,','Rindu kamu,','Salam sayang,'],correct:'Yang benar,'},
+    {q:'Alamat penerima dalam surat rasmi ditulis di?',options:['Bahagian atas surat, sebelah kiri','Tidak perlu ditulis','Bahagian bawah surat','Tengah-tengah surat'],correct:'Bahagian atas surat, sebelah kiri'},
+    {q:'Bahasa yang digunakan dalam surat kiriman rasmi ialah?',options:['Bahasa formal dan sopan','Bahasa santai dan mesra','Bahasa singkatan','Bahasa pasar'],correct:'Bahasa formal dan sopan'},
+    {q:'Surat kiriman rasmi biasanya mempunyai bahagian \'Perkara:\' yang berfungsi untuk?',options:['Menyatakan tujuan surat secara ringkas','Menyatakan nama penulis','Menyatakan alamat penulis','Menyatakan tarikh surat'],correct:'Menyatakan tujuan surat secara ringkas'},
+    {q:'Manakah contoh isi surat rasmi yang sesuai untuk memohon kebenaran menganjurkan program?',options:['Dengan hormatnya, saya ingin memohon kebenaran pihak tuan untuk menganjurkan program kitar semula.','Hai, boleh saya buat program tak?','Saya nak buat program kitar semula.','Program kitar semula nak buat.'],correct:'Dengan hormatnya, saya ingin memohon kebenaran pihak tuan untuk menganjurkan program kitar semula.'},
+    {q:'Surat rasmi memerlukan nombor rujukan kerana?',options:['Memudahkan rujukan dan rekod pihak yang berkenaan','Tiada sebab khusus','Untuk hiasan surat','Untuk memanjangkan surat'],correct:'Memudahkan rujukan dan rekod pihak yang berkenaan'},
+    {q:'Manakah salam penutup yang TIDAK sesuai untuk surat rasmi?',options:['Sayangmu,','Yang benar,','Yang menjalankan tugas,','Yang ikhlas berkhidmat,'],correct:'Sayangmu,'},
+    {q:'Nama dan jawatan penulis dalam surat rasmi ditulis di?',options:['Bahagian bawah, selepas tandatangan','Bahagian atas surat','Tengah-tengah surat','Tidak perlu ditulis'],correct:'Bahagian bawah, selepas tandatangan'},
+    {q:'Surat kiriman rasmi sesuai digunakan untuk tujuan?',options:['Memohon kebenaran daripada pihak sekolah','Mengucapkan tahniah kepada kawan','Berkongsi cerita peribadi','Mengajak kawan bermain'],correct:'Memohon kebenaran daripada pihak sekolah'},
+    {q:'Manakah ayat pembuka yang sesuai untuk surat rasmi?',options:['Dengan hormatnya saya merujuk perkara di atas.','Apa khabar? Semoga sihat.','Hai, macam mana?','Saya nak cakap sikit.'],correct:'Dengan hormatnya saya merujuk perkara di atas.'},
+    {q:'Format surat rasmi berbeza dengan surat tidak rasmi kerana?',options:['Memerlukan alamat penerima dan nombor rujukan','Tidak memerlukan tarikh','Tidak memerlukan nama penulis','Menggunakan bahasa santai'],correct:'Memerlukan alamat penerima dan nombor rujukan'},
+    {q:'Manakah contoh perkara surat rasmi yang sesuai untuk memohon menganjurkan gotong-royong?',options:['Permohonan Kebenaran Menganjurkan Program Gotong-Royong','Nak buat gotong-royong boleh tak?','Gotong-royong','Saya suka gotong-royong'],correct:'Permohonan Kebenaran Menganjurkan Program Gotong-Royong'},
+    {q:'Surat rasmi biasanya ditulis atas nama?',options:['Jawatan atau organisasi tertentu','Diri sendiri secara peribadi sahaja','Tiada nama diperlukan','Nama samaran'],correct:'Jawatan atau organisasi tertentu'},
+    {q:'Manakah kesalahan biasa yang perlu dielakkan dalam surat rasmi?',options:['Menggunakan bahasa santai seperti bercakap dengan kawan','Menggunakan bahasa formal','Menulis tarikh','Menyertakan tandatangan'],correct:'Menggunakan bahasa santai seperti bercakap dengan kawan'},
+    {q:'Surat rasmi memerlukan perenggan penutup yang menyatakan?',options:['Harapan agar permohonan dipertimbangkan','Cerita peribadi','Salam kepada keluarga','Ajakan bermain'],correct:'Harapan agar permohonan dipertimbangkan'},
+    {q:'Manakah contoh penutup isi surat rasmi yang sesuai?',options:['Kerjasama daripada pihak tuan amatlah dihargai.','Jumpa lagi ya!','Bye-bye.','Nanti kita sembang lagi.'],correct:'Kerjasama daripada pihak tuan amatlah dihargai.'},
+    {q:'Surat rasmi kepada Pengetua sekolah perlu menggunakan sapaan?',options:['Tuan/Puan Pengetua,','Kawanku,','Pengetua sayang,','Hai cikgu,'],correct:'Tuan/Puan Pengetua,'},
+    {q:'Bilangan perenggan dalam isi surat rasmi biasanya?',options:['3 (pengenalan, huraian, penutup)','Hanya 1 perenggan','Lebih 10 perenggan','Tiada had tertentu'],correct:'3 (pengenalan, huraian, penutup)'},
+  ],
+  'd5-rumusan-asas': [
+    {q:'Rumusan ialah penulisan yang?',options:['Meringkaskan isi penting sesuatu petikan dalam ayat sendiri','Menyalin keseluruhan petikan','Menambah maklumat baharu yang tiada dalam petikan','Memberi pendapat peribadi sahaja'],correct:'Meringkaskan isi penting sesuatu petikan dalam ayat sendiri'},
+    {q:'Rumusan yang baik perlu ditulis dalam?',options:['Ayat sendiri, bukan menyalin terus daripada petikan','Ayat yang disalin terus daripada petikan','Bentuk senarai','Bentuk soalan'],correct:'Ayat sendiri, bukan menyalin terus daripada petikan'},
+    {q:'Langkah pertama dalam menulis rumusan ialah?',options:['Membaca dan memahami keseluruhan petikan','Terus menulis tanpa membaca petikan','Menyalin ayat pertama petikan','Menulis pendapat sendiri'],correct:'Membaca dan memahami keseluruhan petikan'},
+    {q:'Rumusan yang baik perlu mengelakkan?',options:['Butiran atau contoh yang tidak penting','Isi penting petikan','Ayat sendiri','Pengenalan ringkas'],correct:'Butiran atau contoh yang tidak penting'},
+    {q:'Ayat pengenalan dalam rumusan biasanya menyatakan?',options:['Tajuk atau tema umum petikan','Kesimpulan sahaja','Pendapat peribadi','Contoh daripada petikan'],correct:'Tajuk atau tema umum petikan'},
+    {q:'Rumusan biasanya ditulis dalam bentuk?',options:['Satu perenggan yang padat','Beberapa perenggan panjang','Senarai bertitik','Jadual'],correct:'Satu perenggan yang padat'},
+    {q:'Manakah kesalahan biasa murid semasa menulis rumusan?',options:['Menyalin ayat terus daripada petikan tanpa mengubah','Menggunakan ayat sendiri','Memahami petikan dengan teliti','Menulis dengan ringkas'],correct:'Menyalin ayat terus daripada petikan tanpa mengubah'},
+    {q:'Rumusan yang baik perlu merangkumi?',options:['Semua isi penting tanpa mengabaikan mana-mana bahagian petikan','Hanya perenggan pertama petikan','Hanya perenggan terakhir petikan','Pendapat peribadi sahaja'],correct:'Semua isi penting tanpa mengabaikan mana-mana bahagian petikan'},
+    {q:'Panjang rumusan biasanya ditentukan oleh?',options:['Bilangan perkataan yang ditetapkan dalam soalan','Kehendak murid sepenuhnya','Panjang petikan asal','Tiada had tertentu'],correct:'Bilangan perkataan yang ditetapkan dalam soalan'},
+    {q:'Rumusan yang melebihi had perkataan yang ditetapkan boleh menyebabkan?',options:['Pemotongan markah','Markah tambahan','Tiada kesan','Markah penuh diberikan'],correct:'Pemotongan markah'},
+    {q:'Untuk menulis rumusan yang baik, murid perlu mengenal pasti?',options:['Isi-isi penting dalam setiap perenggan petikan','Hanya tajuk petikan','Nama penulis petikan','Bilangan perkataan sahaja'],correct:'Isi-isi penting dalam setiap perenggan petikan'},
+    {q:'Rumusan berbeza daripada karangan biasa kerana rumusan?',options:['Meringkaskan idea orang lain, bukan mencipta idea baharu','Membenarkan idea rekaan','Tidak memerlukan pemahaman petikan','Boleh ditulis tanpa membaca petikan'],correct:'Meringkaskan idea orang lain, bukan mencipta idea baharu'},
+    {q:'Manakah ayat rumusan yang baik untuk petikan tentang faedah membaca?',options:['Membaca memberi pelbagai faedah seperti meluaskan ilmu dan mengisi masa lapang.','Saya suka membaca buku cerita.','Membaca itu buku.','Buku ada banyak jenis.'],correct:'Membaca memberi pelbagai faedah seperti meluaskan ilmu dan mengisi masa lapang.'},
+    {q:'Kesimpulan atau pengajaran boleh disertakan pada akhir rumusan jika?',options:['Soalan meminta murid menyatakan pengajaran','Sentiasa wajib walau apa jua soalan','Tidak pernah dibenarkan','Hanya untuk rumusan panjang'],correct:'Soalan meminta murid menyatakan pengajaran'},
+    {q:'Rumusan yang baik menggunakan penanda wacana untuk?',options:['Menghubungkan idea dengan lancar','Memanjangkan rumusan','Mengelirukan pembaca','Menggantikan isi penting'],correct:'Menghubungkan idea dengan lancar'},
+    {q:'Manakah contoh penanda wacana yang sesuai digunakan dalam rumusan?',options:['Selain itu,','Wah,','Alamak,','Aduh,'],correct:'Selain itu,'},
+    {q:'Sebelum menulis rumusan akhir, murid digalakkan untuk?',options:['Menyenaraikan isi-isi penting terlebih dahulu sebagai draf','Terus menulis tanpa perancangan','Menyalin petikan penuh dahulu','Mengabaikan tajuk petikan'],correct:'Menyenaraikan isi-isi penting terlebih dahulu sebagai draf'},
+    {q:'Rumusan yang ditulis perlu kekal?',options:['Setia kepada maksud asal petikan','Berbeza sepenuhnya daripada petikan asal','Berdasarkan tekaan sahaja','Panjang seperti petikan asal'],correct:'Setia kepada maksud asal petikan'},
+    {q:'Manakah isi yang PALING penting untuk dimasukkan dalam rumusan tentang bencana banjir?',options:['Punca dan kesan banjir','Warna air banjir','Bilangan payung yang digunakan','Jenis kasut mangsa banjir'],correct:'Punca dan kesan banjir'},
+    {q:'Rumusan yang baik memerlukan murid untuk?',options:['Berfikir secara kritis untuk memilih isi yang relevan','Menyalin semua ayat dalam petikan','Menambah maklumat rekaan','Mengabaikan tajuk petikan'],correct:'Berfikir secara kritis untuk memilih isi yang relevan'},
+  ],
+  'd6-tatabahasa-pemantapan': [
+    {q:'Ayat manakah yang gramatis?',options:['Buku itu telah saya baca dengan teliti.','Buku telah itu saya baca dengan teliti.','Saya buku itu telah baca dengan teliti.','Telah saya buku itu baca dengan teliti.'],correct:'Buku itu telah saya baca dengan teliti.'},
+    {q:'Ayat manakah yang tidak gramatis?',options:['Dia sedang membaca buku di bilik.','Dia buku sedang membaca di bilik.','Dia sedang membaca buku itu.','Buku itu sedang dibaca oleh dia.'],correct:'Dia buku sedang membaca di bilik.'},
+    {q:'Kesalahan tatabahasa dalam ayat \'Saya sudah makan nasi tadi pagi\' terletak pada?',options:['ayat sudah betul','susunan \'tadi pagi\' sepatutnya \'pagi tadi\'','kata kerja \'makan\' salah','kata nama \'nasi\' salah'],correct:'susunan \'tadi pagi\' sepatutnya \'pagi tadi\''},
+    {q:'Pilih ayat yang menggunakan tanda baca dengan betul.',options:['Ibu berkata, "Jangan lupa bawa payung."','Ibu berkata "Jangan lupa bawa payung".','Ibu berkata: Jangan lupa bawa payung.','Ibu berkata, Jangan lupa bawa payung.'],correct:'Ibu berkata, "Jangan lupa bawa payung."'},
+    {q:'Golongan kata bagi perkataan \'keberanian\' ialah?',options:['kata nama terbitan','kata kerja','kata adjektif','kata hubung'],correct:'kata nama terbitan'},
+    {q:'Manakah ayat yang menggunakan imbuhan dengan betul?',options:['Dia menghantar surat itu kepada saya.','Dia hantar surat itu menghantar saya.','Dia dihantar surat kepada saya.','Dia surat menghantar kepada saya.'],correct:'Dia menghantar surat itu kepada saya.'},
+    {q:'Kesalahan dalam ayat \'Kereta yang saya beli sangat laju sekali\' ialah?',options:['Penggunaan \'sangat\' dan \'sekali\' bersama adalah berlebihan','Ayat sudah betul','Kata hubung \'yang\' salah','Tiada kesalahan'],correct:'Penggunaan \'sangat\' dan \'sekali\' bersama adalah berlebihan'},
+    {q:'Manakah ayat yang betul penggunaan kata bilangannya?',options:['Tiga orang murid itu hadir ke sekolah.','Murid tiga orang itu hadir ke sekolah.','Orang tiga murid itu hadir ke sekolah.','Hadir tiga orang murid itu ke sekolah.'],correct:'Tiga orang murid itu hadir ke sekolah.'},
+    {q:'Ayat \'Dia telah pergi ke kedai kemarin\' mempunyai kesalahan pada?',options:['Penggunaan kata \'telah\' bersama \'kemarin\' adalah berlebihan','Kata kerja \'pergi\'','Kata nama \'kedai\'','Tiada kesalahan'],correct:'Penggunaan kata \'telah\' bersama \'kemarin\' adalah berlebihan'},
+    {q:'Manakah ayat yang menggunakan kata hubung dengan tepat?',options:['Dia rajin belajar kerana dia mahu berjaya.','Dia rajin belajar dan dia mahu berjaya kerana.','Kerana dia rajin belajar dia mahu berjaya dan.','Dia rajin dan belajar kerana berjaya mahu.'],correct:'Dia rajin belajar kerana dia mahu berjaya.'},
+    {q:'Kesalahan ejaan dalam \'Saya suka makan buah-buahan segar\' terletak pada?',options:['Tiada kesalahan, ejaan sudah betul','\'buah-buahan\' sepatutnya \'buah buahan\'','\'segar\' sepatutnya \'segaq\'','\'makan\' sepatutnya \'makkan\''],correct:'Tiada kesalahan, ejaan sudah betul'},
+    {q:'Manakah ayat yang betul penggunaan kata gantinya?',options:['Dia memberitahu saya bahawa dia akan datang.','Dia memberitahu dia bahawa saya akan datang, salah rujukan.','Saya memberitahu dia bahawa dia akan datang tanpa jelas siapa.','Dia dia memberitahu bahawa akan datang saya.'],correct:'Dia memberitahu saya bahawa dia akan datang.'},
+    {q:'Ayat \'Buku-buku itu telah dibaca oleh murid-murid dengan teliti\' merupakan ayat?',options:['Pasif','Aktif','Tanya','Seruan'],correct:'Pasif'},
+    {q:'Manakah penggunaan huruf besar yang betul?',options:['Ahmad tinggal di Kuala Lumpur.','ahmad tinggal di kuala lumpur.','Ahmad tinggal di kuala Lumpur.','ahmad Tinggal di Kuala lumpur.'],correct:'Ahmad tinggal di Kuala Lumpur.'},
+    {q:'Kesalahan tatabahasa dalam \'Kami akan pergi bercuti ke Langkawi minggu depan nanti\' ialah?',options:['Penggunaan \'depan\' dan \'nanti\' bersama adalah berlebihan','Ayat sudah betul','Kata nama \'Langkawi\' salah','Kata kerja \'pergi\' salah'],correct:'Penggunaan \'depan\' dan \'nanti\' bersama adalah berlebihan'},
+    {q:'Manakah ayat yang gramatis dari segi susunan subjek dan predikat?',options:['Murid-murid itu belajar dengan tekun di dalam kelas.','Belajar murid-murid itu dengan tekun di dalam kelas.','Di dalam kelas belajar murid-murid itu dengan tekun sahaja.','Tekun dengan belajar murid-murid itu di dalam kelas.'],correct:'Murid-murid itu belajar dengan tekun di dalam kelas.'},
+    {q:'Ayat \'Adik saya yang bongsu sedang bermain di taman\' menggunakan kata hubung jenis?',options:['Pancangan relatif (\'yang\')','Gabungan','Pancangan komplemen','Tiada kata hubung'],correct:'Pancangan relatif (\'yang\')'},
+    {q:'Kesalahan dalam ayat \'Dia lebih pandai daripada saya berbanding kawan-kawan lain\' ialah?',options:['Penggunaan \'daripada\' dan \'berbanding\' bersama adalah berlebihan','Tiada kesalahan','Kata adjektif \'pandai\' salah','Kata ganti \'saya\' salah'],correct:'Penggunaan \'daripada\' dan \'berbanding\' bersama adalah berlebihan'},
+    {q:'Manakah ayat yang betul menggunakan kata bantu?',options:['Dia sudah makan nasi.','Dia telah sudah makan nasi.','Sudah dia telah makan nasi.','Dia makan sudah telah nasi.'],correct:'Dia sudah makan nasi.'},
+    {q:'Ayat \'Rumah itu besar dan cantik serta selesa didiami\' merupakan contoh ayat majmuk?',options:['Gabungan (menggabungkan beberapa sifat)','Pancangan komplemen','Pancangan keterangan','Tunggal'],correct:'Gabungan (menggabungkan beberapa sifat)'},
+  ],
+  'd6-peribahasa-pantun': [
+    {q:'\'Melentur buluh biarlah dari rebungnya\' bermaksud?',options:['mendidik anak biarlah sejak kecil lagi','buluh mudah dilentur semasa muda','rebung ialah anak buluh','perkara yang sukar dilakukan'],correct:'mendidik anak biarlah sejak kecil lagi'},
+    {q:'\'Air tenang jangan disangka tiada buaya\' bermaksud?',options:['air yang tenang biasanya jernih','orang yang pendiam belum tentu tidak berbahaya atau tidak berilmu','buaya suka bersembunyi di air tenang','air sungai yang tenang berbahaya'],correct:'orang yang pendiam belum tentu tidak berbahaya atau tidak berilmu'},
+    {q:'\'Pantang mengalah biar mati\' berkait rapat dengan peribahasa yang membawa maksud?',options:['sifat penakut','sifat gigih dan tidak mudah putus asa','sifat malas','sifat suka menyerah kalah'],correct:'sifat gigih dan tidak mudah putus asa'},
+    {q:'Rangkap pantun biasanya terdiri daripada berapa baris?',options:['dua baris','tiga baris','empat baris','lima baris'],correct:'empat baris'},
+    {q:'Dalam pantun empat kerat, baris manakah yang menjadi maksud (isi)?',options:['baris pertama dan kedua','baris ketiga dan keempat','baris pertama sahaja','baris keempat sahaja'],correct:'baris ketiga dan keempat'},
+    {q:'Baris \'Pisang emas dibawa berlayar\' dalam pantun dikenali sebagai?',options:['pembayang (sampiran)','maksud (isi)','kesimpulan','tajuk'],correct:'pembayang (sampiran)'},
+    {q:'\'Sedikit-sedikit lama-lama jadi bukit\' bermaksud?',options:['sesuatu yang kecil jika dikumpul lama-kelamaan akan menjadi besar','bukit terbentuk daripada pasir','perkara kecil tidak penting','kerja besar mesti dilakukan sekaligus'],correct:'sesuatu yang kecil jika dikumpul lama-kelamaan akan menjadi besar'},
+    {q:'\'Bagai menatang minyak yang penuh\' bermaksud?',options:['sangat berhati-hati menjaga sesuatu','cuai dalam menjaga sesuatu','suka membazir minyak','tidak peduli akan sesuatu'],correct:'sangat berhati-hati menjaga sesuatu'},
+    {q:'Pantun biasanya mempunyai skema rima?',options:['a-b-a-b','a-a-a-a','a-b-c-d','a-a-b-b'],correct:'a-b-a-b'},
+    {q:'\'Malu bertanya sesat jalan\' bermaksud?',options:['jika tidak bertanya, kita akan mengalami kesukaran atau kesilapan','malu itu perbuatan yang baik','bertanya itu memalukan','jalan yang sesat sukar dicari'],correct:'jika tidak bertanya, kita akan mengalami kesukaran atau kesilapan'},
+    {q:'Pantun nasihat biasanya bertujuan untuk?',options:['memberikan panduan atau teladan yang baik','menceritakan kisah cinta sahaja','menghibur sahaja tanpa pengajaran','mengkritik seseorang secara terus'],correct:'memberikan panduan atau teladan yang baik'},
+    {q:'\'Hendak seribu daya, tak hendak seribu dalih\' bermaksud?',options:['orang yang berazam akan cari jalan, yang tidak berazam akan cari alasan','seribu itu bilangan yang banyak','daya dan dalih perkataan yang sama','tiada kaitan dengan usaha'],correct:'orang yang berazam akan cari jalan, yang tidak berazam akan cari alasan'},
+    {q:'Manakah contoh pembayang (sampiran) pantun yang sesuai berkaitan alam semula jadi?',options:['Pergi ke sawah menanam padi,','Rajin-rajinlah kamu belajar,','Ilmu itu tunjuk ajar,','Supaya kamu tidak tersasar.'],correct:'Pergi ke sawah menanam padi,'},
+    {q:'\'Bagai isi dengan kuku\' bermaksud?',options:['hubungan yang sangat rapat dan tidak boleh dipisahkan','dua benda berbeza','permusuhan yang kekal','kuku yang sakit'],correct:'hubungan yang sangat rapat dan tidak boleh dipisahkan'},
+    {q:'Pantun jenaka bertujuan untuk?',options:['menghiburkan pendengar atau pembaca','menasihati sahaja','mengkritik secara serius','memberikan maklumat teknikal'],correct:'menghiburkan pendengar atau pembaca'},
+    {q:'\'Bagai mencurah air ke daun keladi\' bermaksud?',options:['nasihat yang tidak diambil peduli atau diendahkan','air yang mengalir deras','daun keladi yang licin','cara menyiram tumbuhan'],correct:'nasihat yang tidak diambil peduli atau diendahkan'},
+    {q:'Rima akhir dalam pantun berfungsi untuk?',options:['Memberi keindahan bunyi dan struktur pada pantun','Menambah bilangan baris','Mengelirukan pembaca','Tiada fungsi khusus'],correct:'Memberi keindahan bunyi dan struktur pada pantun'},
+    {q:'\'Sepandai-pandai tupai melompat, akhirnya jatuh ke tanah juga\' bermaksud?',options:['sepandai mana seseorang melakukan kesalahan, akhirnya akan ketahuan juga','tupai memang pandai melompat','tanah tempat tupai jatuh','kepandaian tidak penting'],correct:'sepandai mana seseorang melakukan kesalahan, akhirnya akan ketahuan juga'},
+    {q:'Pantun kanak-kanak biasanya menggunakan bahasa yang?',options:['Mudah difahami dan riang','Sukar dan berat','Penuh istilah teknikal','Bahasa asing'],correct:'Mudah difahami dan riang'},
+    {q:'\'Kalau tidak dipecahkan ruyung, manakan dapat sagunya\' bermaksud?',options:['kejayaan memerlukan usaha dan pengorbanan','ruyung dan sagu benda yang sama','tidak perlu berusaha untuk berjaya','sagu lebih penting daripada ruyung'],correct:'kejayaan memerlukan usaha dan pengorbanan'},
+  ],
+  'd6-kefahaman-kbat': [
+    {q:'Berdasarkan ayat: \'Walaupun miskin, dia tetap menghulurkan bantuan kepada jiran yang kesusahan.\' Apakah sifat yang digambarkan?',options:['sifat kedekut','sifat pemurah walaupun serba kekurangan','sifat malas','sifat sombong'],correct:'sifat pemurah walaupun serba kekurangan'},
+    {q:'Pilih ayat yang paling sesuai untuk mengakhiri sebuah karangan tentang kepentingan menjaga alam sekitar.',options:['Alam sekitar penting.','Justeru, semua pihak perlu berganding bahu menjaga alam sekitar demi generasi akan datang.','Saya suka alam sekitar.','Alam sekitar ada banyak pokok.'],correct:'Justeru, semua pihak perlu berganding bahu menjaga alam sekitar demi generasi akan datang.'},
+    {q:'\'Dia berusaha bersungguh-sungguh walaupun sudah berkali-kali gagal.\' Apakah pengajaran yang boleh diambil daripada ayat ini?',options:['Kegagalan tidak sepatutnya menghalang usaha untuk berjaya','Kegagalan bermakna seseorang perlu berhenti mencuba','Usaha tidak penting untuk kejayaan','Seseorang tidak perlu berusaha lagi selepas gagal'],correct:'Kegagalan tidak sepatutnya menghalang usaha untuk berjaya'},
+    {q:'Berdasarkan situasi: seorang murid selalu menyalin kerja rumah kawannya. Apakah kesan buruk tindakan ini pada masa depan?',options:['Murid itu tidak akan benar-benar memahami pelajaran','Murid itu akan menjadi lebih bijak','Tiada kesan buruk langsung','Murid itu akan mendapat markah lebih tinggi secara berterusan'],correct:'Murid itu tidak akan benar-benar memahami pelajaran'},
+    {q:'\'Sungai yang dahulunya jernih kini keruh akibat pembuangan sampah oleh sesetengah penduduk.\' Apakah tindakan yang paling wajar diambil oleh penduduk kampung?',options:['Mengadakan program gotong-royong dan kempen kesedaran menjaga sungai','Membiarkan sahaja keadaan itu','Berpindah ke kawasan lain','Menyalahkan pihak berkuasa sahaja tanpa bertindak'],correct:'Mengadakan program gotong-royong dan kempen kesedaran menjaga sungai'},
+    {q:'Berdasarkan ayat: \'Dia lebih suka membaca buku berbanding bermain permainan video.\' Apakah kesimpulan yang boleh dibuat tentang minat orang itu?',options:['Dia lebih gemar aktiviti berbentuk bacaan','Dia tidak suka membaca langsung','Dia hanya suka permainan video','Dia tidak mempunyai minat khusus'],correct:'Dia lebih gemar aktiviti berbentuk bacaan'},
+    {q:'\'Harga barangan semakin meningkat, namun gaji pekerja tidak turut meningkat.\' Apakah kesan situasi ini kepada rakyat?',options:['Kos sara hidup rakyat semakin membebankan','Rakyat menjadi lebih kaya','Tiada kesan kepada rakyat','Harga barangan akan turun secara automatik'],correct:'Kos sara hidup rakyat semakin membebankan'},
+    {q:'Berdasarkan ayat: \'Dia sentiasa mengambil kesempatan atas kebaikan orang lain tanpa membalas budi.\' Apakah sifat negatif yang ditunjukkan?',options:['Sifat tidak tahu membalas budi','Sifat pemurah','Sifat rajin','Sifat jujur'],correct:'Sifat tidak tahu membalas budi'},
+    {q:'Pilih ayat yang paling sesuai sebagai cadangan penyelesaian bagi masalah pencemaran udara di bandar.',options:['Kerajaan dan rakyat perlu bekerjasama mengurangkan penggunaan kenderaan peribadi dan menggalakkan pengangkutan awam.','Pencemaran udara tidak boleh diselesaikan.','Biarkan sahaja keadaan itu berterusan.','Pencemaran udara bukan masalah besar.'],correct:'Kerajaan dan rakyat perlu bekerjasama mengurangkan penggunaan kenderaan peribadi dan menggalakkan pengangkutan awam.'},
+    {q:'\'Walaupun diejek oleh rakan-rakan, dia tetap yakin dengan kebolehan dirinya.\' Apakah sifat positif watak dalam ayat ini?',options:['Keyakinan diri yang tinggi','Sifat mudah putus asa','Sifat pemarah','Sifat penakut'],correct:'Keyakinan diri yang tinggi'},
+    {q:'Berdasarkan situasi: sebuah kilang membuang sisa toksik ke dalam sungai tanpa kebenaran. Apakah tindakan yang sepatutnya diambil oleh pihak berkuasa?',options:['Mengambil tindakan undang-undang tegas terhadap kilang itu','Membenarkan kilang itu terus beroperasi tanpa sekatan','Memberi ganjaran kepada kilang itu','Tidak mengambil sebarang tindakan'],correct:'Mengambil tindakan undang-undang tegas terhadap kilang itu'},
+    {q:'\'Dia sanggup berkorban masa dan wang demi membantu mangsa bencana alam.\' Apakah nilai murni yang ditunjukkan?',options:['Sifat prihatin dan sanggup berkorban untuk orang lain','Sifat kedekut','Sifat mementingkan diri sendiri','Sifat malas'],correct:'Sifat prihatin dan sanggup berkorban untuk orang lain'},
+    {q:'Pilih kesimpulan yang paling tepat bagi petikan tentang kepentingan pendidikan dalam membina masa depan seseorang.',options:['Pendidikan merupakan asas penting untuk membina kehidupan yang lebih baik pada masa hadapan.','Pendidikan tidak penting bagi sesetengah orang.','Semua orang tidak memerlukan pendidikan.','Pendidikan hanya penting untuk orang kaya.'],correct:'Pendidikan merupakan asas penting untuk membina kehidupan yang lebih baik pada masa hadapan.'},
+    {q:'\'Dia terus bekerja keras walaupun gagal dalam perniagaan pertamanya.\' Apakah sikap yang ditunjukkan oleh watak ini?',options:['Ketabahan dan semangat tidak mudah berputus asa','Sifat malas','Sifat cepat berputus asa','Sifat tidak bertanggungjawab'],correct:'Ketabahan dan semangat tidak mudah berputus asa'},
+    {q:'Berdasarkan situasi: seorang murid sering ponteng sekolah untuk bermain permainan video. Apakah kesan jangka panjang tindakan ini?',options:['Prestasi akademik murid itu akan merosot','Prestasi akademik murid itu akan meningkat','Tiada kesan kepada masa depan murid itu','Murid itu akan menjadi lebih rajin'],correct:'Prestasi akademik murid itu akan merosot'},
+    {q:'\'Walaupun cuaca panas terik, para sukarelawan tetap membantu mangsa banjir tanpa mengeluh.\' Apakah nilai yang boleh dicontohi daripada ayat ini?',options:['Semangat sukarela dan keikhlasan membantu orang lain','Sifat malas bekerja','Sifat mementingkan keselesaan diri','Sifat suka mengeluh'],correct:'Semangat sukarela dan keikhlasan membantu orang lain'},
+    {q:'Pilih ayat yang paling sesuai untuk memujuk seseorang supaya berhenti membuang sampah merata-rata.',options:['Membuang sampah merata-rata bukan sahaja mencemarkan alam sekitar, malah membahayakan kesihatan kita semua.','Sampah itu tidak penting.','Buang sampah di mana-mana sahaja boleh.','Alam sekitar tidak perlu dijaga.'],correct:'Membuang sampah merata-rata bukan sahaja mencemarkan alam sekitar, malah membahayakan kesihatan kita semua.'},
+    {q:'\'Dia sentiasa bersedia membantu tanpa mengharapkan sebarang balasan.\' Apakah nilai murni yang digambarkan?',options:['Keikhlasan dalam menolong orang lain','Sifat tamak','Sifat mementingkan diri','Sifat sombong'],correct:'Keikhlasan dalam menolong orang lain'},
+    {q:'Berdasarkan petikan tentang kepentingan menabung sejak kecil, apakah tujuan utama penulis menyampaikan mesej ini?',options:['Menggalakkan pembaca mengamalkan sikap berjimat-cermat dari awal','Menggalakkan pembaca membelanjakan wang tanpa had','Menunjukkan bahawa menabung tidak penting','Menggalakkan pembaca meminjam wang'],correct:'Menggalakkan pembaca mengamalkan sikap berjimat-cermat dari awal'},
+    {q:'\'Sikap tolong-menolong dalam masyarakat semakin pudar akibat kesibukan hidup moden.\' Apakah cadangan yang sesuai untuk mengatasi masalah ini?',options:['Mengadakan lebih banyak aktiviti kemasyarakatan untuk mengeratkan hubungan','Membiarkan sahaja keadaan itu berterusan','Mengurangkan interaksi antara jiran','Menyalahkan teknologi sepenuhnya tanpa tindakan'],correct:'Mengadakan lebih banyak aktiviti kemasyarakatan untuk mengeratkan hubungan'},
+  ],
+  'd6-karangan-berformat': [
+    {q:'Karangan berformat merujuk kepada karangan yang mempunyai?',options:['Format tertentu seperti surat, laporan atau ucapan','Tiada format khusus','Ayat pendek sahaja','Gambar sahaja'],correct:'Format tertentu seperti surat, laporan atau ucapan'},
+    {q:'Manakah antara berikut ialah contoh karangan berformat?',options:['Surat kiriman rasmi','Karangan naratif','Karangan deskriptif','Cerpen'],correct:'Surat kiriman rasmi'},
+    {q:'Karangan tidak berformat merujuk kepada karangan yang?',options:['Ditulis dalam bentuk perenggan biasa tanpa format khusus','Mesti mempunyai alamat dan tarikh','Mesti dalam bentuk surat','Mesti mempunyai nombor rujukan'],correct:'Ditulis dalam bentuk perenggan biasa tanpa format khusus'},
+    {q:'Laporan sebagai karangan berformat biasanya mengandungi bahagian?',options:['Pengenalan, isi laporan dan penutup','Hanya pengenalan','Hanya penutup','Tiada struktur tertentu'],correct:'Pengenalan, isi laporan dan penutup'},
+    {q:'Ucapan sebagai karangan berformat perlu dimulakan dengan?',options:['Kata alu-aluan atau sapaan kepada hadirin','Terus kepada isi utama','Kesimpulan','Tandatangan'],correct:'Kata alu-aluan atau sapaan kepada hadirin'},
+    {q:'Manakah antara berikut ialah contoh karangan tidak berformat?',options:['Karangan berdasarkan gambar','Surat kiriman rasmi','Laporan aktiviti','Ucapan perasmian'],correct:'Karangan berdasarkan gambar'},
+    {q:'Format laporan biasanya memerlukan tajuk yang?',options:['Jelas menyatakan perkara yang dilaporkan','Panjang dan berbelit-belit','Tidak berkaitan dengan isi laporan','Tidak diperlukan langsung'],correct:'Jelas menyatakan perkara yang dilaporkan'},
+    {q:'Penutup ucapan biasanya mengandungi?',options:['Ucapan terima kasih dan salam penutup','Isi utama ucapan','Tajuk ucapan','Alamat pengucap'],correct:'Ucapan terima kasih dan salam penutup'},
+    {q:'Karangan tidak berformat seperti karangan naratif memerlukan?',options:['Jalan cerita yang jelas dan menarik','Format rasmi seperti surat','Nombor rujukan','Alamat penerima'],correct:'Jalan cerita yang jelas dan menarik'},
+    {q:'Manakah ciri utama yang membezakan karangan berformat dan tidak berformat?',options:['Karangan berformat mempunyai struktur tetap mengikut jenisnya','Kedua-duanya sama sahaja','Karangan tidak berformat lebih pendek','Karangan berformat tidak memerlukan tajuk'],correct:'Karangan berformat mempunyai struktur tetap mengikut jenisnya'},
+    {q:'Laporan mengenai aktiviti sekolah perlu menyatakan?',options:['Tarikh, tempat, dan perkara yang berlaku semasa aktiviti','Hanya pendapat peribadi penulis','Cerita rekaan','Tiada maklumat khusus'],correct:'Tarikh, tempat, dan perkara yang berlaku semasa aktiviti'},
+    {q:'Ucapan perasmian sesuatu majlis biasanya disampaikan oleh?',options:['Tetamu kehormat atau pegawai yang dilantik','Sesiapa sahaja secara rawak','Kanak-kanak sekolah rendah sahaja','Tidak perlu sesiapa'],correct:'Tetamu kehormat atau pegawai yang dilantik'},
+    {q:'Manakah tajuk yang sesuai untuk laporan tentang program membaca di sekolah?',options:['Laporan Program Membaca di Sekolah','Karangan Saya','Membaca','Program Sekolah'],correct:'Laporan Program Membaca di Sekolah'},
+    {q:'Karangan berbentuk cerpen tergolong dalam kategori?',options:['Karangan tidak berformat','Karangan berformat','Laporan','Surat rasmi'],correct:'Karangan tidak berformat'},
+    {q:'Bahagian isi dalam laporan perlu disusun secara?',options:['Kronologi dan sistematik','Rawak tanpa susunan','Terbalik sepenuhnya','Berselerak'],correct:'Kronologi dan sistematik'},
+    {q:'Ucapan yang baik memerlukan penggunaan bahasa yang?',options:['Sopan dan sesuai dengan majlis','Kasar dan tidak formal','Bahasa pasar','Bahasa asing sepenuhnya'],correct:'Sopan dan sesuai dengan majlis'},
+    {q:'Manakah contoh format karangan yang memerlukan alamat dan tarikh?',options:['Surat kiriman rasmi','Karangan deskriptif','Cerpen','Ucapan'],correct:'Surat kiriman rasmi'},
+    {q:'Laporan aktiviti sekolah perlu ditulis dalam bentuk?',options:['Ayat lampau kerana menceritakan aktiviti yang telah berlaku','Ayat masa depan sahaja','Ayat tanya sahaja','Ayat seruan sahaja'],correct:'Ayat lampau kerana menceritakan aktiviti yang telah berlaku'},
+    {q:'Manakah cara terbaik untuk memulakan ucapan di hadapan hadirin?',options:['Yang berbahagia hadirin sekalian, selamat pagi.','Hai semua.','Terus kepada isi ucapan.','Ok, jom mula.'],correct:'Yang berbahagia hadirin sekalian, selamat pagi.'},
+    {q:'Karangan berformat perlu dinilai berdasarkan?',options:['Ketepatan mengikut format yang ditetapkan serta isi kandungan','Panjang karangan sahaja','Warna dakwat yang digunakan','Bilangan gambar yang disertakan'],correct:'Ketepatan mengikut format yang ditetapkan serta isi kandungan'},
+  ],
+  'd6-rumusan-lengkap': [
+    {q:'Rumusan lengkap perlu mengandungi?',options:['Pendahuluan, isi tersirat dan tersurat, serta kesimpulan/pengajaran','Hanya isi tersurat','Hanya kesimpulan','Hanya pendahuluan'],correct:'Pendahuluan, isi tersirat dan tersurat, serta kesimpulan/pengajaran'},
+    {q:'Isi tersurat dalam sesebuah petikan merujuk kepada?',options:['Maklumat yang dinyatakan secara jelas dalam petikan','Maklumat yang perlu ditafsir sendiri oleh pembaca','Pendapat peribadi penulis rumusan','Maklumat yang tiada dalam petikan'],correct:'Maklumat yang dinyatakan secara jelas dalam petikan'},
+    {q:'Isi tersirat dalam sesebuah petikan merujuk kepada?',options:['Maklumat yang perlu ditafsir atau disimpulkan sendiri oleh pembaca','Maklumat yang dinyatakan secara terus','Maklumat yang tidak berkaitan dengan petikan','Fakta yang direka sendiri'],correct:'Maklumat yang perlu ditafsir atau disimpulkan sendiri oleh pembaca'},
+    {q:'Rumusan lengkap peringkat sekolah rendah biasanya memerlukan bilangan isi antara?',options:['5 hingga 8 isi','1 hingga 2 isi','20 hingga 30 isi','Tiada had bilangan isi'],correct:'5 hingga 8 isi'},
+    {q:'Kesimpulan dalam rumusan lengkap berfungsi untuk?',options:['Merumuskan keseluruhan idea dan memberi pengajaran','Memulakan idea baharu','Menyalin semula isi petikan','Tiada fungsi khusus'],correct:'Merumuskan keseluruhan idea dan memberi pengajaran'},
+    {q:'Pendahuluan rumusan lengkap biasanya menyatakan?',options:['Tajuk atau tema umum petikan secara ringkas','Kesimpulan sahaja','Isi penuh petikan','Pendapat peribadi murid'],correct:'Tajuk atau tema umum petikan secara ringkas'},
+    {q:'Manakah teknik yang sesuai untuk mengenal pasti isi tersirat dalam petikan?',options:['Membaca antara baris dan membuat inferens berdasarkan konteks','Menyalin ayat terus daripada petikan','Mengabaikan bahagian petikan yang sukar','Menulis tanpa membaca petikan'],correct:'Membaca antara baris dan membuat inferens berdasarkan konteks'},
+    {q:'Rumusan lengkap perlu dielakkan daripada?',options:['Menambah maklumat rekaan yang tiada dalam petikan','Menggunakan ayat sendiri','Menyatakan isi tersurat','Menyatakan isi tersirat'],correct:'Menambah maklumat rekaan yang tiada dalam petikan'},
+    {q:'Manakah contoh isi tersurat bagi petikan \'Kerajaan telah membina 50 buah sekolah baharu tahun lepas.\'?',options:['Kerajaan membina 50 buah sekolah baharu tahun lepas','Pendidikan penting untuk negara','Sekolah perlu dibina di semua kawasan','Kerajaan sentiasa membina sekolah setiap tahun'],correct:'Kerajaan membina 50 buah sekolah baharu tahun lepas'},
+    {q:'Manakah contoh isi tersirat yang boleh disimpulkan daripada petikan tentang kejayaan seorang usahawan yang gigih berusaha?',options:['Kejayaan memerlukan usaha dan ketekunan','Usahawan itu bertuah semata-mata','Kejayaan datang tanpa usaha','Usaha tidak penting untuk berjaya'],correct:'Kejayaan memerlukan usaha dan ketekunan'},
+    {q:'Rumusan lengkap perlu ditulis dalam bentuk?',options:['Perenggan yang koheren dan menggunakan penanda wacana','Senarai bertitik','Jadual','Soalan dan jawapan'],correct:'Perenggan yang koheren dan menggunakan penanda wacana'},
+    {q:'Manakah kesalahan biasa dalam rumusan lengkap yang menyebabkan pengurangan markah?',options:['Melebihi had perkataan yang ditetapkan','Menggunakan penanda wacana','Menyatakan kesimpulan','Membaca petikan dengan teliti'],correct:'Melebihi had perkataan yang ditetapkan'},
+    {q:'Pengajaran dalam rumusan lengkap perlu?',options:['Berkaitan secara langsung dengan tema petikan','Tidak berkaitan dengan petikan','Diambil daripada rumusan lain','Diabaikan sepenuhnya'],correct:'Berkaitan secara langsung dengan tema petikan'},
+    {q:'Manakah penanda wacana yang sesuai untuk menghubungkan isi kedua dalam rumusan?',options:['Selain itu,','Oleh itu,','Kesimpulannya,','Pada asalnya,'],correct:'Selain itu,'},
+    {q:'Rumusan lengkap yang baik perlu mempamerkan kemahiran murid dalam?',options:['Meringkaskan dan mengolah maklumat dalam bahasa sendiri','Menyalin maklumat tanpa diubah','Menambah maklumat luar petikan','Menghafal petikan sepenuhnya'],correct:'Meringkaskan dan mengolah maklumat dalam bahasa sendiri'},
+    {q:'Manakah contoh ayat kesimpulan yang sesuai untuk rumusan tentang kepentingan menjaga alam sekitar?',options:['Kesimpulannya, semua pihak perlu berganding bahu menjaga alam sekitar untuk generasi akan datang.','Alam sekitar penting.','Saya suka alam sekitar.','Ada banyak pokok dalam alam sekitar.'],correct:'Kesimpulannya, semua pihak perlu berganding bahu menjaga alam sekitar untuk generasi akan datang.'},
+    {q:'Sebelum menulis rumusan lengkap, murid perlu?',options:['Menggariskan isi-isi penting dalam petikan terlebih dahulu','Terus menulis tanpa perancangan','Mengabaikan tajuk petikan','Menyalin ayat pertama petikan sahaja'],correct:'Menggariskan isi-isi penting dalam petikan terlebih dahulu'},
+    {q:'Rumusan lengkap yang terlalu pendek berbanding had perkataan yang ditetapkan boleh menyebabkan?',options:['Kehilangan markah kerana isi tidak mencukupi','Markah tambahan','Tiada kesan','Markah penuh diberikan'],correct:'Kehilangan markah kerana isi tidak mencukupi'},
+    {q:'Manakah cara terbaik untuk memastikan rumusan tidak keluar daripada had perkataan yang ditetapkan?',options:['Mengira perkataan semasa menulis draf','Menulis tanpa mengira perkataan','Menulis sepanjang mungkin','Mengabaikan had perkataan'],correct:'Mengira perkataan semasa menulis draf'},
+    {q:'Rumusan lengkap yang cemerlang mencerminkan kebolehan murid untuk?',options:['Berfikir secara kritis dan menyusun maklumat dengan tersusun','Menghafal fakta tanpa memahami','Menyalin petikan sepenuhnya','Menambah maklumat rekaan'],correct:'Berfikir secara kritis dan menyusun maklumat dengan tersusun'},
+  ],
+  'd6-ulasan-petikan': [
+    {q:'Ulasan petikan ialah penulisan yang?',options:['Memberi pendapat dan penilaian tentang sesuatu petikan','Meringkaskan petikan tanpa pendapat','Menyalin petikan sepenuhnya','Menterjemah petikan'],correct:'Memberi pendapat dan penilaian tentang sesuatu petikan'},
+    {q:'Ulasan yang baik perlu disokong dengan?',options:['Alasan atau bukti yang jelas','Pendapat tanpa alasan','Fakta yang direka','Tiada sokongan diperlukan'],correct:'Alasan atau bukti yang jelas'},
+    {q:'Ulasan petikan berbeza daripada rumusan kerana ulasan?',options:['Melibatkan pendapat dan penilaian peribadi','Hanya meringkaskan fakta','Tidak memerlukan pemahaman petikan','Perlu menyalin petikan sepenuhnya'],correct:'Melibatkan pendapat dan penilaian peribadi'},
+    {q:'Sebelum menulis ulasan, murid perlu?',options:['Memahami sepenuhnya kandungan dan mesej petikan','Terus menulis pendapat tanpa membaca petikan','Mengabaikan tajuk petikan','Menyalin ulasan orang lain'],correct:'Memahami sepenuhnya kandungan dan mesej petikan'},
+    {q:'Manakah contoh ayat ulasan yang baik tentang kepentingan menjaga kesihatan mental?',options:['Pada pandangan saya, kesihatan mental perlu diberi perhatian serius kerana ia mempengaruhi kualiti hidup seseorang.','Kesihatan mental penting.','Saya suka kesihatan mental.','Kesihatan mental ada dalam petikan.'],correct:'Pada pandangan saya, kesihatan mental perlu diberi perhatian serius kerana ia mempengaruhi kualiti hidup seseorang.'},
+    {q:'Ulasan petikan biasanya mengandungi struktur?',options:['Pengenalan, huraian pendapat dengan alasan, dan kesimpulan','Hanya senarai fakta','Hanya soalan','Tiada struktur tertentu'],correct:'Pengenalan, huraian pendapat dengan alasan, dan kesimpulan'},
+    {q:'Manakah frasa yang sesuai untuk memulakan ulasan?',options:['Pada pandangan saya,','Sekian, terima kasih.','Dengan hormatnya,','Salam sejahtera.'],correct:'Pada pandangan saya,'},
+    {q:'Ulasan yang baik perlu kekal?',options:['Relevan dengan tema atau isu dalam petikan','Tidak berkaitan dengan petikan','Berdasarkan tekaan semata-mata','Bertentangan dengan fakta petikan tanpa alasan'],correct:'Relevan dengan tema atau isu dalam petikan'},
+    {q:'Manakah contoh alasan yang menyokong pendapat \'Membaca penting untuk perkembangan minda\'?',options:['Membaca membantu meningkatkan perbendaharaan kata dan pengetahuan am','Membaca membuang masa','Membaca tidak memberi sebarang faedah','Membaca hanya untuk hiburan'],correct:'Membaca membantu meningkatkan perbendaharaan kata dan pengetahuan am'},
+    {q:'Ulasan petikan mengenai isu sosial perlu ditulis dengan nada?',options:['Objektif dan matang','Emosional tanpa alasan','Menyerang secara peribadi','Tidak serius'],correct:'Objektif dan matang'},
+    {q:'Kesimpulan dalam ulasan biasanya merumuskan?',options:['Pendirian akhir penulis tentang isu yang dibincangkan','Isi baharu yang belum dibincangkan','Fakta yang tiada kaitan','Soalan tambahan'],correct:'Pendirian akhir penulis tentang isu yang dibincangkan'},
+    {q:'Manakah contoh ulasan yang menunjukkan pemikiran kritis?',options:['Walaupun kempen ini bermanfaat, pelaksanaannya perlu dipertingkatkan agar lebih berkesan.','Kempen ini bagus.','Saya suka kempen ini.','Kempen ini ada dalam petikan.'],correct:'Walaupun kempen ini bermanfaat, pelaksanaannya perlu dipertingkatkan agar lebih berkesan.'},
+    {q:'Ulasan petikan yang baik mengelakkan?',options:['Pendapat yang tidak disokong dengan alasan yang munasabah','Pendapat yang disokong dengan alasan','Struktur yang jelas','Kesimpulan yang tepat'],correct:'Pendapat yang tidak disokong dengan alasan yang munasabah'},
+    {q:'Manakah tajuk yang sesuai untuk ulasan tentang kepentingan menjaga alam sekitar?',options:['Ulasan: Kepentingan Menjaga Alam Sekitar','Karangan Saya','Alam Sekitar','Ulasan Ini'],correct:'Ulasan: Kepentingan Menjaga Alam Sekitar'},
+    {q:'Ulasan yang baik memerlukan murid untuk?',options:['Berfikir secara analitikal tentang isu dalam petikan','Menghafal petikan sepenuhnya','Menyalin pendapat orang lain','Mengabaikan mesej petikan'],correct:'Berfikir secara analitikal tentang isu dalam petikan'},
+    {q:'Manakah contoh pendapat yang seimbang (mempertimbangkan dua sudut pandang) dalam ulasan?',options:['Walaupun teknologi membawa banyak manfaat, penggunaannya secara berlebihan boleh menjejaskan kesihatan.','Teknologi sangat bagus tanpa sebarang kelemahan.','Teknologi sangat buruk tanpa sebarang kebaikan.','Teknologi tidak penting.'],correct:'Walaupun teknologi membawa banyak manfaat, penggunaannya secara berlebihan boleh menjejaskan kesihatan.'},
+    {q:'Ulasan petikan sastera biasanya menilai aspek?',options:['Tema, watak, dan pengajaran dalam karya','Harga buku sahaja','Bilangan muka surat sahaja','Warna kulit buku'],correct:'Tema, watak, dan pengajaran dalam karya'},
+    {q:'Manakah cara terbaik untuk mengakhiri ulasan dengan berkesan?',options:['Merumuskan pendirian dengan jelas dan padat','Meninggalkan ulasan tanpa kesimpulan','Menambah isu baharu yang tidak berkaitan','Mengulang keseluruhan petikan'],correct:'Merumuskan pendirian dengan jelas dan padat'},
+    {q:'Ulasan petikan yang berkualiti tinggi mencerminkan kebolehan murid untuk?',options:['Menganalisis dan menilai maklumat secara matang','Menghafal fakta tanpa pemahaman','Menyalin pendapat guru','Mengabaikan tema petikan'],correct:'Menganalisis dan menilai maklumat secara matang'},
+    {q:'Manakah struktur ulasan yang paling sesuai untuk petikan yang membincangkan dua isu berbeza?',options:['Membincangkan setiap isu secara berasingan dengan alasan masing-masing','Mencampuradukkan kedua-dua isu tanpa struktur','Hanya membincangkan satu isu sahaja','Mengabaikan kedua-dua isu'],correct:'Membincangkan setiap isu secara berasingan dengan alasan masing-masing'},
+  ],
+};var TOPIC_META = {
+  'd1-kata-nama': {title:'Kata Nama Am & Khas', darjah:'Darjah 1', emoji:'📛'},
+  'd1-ayat-tunggal': {title:'Ayat Tunggal Mudah', darjah:'Darjah 1', emoji:'📝'},
+  'd1-imbuhan-awalan': {title:'Imbuhan Awalan (me-, ber-)', darjah:'Darjah 1', emoji:'🔤'},
+  'd1-kefahaman': {title:'Bacaan & Kefahaman', darjah:'Darjah 1', emoji:'📖'},
+  'd1-karangan-gambar': {title:'Karangan Gambar Tunggal', darjah:'Darjah 1', emoji:'🖼️'},
+  'd2-kata-kerja-adjektif': {title:'Kata Kerja & Kata Adjektif', darjah:'Darjah 2', emoji:'🏃'},
+  'd2-ayat-majmuk-asas': {title:'Ayat Tunggal & Majmuk Asas', darjah:'Darjah 2', emoji:'📝'},
+  'd2-imbuhan-akhiran': {title:'Imbuhan Akhiran (-kan, -i)', darjah:'Darjah 2', emoji:'🔤'},
+  'd2-kefahaman-petikan': {title:'Kefahaman Petikan Pendek', darjah:'Darjah 2', emoji:'📖'},
+  'd2-karangan-gambar': {title:'Karangan Gambar Tunggal', darjah:'Darjah 2', emoji:'🖼️'},
+  'd3-ganti-sendi-nama': {title:'Kata Ganti & Kata Sendi Nama', darjah:'Darjah 3', emoji:'🔗'},
+  'd3-imbuhan-apitan': {title:'Imbuhan Apitan Asas', darjah:'Darjah 3', emoji:'🔤'},
+  'd3-ayat-majmuk-gabungan': {title:'Ayat Majmuk Gabungan', darjah:'Darjah 3', emoji:'📝'},
+  'd3-kefahaman-sederhana': {title:'Kefahaman Petikan Sederhana', darjah:'Darjah 3', emoji:'📖'},
+  'd3-karangan-gambar-bersiri': {title:'Karangan Gambar Bersiri', darjah:'Darjah 3', emoji:'🖼️'},
+  'd4-kata-hubung-imbuhan': {title:'Kata Hubung & Imbuhan Lanjutan', darjah:'Darjah 4', emoji:'🔗'},
+  'd4-ayat-majmuk-pancangan': {title:'Ayat Majmuk Pancangan', darjah:'Darjah 4', emoji:'📝'},
+  'd4-peribahasa-asas': {title:'Peribahasa Asas', darjah:'Darjah 4', emoji:'💬'},
+  'd4-kefahaman-jawapan-berayat': {title:'Kefahaman & Jawapan Berayat', darjah:'Darjah 4', emoji:'📖'},
+  'd4-karangan-gambar': {title:'Karangan Gambar Tunggal/Bersiri', darjah:'Darjah 4', emoji:'🖼️'},
+  'd4-surat-tidak-rasmi': {title:'Surat Kiriman Tidak Rasmi', darjah:'Darjah 4', emoji:'✉️'},
+  'd5-golongan-kata-lanjutan': {title:'Golongan Kata Lanjutan', darjah:'Darjah 5', emoji:'📚'},
+  'd5-ayat-aktif-pasif': {title:'Ayat Aktif & Pasif', darjah:'Darjah 5', emoji:'🔄'},
+  'd5-peribahasa-simpulan': {title:'Peribahasa & Simpulan Bahasa', darjah:'Darjah 5', emoji:'💬'},
+  'd5-kefahaman-panjang': {title:'Kefahaman Petikan Panjang', darjah:'Darjah 5', emoji:'📖'},
+  'd5-karangan-naratif-deskriptif': {title:'Karangan Naratif/Deskriptif', darjah:'Darjah 5', emoji:'🖋️'},
+  'd5-surat-rasmi': {title:'Surat Kiriman Rasmi', darjah:'Darjah 5', emoji:'📩'},
+  'd5-rumusan-asas': {title:'Rumusan Asas', darjah:'Darjah 5', emoji:'📋'},
+  'd6-tatabahasa-pemantapan': {title:'Tatabahasa Pemantapan', darjah:'Darjah 6', emoji:'✅'},
+  'd6-peribahasa-pantun': {title:'Peribahasa & Pantun', darjah:'Darjah 6', emoji:'🎭'},
+  'd6-kefahaman-kbat': {title:'Kefahaman Aras Tinggi (KBAT)', darjah:'Darjah 6', emoji:'🧠'},
+  'd6-karangan-berformat': {title:'Karangan Berformat & Tidak Berformat', darjah:'Darjah 6', emoji:'🖋️'},
+  'd6-rumusan-lengkap': {title:'Rumusan Lengkap', darjah:'Darjah 6', emoji:'📋'},
+  'd6-ulasan-petikan': {title:'Ulasan Petikan', darjah:'Darjah 6', emoji:'🔍'},
+};
+
+/* ===================== SOUND ENGINE ===================== */
+let soundOn = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function ensureCtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+function beep({freq=440, dur=0.15, type='sine', gain=0.2, delay=0}){
+  if(!soundOn) return;
+  const ctx = ensureCtx();
+  const t0 = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + dur + 0.02);
+}
+function sfxCorrect(){
+  beep({freq:523.25, dur:0.12, type:'triangle', gain:0.22});
+  beep({freq:659.25, dur:0.12, type:'triangle', gain:0.22, delay:0.1});
+  beep({freq:783.99, dur:0.18, type:'triangle', gain:0.24, delay:0.2});
+}
+function sfxWrong(){
+  beep({freq:220, dur:0.18, type:'sawtooth', gain:0.18});
+  beep({freq:164.81, dur:0.25, type:'sawtooth', gain:0.18, delay:0.14});
+}
+function sfxClick(){ beep({freq:600, dur:0.05, type:'square', gain:0.08}); }
+function sfxTick(){ beep({freq:880, dur:0.045, type:'square', gain:0.06}); }
+function sfxTimeUp(){
+  beep({freq:180, dur:0.3, type:'sawtooth', gain:0.2});
+  beep({freq:140, dur:0.4, type:'sawtooth', gain:0.2, delay:0.2});
+}
+function sfxFanfare(){
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep({freq:f,dur:0.22,type:'triangle',gain:0.22,delay:i*0.13}));
+}
+
+/* ===================== LOAD TOPIC ===================== */
+const params = new URLSearchParams(window.location.search);
+const topicId = params.get('topic') || Object.keys(TOPIC_BANKS)[0];
+const meta = TOPIC_META[topicId] || {title:'Latihan Bahasa Melayu', darjah:'', emoji:'🔬'};
+let QUESTIONS = (TOPIC_BANKS[topicId] || []).slice();
+
+document.getElementById('coverTitle').textContent = meta.emoji + ' ' + meta.title;
+document.getElementById('coverEyebrow').textContent = 'Buku Latihan · ' + meta.darjah;
+document.getElementById('coverSub').textContent = QUESTIONS.length + ' soalan · 30 saat/soalan';
+document.getElementById('coverStamp').innerHTML = meta.darjah.replace('Darjah ','D') + '<br>BM';
+document.getElementById('footerText').textContent = meta.title + ' · Bahasa Melayu · Study Buddy';
+document.title = meta.title + ' — Latihan Bahasa Melayu';
+
+const LETTERS = ['A','B','C','D'];
+
+/* ===================== STATE ===================== */
+let currentIndex = 0;
+let score = 0;
+let selectedAnswers = [];
+let answered = false;
+let timer = null;
+let timeLeft = 30;
+const TIME_LIMIT = 30;
+
+const startCard = document.getElementById('startCard');
+const startBtn = document.getElementById('startBtn');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+
+const expTag = document.getElementById('expTag');
+const qNum = document.getElementById('qNum');
+const qText = document.getElementById('qText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const scoreVal = document.getElementById('scoreVal');
+const qCounter = document.getElementById('qCounter');
+const progressBar = document.getElementById('progressBar');
+const soundToggle = document.getElementById('soundToggle');
+const timerBox = document.getElementById('timerBox');
+const timerBar = document.getElementById('timerBar');
+const timeVal = document.getElementById('timeVal');
+
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ ensureCtx(); sfxClick(); }
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureCtx();
+  sfxClick();
+  startCard.style.display = 'none';
+  quizArea.style.display = 'block';
+  QUESTIONS = shuffle(QUESTIONS);
+  currentIndex = 0; score = 0; selectedAnswers = [];
+  scoreVal.textContent = 0;
+  loadQuestion();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  timerBox.classList.remove('low');
+  updateTimerUI();
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft <= 5 && timeLeft > 0){ sfxTick(); }
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      sfxTimeUp();
+      handleTimeout();
+    }
+  },1000);
+}
+
+function updateTimerUI(){
+  timeVal.textContent = timeLeft;
+  const pct = Math.max(0,(timeLeft/TIME_LIMIT)*100);
+  timerBar.style.width = pct + '%';
+  timerBox.classList.toggle('low', timeLeft <= 5);
+}
+
+function loadQuestion(){
+  answered = false;
+  feedback.classList.remove('show','good','bad');
+  nextBtn.classList.remove('show');
+  const q = QUESTIONS[currentIndex];
+
+  expTag.textContent = meta.title;
+  qNum.textContent = 'Soalan ' + (currentIndex+1);
+  qText.textContent = q.q;
+  qCounter.textContent = `${currentIndex+1}/${QUESTIONS.length}`;
+  progressBar.style.width = ((currentIndex)/QUESTIONS.length*100) + '%';
+
+  optionsWrap.innerHTML = '';
+  const order = shuffle(q.options);
+  q._order = order;
+
+  order.forEach((optText, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx] || (idx+1)}</span><span>${optText}</span>`;
+    btn.addEventListener('click', ()=> selectAnswer(btn, optText));
+    optionsWrap.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function selectAnswer(btn, chosenText){
+  if(answered) return;
+  answered = true;
+  clearInterval(timer);
+  const q = QUESTIONS[currentIndex];
+  const isCorrect = chosenText === q.correct;
+
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+    else if(el === btn){ el.classList.add('wrong'); }
+  });
+
+  if(isCorrect){
+    score++;
+    scoreVal.textContent = score;
+    sfxCorrect();
+    feedback.classList.add('show','good');
+    feedback.innerHTML = `<b>Betul! 🎉</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  } else {
+    sfxWrong();
+    feedback.classList.add('show','bad');
+    feedback.innerHTML = `<b>Bukan tu.</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  }
+
+  selectedAnswers.push({ q, correct: isCorrect, chosen: chosenText });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+  nextBtn.focus();
+}
+
+function handleTimeout(){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.opt').forEach(el=>el.classList.add('disabled'));
+  document.querySelectorAll('.opt').forEach((el)=>{
+    const txt = el.querySelector('span:last-child').textContent;
+    if(txt === q.correct){ el.classList.add('correct'); }
+  });
+  feedback.classList.add('show','bad');
+  feedback.innerHTML = `<b>Masa tamat! ⏰</b>Jawapan yang betul: <b style="display:inline">${q.correct}</b>.`;
+  selectedAnswers.push({ q, correct:false, chosen: null });
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (currentIndex+1 >= QUESTIONS.length) ? 'Lihat Keputusan →' : 'Seterusnya →';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  sfxClick();
+  currentIndex++;
+  if(currentIndex >= QUESTIONS.length){
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult(){
+  clearInterval(timer);
+  progressBar.style.width = '100%';
+  quizArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  const resultEmoji = document.getElementById('resultEmoji');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMsg = document.getElementById('resultMsg');
+  document.getElementById('resultScore').textContent = score + ' / ' + QUESTIONS.length;
+
+  if(pct >= 80){
+    resultEmoji.textContent = '🏆';
+    resultTitle.textContent = 'Syabas, Faham Betul!';
+    resultMsg.textContent = 'Konsep ' + meta.title + ' demo dah mantap!';
+    sfxFanfare();
+  } else if(pct >= 50){
+    resultEmoji.textContent = '👍';
+    resultTitle.textContent = 'Dah Faham Sikit!';
+    resultMsg.textContent = 'Baca balik jawapan yang salah tadi, lepas tu try lagi sekali.';
+  } else {
+    resultEmoji.textContent = '💪';
+    resultTitle.textContent = 'Jangan Give Up!';
+    resultMsg.textContent = 'Baca balik penjelasan yang salah tadi, lepas tu try lagi sekali.';
+  }
+
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;color:#5a5346;">RINGKASAN JAWAPAN</div>';
+  selectedAnswers.forEach((a,i)=>{
+    const div = document.createElement('div');
+    div.className = 'breakdown-item';
+    const mark = a.correct ? '✅' : '❌';
+    let html = `<div class="row"><span class="mark">${mark}</span><span>${i+1}. ${a.q.q}</span></div>`;
+    if(!a.correct){
+      const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
+      html += `<div class="answer-detail">
+        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="rightans">Jawapan betul:</span> ${a.q.correct}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+    breakdown.appendChild(div);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  sfxClick();
+  resultArea.style.display = 'none';
+  startCard.style.display = 'block';
+});
+document.getElementById('homeBtn').addEventListener('click', ()=>{
+  window.location.href = 'bm-latihan-hub.html';
+});
+</script>
+</body>
+</html>
