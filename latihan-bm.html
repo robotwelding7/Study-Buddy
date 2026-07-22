@@ -1288,7 +1288,7 @@ function showResult(){
   if(pct >= 80){
     resultEmoji.textContent = '🏆';
     resultTitle.textContent = 'Syabas, Faham Betul!';
-    resultMsg.textContent = 'Konsep ' + meta.title + ' demo dah mantap!';
+    resultMsg.textContent = 'Konsep ' + meta.title + ' kamu dah mantap!';
     sfxFanfare();
   } else if(pct >= 50){
     resultEmoji.textContent = '👍';
@@ -1310,7 +1310,7 @@ function showResult(){
     if(!a.correct){
       const yourAnsText = a.chosen ? a.chosen : 'Tiada jawapan (masa tamat)';
       html += `<div class="answer-detail">
-        <div><span class="yourans">Jawapan demo:</span> ${yourAnsText}</div>
+        <div><span class="yourans">Jawapan kamu:</span> ${yourAnsText}</div>
         <div><span class="rightans">Jawapan betul:</span> ${a.q.correct}</div>
       </div>`;
     }
