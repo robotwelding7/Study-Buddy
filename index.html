@@ -1,5 +1,39 @@
 <!doctype html>
-<html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#184f57"><title>Study Buddy Tahun 4 · Rakan belajar MPT4</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="enhancements.css"></head>
-<body><div class="app-shell"><header class="app-header"><a href="#home" class="brand"><span class="brand-mark">✦</span><span>Study Buddy<small>TAHUN 4 · PERSIAPAN MPT4</small></span></a><div class="header-tools"><span id="saved-status" role="status">Tersimpan pada peranti</span><span class="star-badge">★ <b id="star-count">12</b></span></div></header><nav aria-label="Menu utama" id="main-nav"><button data-page="home">Utama</button><button data-page="practice">Latih Tubi Topik</button><button data-page="exam">Simulasi MPT4</button><button data-page="performance">Prestasi / Scoreboard</button></nav><div id="storage-warning" class="notice hide" role="alert"></div><main id="content"></main><footer>Belajar dengan tenang. Faham satu konsep, cuba satu langkah. <button class="text-button" data-page="references">Bahan rujukan bergambar</button> · <button class="text-button" data-page="about">Tentang format & bahan</button></footer></div>
-<dialog id="modal"><div id="modal-content"></div><button class="secondary" id="modal-close">Tutup</button></dialog><div id="toast" role="status" class="toast hide"></div><button class="type-toggle" data-large-type aria-label="Tukar saiz tulisan biasa atau besar">Aa · Saiz tulisan</button>
-<script src="data-core.js"></script><script src="data-math.js"></script><script src="data-science.js"></script><script src="data-language.js"></script><script src="data-extra.js"></script><script src="format-verified.js"></script><script src="references.js"></script><script src="data-original.js"></script><script src="diagrams.js"></script><script src="diagram-extra.js"></script><script src="grading-enhanced.js"></script><script src="learning-enhanced.js"></script><script src="app.js"></script></body></html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#184f57">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Study Buddy">
+  <title>Study Buddy Tahun 4 · Rakan belajar MPT4</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="enhancements.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header"><a href="#home" class="brand"><span class="brand-mark">✦</span><span>Study Buddy<small>TAHUN 4 · PERSIAPAN MPT4</small></span></a><div class="header-tools"><span id="saved-status" role="status">Tersimpan pada peranti</span><span class="star-badge">★ <b id="star-count">12</b></span></div></header>
+    <nav aria-label="Menu utama" id="main-nav"><button data-page="home">Utama</button><button data-page="practice">Latih Tubi Topik</button><button data-page="exam">Simulasi MPT4</button><button data-page="performance">Prestasi / Scoreboard</button></nav>
+    <div id="storage-warning" class="notice hide" role="alert"></div>
+    <main id="content"></main>
+    <footer>Belajar dengan tenang. Faham satu konsep, cuba satu langkah. <button class="text-button" data-page="references">Bahan rujukan bergambar</button> · <button class="text-button" data-page="about">Tentang format & bahan</button></footer>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div><button class="secondary" id="modal-close">Tutup</button></dialog>
+  <div id="toast" role="status" class="toast hide"></div>
+  <button class="type-toggle" data-large-type aria-label="Tukar saiz tulisan biasa atau besar">Aa · Saiz tulisan</button>
+  <script src="data-core.js"></script><script src="data-math.js"></script><script src="data-science.js"></script><script src="data-language.js"></script><script src="data-extra.js"></script><script src="format-verified.js"></script><script src="references.js"></script><script src="data-original.js"></script><script src="diagrams.js"></script><script src="diagram-extra.js"></script><script src="grading-enhanced.js"></script><script src="learning-enhanced.js"></script><script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js", { scope: "./" })
+          .catch(error => console.warn("Service worker gagal didaftarkan:", error));
+      });
+    }
+  </script>
+</body>
+</html>
