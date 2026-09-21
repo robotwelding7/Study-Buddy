@@ -18,7 +18,7 @@
 <body>
   <div class="app-shell">
     <header class="app-header"><a href="#home" class="brand"><span class="brand-mark">✦</span><span>Study Buddy<small>TAHUN 4 · PERSIAPAN MPT4</small></span></a><div class="header-tools"><span id="saved-status" role="status">Tersimpan pada peranti</span><span class="star-badge">★ <b id="star-count">12</b></span></div></header>
-    <nav aria-label="Menu utama" id="main-nav"><button data-page="home">Utama</button><button data-page="practice">Latih Tubi Topik</button><button data-page="exam">Simulasi MPT4</button><button data-page="performance">Prestasi / Scoreboard</button><button data-page="parent">🔐 Ibu Bapa</button></nav>
+    <nav aria-label="Menu utama" id="main-nav"><button data-page="home">Utama</button><button data-page="practice">Latih Tubi Topik</button><button data-page="exam">Simulasi MPT4</button><button data-page="performance">Prestasi / Scoreboard</button><button data-page="tutor">🤖 Tanya Cikgu AI</button><button data-page="parent">🔐 Ibu Bapa</button></nav>
     <div id="storage-warning" class="notice hide" role="alert"></div>
     <main id="content"></main>
     <footer>Belajar dengan tenang. Faham satu konsep, cuba satu langkah. <button class="text-button" data-page="references">Bahan rujukan bergambar</button> · <button class="text-button" data-page="about">Tentang format & bahan</button></footer>
@@ -26,12 +26,12 @@
   <dialog id="modal"><div id="modal-content"></div><button class="secondary" id="modal-close">Tutup</button></dialog>
   <div id="toast" role="status" class="toast hide"></div>
   <button class="type-toggle" data-large-type aria-label="Tukar saiz tulisan biasa atau besar">Aa · Saiz tulisan</button>
-  <script src="data-core.js"></script><script src="data-math.js"></script><script src="data-science.js"></script><script src="data-language.js"></script><script src="data-extra.js"></script><script src="format-verified.js"></script><script src="references.js"></script><script src="data-original.js"></script><script src="diagrams.js"></script><script src="diagram-extra.js"></script><script src="grading-enhanced.js"></script><script src="learning-enhanced.js"></script><script src="app.js"></script>
+  <script src="data-core.js"></script><script src="data-math.js"></script><script src="data-science.js"></script><script src="data-language.js"></script><script src="data-extra.js"></script><script src="format-verified.js"></script><script src="references.js"></script><script src="data-original.js"></script><script src="diagrams.js"></script><script src="diagram-extra.js"></script><script src="grading-enhanced.js"></script><script src="learning-enhanced.js"></script><script src="educational-visuals.js"></script><script src="ai-config.js"></script><script src="ai-tutor.js"></script><script src="app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js", { scope: "./" })
-          .catch(error => console.warn("Service worker gagal didaftarkan:", error));
+          .catch(error => console.warn("Service worker registration failed:", error));
       });
     }
   </script>
