@@ -1,10 +1,13 @@
-const CACHE_NAME = "study-buddy-v1";
+const CACHE_NAME = "study-buddy-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
   "./style.css",
   "./enhancements.css",
+  "./educational-visuals.js",
+  "./ai-config.js",
+  "./ai-tutor.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png"
