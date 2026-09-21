@@ -1,6 +1,17 @@
 name = "study-buddy-cikgu-ai"
 main = "src/worker.js"
-compatibility_date = "2026-09-01"
+compatibility_date = "2026-09-21"
+
+[observability]
+enabled = true
+
+  [observability.logs]
+  enabled = true
+  head_sampling_rate = 1
+
+  [observability.traces]
+  enabled = true
+  head_sampling_rate = 0.01
 
 [ai]
 binding = "AI"
