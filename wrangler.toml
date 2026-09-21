@@ -1,0 +1,28 @@
+name = "study-buddy"
+main = "cloudflare-worker/src/worker.js"
+compatibility_date = "2026-09-21"
+
+[observability]
+enabled = true
+
+  [observability.logs]
+  enabled = true
+  head_sampling_rate = 1
+
+  [observability.traces]
+  enabled = true
+  head_sampling_rate = 0.01
+
+[ai]
+binding = "AI"
+
+[vars]
+ALLOWED_ORIGIN = "https://robotwelding7.github.io"
+
+[[ratelimits]]
+name = "AI_RATE_LIMITER"
+namespace_id = "11001"
+
+  [ratelimits.simple]
+  limit = 12
+  period = 60
